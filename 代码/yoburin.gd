@@ -5,10 +5,10 @@ enum 状态 {待机,攻击,受击,跑步,战败}
 @export var 动画播放完成 = false
 @export var 是否遭遇敌人 = false
 @export var 是否遭遇攻击 = false
-@export var 是否开始冒险 = false
+@export var 是否开始冒险 = true
 @export var 生命是否用尽 = false
 #export只能显示var，不能直接显示枚举，必须把枚举赋值到一个变量里
-
+var dragging = false
 # Called when the node enters the scene tree for the first time.
 
 func _ready() -> void:
@@ -19,6 +19,9 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func 获取新的状态(当前状态: 状态) -> 状态:
+	#这里写因为什么切换别的状态
+	#这里根据一系列逻辑判断应该进入哪个状态，当条件足时这个函数返回的状态就和目前状态不同，所以切换
+	#print(当前状态)
 	match 当前状态:
 		状态.待机:
 			if 是否开始冒险 == true:
@@ -28,14 +31,13 @@ func 获取新的状态(当前状态: 状态) -> 状态:
 			if 生命是否用尽 == true:
 				return 状态.战败
 			return 当前状态
-			#这里写因为什么切换别的状态
+			
 		状态.攻击:
 			if 动画播放完成 == true:
 				return 状态.待机
 			if 是否开始冒险 == true:
 				return 状态.跑步
 			return 当前状态
-			#这里写因为什么切换别的状态
 		状态.受击:
 			if 动画播放完成 == true:
 				return 状态.待机
@@ -44,23 +46,41 @@ func 获取新的状态(当前状态: 状态) -> 状态:
 			if 是否开始冒险 == false:
 				return 状态.待机
 			return 当前状态
-			#这里写因为什么切换别的状态
+
 		状态.战败:
 			if 生命是否用尽 == false:
 				return 状态.待机
 			return 当前状态
-			#这里写因为什么切换别的状态
 		_:
 			return 状态.待机
 
 func 更改状态调用函数(上一个状态:状态, 下一个状态:状态) -> void:
+	#如果在状态变更的时候要做什么就写在这里
+	if 上一个状态 == 状态.受击 or 上一个状态 == 状态.攻击:
+		动画播放完成 = false
 	pass
 
 func 每帧业务函数(当前状态:状态,delta):
-	animated_sprite_2d.play('待机')
-	print(当前状态)
-	pass
+	match 当前状态:
+		状态.待机:
+			animated_sprite_2d.play('待机')
+		状态.攻击:
+			print('攻击')
+			animated_sprite_2d.play('攻击')
+		状态.受击:
+			animated_sprite_2d.play('受击')
+		状态.跑步:
+			animated_sprite_2d.play('跑步')
+		状态.战败:
+			animated_sprite_2d.play('战败')
+		_:
+			animated_sprite_2d.play('待机')
+	
 
 func _on_animated_sprite_2d_animation_finished() -> void:
+	print('test')
 	动画播放完成 = true
 	pass # Replace with function body.
+	
+
+		
