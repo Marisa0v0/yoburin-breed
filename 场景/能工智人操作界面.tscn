@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://cfnnm1cdaq3uw"]
+
+[node name="Window" type="Window"]
+title = "能工智人自己做饭"
+initial_position = 2
+size = Vector2i(280, 200)
+wrap_controls = true
+transient = true
+keep_title_visible = true
+
+[node name="Container" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Button" type="Button" parent="Container"]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+text = "生成史莱姆（直接升级）"

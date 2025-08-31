@@ -1,0 +1,66 @@
+[gd_scene load_steps=6 format=3 uid="uid://c0w3ip3dlo1j7"]
+
+[ext_resource type="Script" path="res://代码/游戏主界面.gd" id="1_q8akd"]
+[ext_resource type="Script" path="res://代码/game_manager.gd" id="2_yvxn0"]
+[ext_resource type="PackedScene" uid="uid://po2ydgwx1jy2" path="res://场景/Yoburin.tscn" id="3_i03su"]
+[ext_resource type="PackedScene" uid="uid://btrr0ig6fq4hx" path="res://场景/史莱姆.tscn" id="4_tjtyi"]
+[ext_resource type="PackedScene" uid="uid://crqgmg0vndg6a" path="res://场景/钱币.tscn" id="5_v54kg"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_q8akd")
+
+[node name="Camera2D2" type="Camera2D" parent="."]
+position = Vector2(200, 200)
+
+[node name="GameManager" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_yvxn0")
+
+[node name="Yoburin" parent="." instance=ExtResource("3_i03su")]
+position = Vector2(100, 200)
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(794, 193)
+
+[node name="Container" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 300.0
+offset_bottom = 300.0
+
+[node name="Level" type="Label" parent="Container"]
+layout_mode = 0
+offset_left = 111.0
+offset_top = 60.0
+offset_right = 151.0
+offset_bottom = 83.0
+text = "Lv."
+
+[node name="Level_int" type="Label" parent="Container/Level"]
+layout_mode = 0
+offset_left = 22.0
+offset_right = 62.0
+offset_bottom = 23.0
+text = "1"
+
+[node name="Label2" type="Label" parent="Container"]
+layout_mode = 0
+offset_left = 110.0
+offset_top = 83.0
+offset_right = 150.0
+offset_bottom = 106.0
+text = "Exp:"
+
+[node name="EXP" type="Label" parent="Container/Label2"]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 1.0
+offset_right = 74.0
+offset_bottom = 24.0
+text = "0"
+
+[node name="史莱姆" parent="Container/Label2" instance=ExtResource("4_tjtyi")]
+position = Vector2(681, 200)
+
+[node name="钱币" parent="Container/Label2" instance=ExtResource("5_v54kg")]
+position = Vector2(782, 200)
