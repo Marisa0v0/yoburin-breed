@@ -5,8 +5,14 @@ enum 状态 {待机,攻击,受击,跑步,战败}
 @export var 动画播放完成 = false
 @export var 是否遭遇敌人 = false
 @export var 是否遭遇攻击 = false
-@export var 是否开始冒险 = true
+@export var 是否开始冒险 = false
 @export var 生命是否用尽 = false
+@export var 攻击准备就绪 = false
+@export var atk_value = 1
+@export var def_value = 1
+@export var hp_value = 100
+@export var spd_value = 1
+@onready var atk_bar: ProgressBar = $"../UI/Control/ProgressBar"
 #export只能显示var，不能直接显示枚举，必须把枚举赋值到一个变量里
 var dragging = false
 # Called when the node enters the scene tree for the first time.
@@ -30,6 +36,8 @@ func 获取新的状态(当前状态: 状态) -> 状态:
 				return 状态.受击
 			if 生命是否用尽 == true:
 				return 状态.战败
+			if 攻击准备就绪 == true:
+				return 状态.攻击
 			return 当前状态
 			
 		状态.攻击:
@@ -56,16 +64,21 @@ func 获取新的状态(当前状态: 状态) -> 状态:
 
 func 更改状态调用函数(上一个状态:状态, 下一个状态:状态) -> void:
 	#如果在状态变更的时候要做什么就写在这里
-	if 上一个状态 == 状态.受击 or 上一个状态 == 状态.攻击:
+	if 上一个状态 == 状态.受击:
 		动画播放完成 = false
+	if 上一个状态 == 状态.攻击 and 下一个状态 == 状态.待机:
+		动画播放完成 = false
+		atk_bar.value = atk_bar.min_value
 	pass
 
 func 每帧业务函数(当前状态:状态,delta):
+	#每个状态里要做什么就写这里
+	
 	match 当前状态:
 		状态.待机:
 			animated_sprite_2d.play('待机')
+			increase_bar()
 		状态.攻击:
-			print('攻击')
 			animated_sprite_2d.play('攻击')
 		状态.受击:
 			animated_sprite_2d.play('受击')
@@ -78,9 +91,15 @@ func 每帧业务函数(当前状态:状态,delta):
 	
 
 func _on_animated_sprite_2d_animation_finished() -> void:
-	print('test')
 	动画播放完成 = true
+	攻击准备就绪 = false
 	pass # Replace with function body.
 	
-
-		
+func increase_bar():
+	if atk_bar.value == atk_bar.max_value:
+		攻击准备就绪 = true
+	var delta = spd_value * (1 + amplifier(5))
+	atk_bar.value += delta
+	
+func amplifier(x=0):
+	return 1-exp(-x)
