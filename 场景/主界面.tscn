@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://c0w3ip3dlo1j7"]
+[gd_scene load_steps=6 format=3 uid="uid://c0w3ip3dlo1j7"]
 
 [ext_resource type="Script" path="res://代码/游戏主界面.gd" id="1_q8akd"]
 [ext_resource type="Script" path="res://代码/game_manager.gd" id="2_yvxn0"]
 [ext_resource type="PackedScene" uid="uid://po2ydgwx1jy2" path="res://场景/Yoburin.tscn" id="3_i03su"]
+[ext_resource type="Script" path="res://代码/http_request.gd" id="4_wrkt5"]
+[ext_resource type="PackedScene" uid="uid://btrr0ig6fq4hx" path="res://场景/史莱姆.tscn" id="5_x0uo2"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_q8akd")
@@ -21,19 +23,46 @@ position = Vector2(100, 200)
 [node name="Marker2D" type="Marker2D" parent="."]
 position = Vector2(794, 193)
 
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
+script = ExtResource("4_wrkt5")
+
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="Control" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 400.0
-offset_bottom = 400.0
+offset_right = 40.0
+offset_bottom = 40.0
 
-[node name="ProgressBar" type="ProgressBar" parent="UI/Control"]
+[node name="atk" type="Label" parent="UI/Control"]
 layout_mode = 0
-offset_left = 11.0
-offset_top = 12.0
-offset_right = 386.0
-offset_bottom = 39.0
-value = 52.0
-show_percentage = false
+offset_left = 20.0
+offset_top = 355.0
+offset_right = 60.0
+offset_bottom = 378.0
+text = "攻击"
+
+[node name="atk_int" type="Label" parent="UI/Control/atk"]
+layout_mode = 0
+offset_left = 40.0
+offset_right = 80.0
+offset_bottom = 23.0
+text = "1"
+
+[node name="def" type="Label" parent="UI/Control"]
+layout_mode = 0
+offset_left = 280.0
+offset_top = 355.0
+offset_right = 320.0
+offset_bottom = 378.0
+text = "防御"
+
+[node name="def_int" type="Label" parent="UI/Control/def"]
+layout_mode = 0
+offset_left = 40.0
+offset_right = 80.0
+offset_bottom = 23.0
+text = "1"
+
+[node name="史莱姆" parent="." instance=ExtResource("5_x0uo2")]
+position = Vector2(392, 294)

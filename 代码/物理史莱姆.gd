@@ -13,6 +13,5 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_area_2d_area_entered(area: Area2D) -> void:
-	game_manager.level_up()
-	animation_player.play("dead")
+	SPEED = 0
 	死亡音效.playing = true

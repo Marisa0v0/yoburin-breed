@@ -1,8 +1,7 @@
-[gd_scene load_steps=14 format=3 uid="uid://btrr0ig6fq4hx"]
+[gd_scene load_steps=13 format=3 uid="uid://btrr0ig6fq4hx"]
 
 [ext_resource type="Script" path="res://代码/物理史莱姆.gd" id="1_7q7ll"]
 [ext_resource type="Texture2D" uid="uid://cidapv1hna2km" path="res://资源/sprites/slime_green.png" id="1_r1c2k"]
-[ext_resource type="Script" path="res://代码/state_machine.gd" id="4_d4y1o"]
 [ext_resource type="AudioStream" uid="uid://c5yvw3763m6wc" path="res://资源/sounds/jump.wav" id="4_x7mv8"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qhxit"]
@@ -147,8 +146,5 @@ shape = SubResource("RectangleShape2D_ryi23")
 [node name="史莱姆体积" type="CollisionShape2D" parent="."]
 position = Vector2(0, -6)
 shape = SubResource("RectangleShape2D_ryi23")
-
-[node name="StateMachine" type="Node" parent="."]
-script = ExtResource("4_d4y1o")
 
 [connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
