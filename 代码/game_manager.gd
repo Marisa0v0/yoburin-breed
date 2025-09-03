@@ -1,19 +1,10 @@
 extends Node
 
-@export var level = 1
-@export var exp = 0
-@onready var level_str: Label = $"../Container/Level/Level_int"
-@onready var exp_str: Label = $"../Container/Label2/EXP"
+
 
 @onready var player = %Yoburin
 
-func level_up():
-	level += 1
-	level_str.text = str(level)
 
-func add_exp():
-	exp +=10
-	exp_str.text = str(exp)
 	
 #我想想看...
 #需要在游戏管理器里写出来的是用速度获得攻击进度条每帧怎么涨
