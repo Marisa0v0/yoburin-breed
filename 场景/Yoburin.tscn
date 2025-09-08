@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://po2ydgwx1jy2"]
+[gd_scene load_steps=18 format=3 uid="uid://po2ydgwx1jy2"]
 
 [ext_resource type="Texture2D" uid="uid://bhel5dpfu2cy3" path="res://资源/yoburin/待机带砖1.png" id="1_8qxis"]
 [ext_resource type="Script" path="res://代码/yoburin.gd" id="1_yjsgg"]
@@ -12,6 +12,8 @@
 [ext_resource type="Texture2D" uid="uid://d20bbdyus5gjj" path="res://资源/yoburin/攻击2.png" id="5_7v81q"]
 [ext_resource type="Texture2D" uid="uid://bq00gx8m1wrhx" path="res://资源/yoburin/攻击3.png" id="6_8yv13"]
 [ext_resource type="Texture2D" uid="uid://cgv7v3pjk2qe7" path="res://资源/yoburin/攻击4.png" id="7_djqan"]
+[ext_resource type="Texture2D" uid="uid://cvnxfvlvirxmw" path="res://资源/yoburin/战败1.png" id="8_xafb6"]
+[ext_resource type="Texture2D" uid="uid://b5xskjmi8v4pl" path="res://资源/yoburin/战败2.png" id="9_057ke"]
 [ext_resource type="Script" path="res://代码/state_machine.gd" id="13_mo0k4"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_h4dq1"]
@@ -52,6 +54,17 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("8_xafb6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_057ke")
+}],
+"loop": true,
+"name": &"战败",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": ExtResource("4_hkbpi")
 }, {
 "duration": 1.0,
@@ -82,10 +95,6 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3c2sy"]
 size = Vector2(169, 213)
 
-[sub_resource type="SegmentShape2D" id="SegmentShape2D_gc045"]
-a = Vector2(-74, 1)
-b = Vector2(143, -1)
-
 [node name="Yoburin" type="CharacterBody2D"]
 script = ExtResource("1_yjsgg")
 
@@ -97,9 +106,8 @@ position = Vector2(119, 80)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_h4dq1")
-animation = &"攻击"
-frame = 3
-frame_progress = 1.0
+animation = &"战败"
+frame_progress = 0.380592
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
@@ -112,34 +120,4 @@ shape = SubResource("RectangleShape2D_3c2sy")
 position = Vector2(-0.5, -3.5)
 shape = SubResource("RectangleShape2D_3c2sy")
 
-[node name="Control" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 400.0
-offset_bottom = 400.0
-
-[node name="atk_bar" type="ProgressBar" parent="Control"]
-layout_mode = 0
-offset_left = -89.0
-offset_top = 128.0
-offset_right = 87.0
-offset_bottom = 140.0
-show_percentage = false
-
-[node name="hp_bar" type="ProgressBar" parent="Control"]
-layout_mode = 0
-offset_left = -89.0
-offset_top = 100.0
-offset_right = 87.0
-offset_bottom = 127.0
-value = 100.0
-
-[node name="atk_Area2D2" type="Area2D" parent="."]
-position = Vector2(119, 80)
-rotation = 4.71239
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="atk_Area2D2"]
-shape = SubResource("SegmentShape2D_gc045")
-
 [connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]
-[connection signal="area_entered" from="atk_Area2D2" to="." method="_on_atk_area_2d_2_area_entered"]
