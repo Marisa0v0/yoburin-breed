@@ -106,8 +106,7 @@ position = Vector2(119, 80)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_h4dq1")
-animation = &"战败"
-frame_progress = 0.380592
+animation = &"跑步"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false

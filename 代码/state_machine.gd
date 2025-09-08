@@ -1,19 +1,23 @@
+# 状态机相关 - 生物行为
 class_name StateMachine 
 extends Node
 
+# 这怎么调用的！
+#开局是-1，保证没什么问题
 var 当前状态: int = -1:
-	set(下一状态):
+	set(下一状态):#这里和其他语言的set,get没区别，设置变量时发生什么
 		owner.更改状态调用函数(当前状态, 下一状态)
 		当前状态 = 下一状态
 
-
+#节点准备好了就把状态设置为0
 func _ready() -> void:
-	await owner.ready
+	await owner.ready#这里是获取父节点准备信号，也就是说只有一个场景全准备好了他才会进行
 	当前状态 = 0
 	# 他这里必须异步，因为 godot 是从最下层节点开始初始化的，如果不写他找不到父节点，会报错
 	# 所以要等到父级节点初始化完成后再初始化他
 	
 func _physics_process(delta: float) -> void:
+	# 每帧处理状态机
 	# print("调用状态机帧处理了")
 	while true:
 		var 下一个状态 := owner.获取新的状态(当前状态) as int
@@ -21,7 +25,7 @@ func _physics_process(delta: float) -> void:
 		if 下一个状态 == 当前状态 :
 			break
 		当前状态 = 下一个状态
-		# 在这里设 false
+		
 	owner.每帧业务函数(当前状态,delta)
 	#这个必须在if外面，因为他代替了所有角色的每帧循环函数
 	#如果不在外面就意味着只有状态更新的时候其他角色才会步进一步，游戏根本没法运行

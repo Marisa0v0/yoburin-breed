@@ -1,18 +1,17 @@
+# 游戏窗口
 extends Node2D
 
 # Called when the node enters the scene tree for the first time.
 var dragging = false
 
 func _ready() -> void:
+	# 窗口初始化
 	get_viewport().transparent_bg = true
-	pass # Replace with function body.
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
 
 func _input(event):
+	# 接收输入事件
+	# 实现拖动窗口
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
 			dragging = true

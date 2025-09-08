@@ -1,9 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://c0w3ip3dlo1j7"]
+[gd_scene load_steps=6 format=3 uid="uid://c0w3ip3dlo1j7"]
 
 [ext_resource type="Script" path="res://代码/游戏主界面.gd" id="1_q8akd"]
 [ext_resource type="Script" path="res://代码/game_manager.gd" id="2_yvxn0"]
 [ext_resource type="PackedScene" uid="uid://po2ydgwx1jy2" path="res://场景/Yoburin.tscn" id="3_i03su"]
-[ext_resource type="Script" path="res://代码/http_request.gd" id="4_wrkt5"]
 [ext_resource type="PackedScene" uid="uid://btrr0ig6fq4hx" path="res://场景/史莱姆.tscn" id="5_x0uo2"]
 
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_ec0nh"]
@@ -38,9 +37,6 @@ script = ExtResource("2_yvxn0")
 
 [node name="Marker2D" type="Marker2D" parent="."]
 position = Vector2(794, 193)
-
-[node name="HTTPRequest" type="HTTPRequest" parent="."]
-script = ExtResource("4_wrkt5")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
