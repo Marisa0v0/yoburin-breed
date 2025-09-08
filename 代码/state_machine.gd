@@ -1,4 +1,4 @@
-class_name StateMachine
+class_name StateMachine 
 extends Node
 
 var 当前状态: int = -1:
@@ -14,9 +14,14 @@ func _ready() -> void:
 	# 所以要等到父级节点初始化完成后再初始化他
 	
 func _physics_process(delta: float) -> void:
+	# print("调用状态机帧处理了")
 	while true:
 		var 下一个状态 := owner.获取新的状态(当前状态) as int
-		if 下一个状态 == 当前状态:
+		# print("当前状态: ", 当前状态, "下一个状态: ", 下一个状态)
+		if 下一个状态 == 当前状态 :
 			break
 		当前状态 = 下一个状态
+		# 在这里设 false
 	owner.每帧业务函数(当前状态,delta)
+	#这个必须在if外面，因为他代替了所有角色的每帧循环函数
+	#如果不在外面就意味着只有状态更新的时候其他角色才会步进一步，游戏根本没法运行
