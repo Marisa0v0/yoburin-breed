@@ -1,8 +1,7 @@
 # 唯一玩家 - 优里
+@icon("res://资源/yoburin/待机1.png")
 extends CharacterBody2D
 class_name Yoburin
-
-@onready var Gamemanager = %GameManager
 
 # 控制优里行为
 enum 优里状态 {待机,战斗,攻击,受击,跑步,战败}
@@ -21,8 +20,12 @@ enum 优里状态 {待机,战斗,攻击,受击,跑步,战败}
 @export var spd_value = 1
 
 
+func _init() -> void:
+	print(self)
+	add_to_group("Player")
+	
 func _ready() -> void:
-	pass # Replace with function body.
+	pass
 
 
 func 获取新的状态(当前状态: 优里状态) -> 优里状态:
@@ -79,7 +82,7 @@ func 每帧业务函数(当前状态:优里状态,delta):
 			animated_sprite_2d.play('待机')
 		优里状态.战斗:
 			animated_sprite_2d.play('待机')
-			Gamemanager.increase_bar()
+			GlobalGameManager.increase_bar()
 		优里状态.攻击:
 			animated_sprite_2d.play('攻击')
 		优里状态.受击:
@@ -95,4 +98,4 @@ func 每帧业务函数(当前状态:优里状态,delta):
 func _on_animated_sprite_2d_animation_finished() -> void:
 	动画播放完成 = true
 	优里攻击准备就绪 = false
-	Gamemanager.animated_end()
+	GlobalGameManager.animated_end()
