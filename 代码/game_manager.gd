@@ -1,21 +1,37 @@
 extends Node
 
+# 唯一玩家 - 优里
+@onready var player = %Player/Yoburin#用不着这么复杂，直接%yoburin就能访问到了，唯一名称就是干这个的！！那就去掉yoburin的百分号【
+# 所有怪物父节点
+@onready var monster =%Monster
+# 
+@onready var atk_int: Label = %atk_int
+#
+@onready var def_int: Label = %def_int
+@onready var health_bar: ProgressBar = %health_bar
+@onready var atk_speed_bar: ProgressBar = %atk_speed_bar
 
+func _ready() -> void:
+	await owner.ready
+	health_bar.max_value = player.hp_value
+	health_bar.value = health_bar.max_value
 
-@onready var player = %Yoburin
+func increase_bar():
+	if atk_speed_bar.value == atk_speed_bar.max_value:
+		player.优里攻击准备就绪 = true
+	var delta = player.spd_value * (1 + amplifier(5))
+	atk_speed_bar.value += delta
 
+func animated_end():
+	atk_speed_bar.value = atk_speed_bar.min_value
 
-	
-#我想想看...
-#需要在游戏管理器里写出来的是用速度获得攻击进度条每帧怎么涨
+func amplifier(x=0):
+	return 1-exp(-x)
 
-# 总结
-# 1. 攻击进度条 atk_progress_bar 初始值为 0
-# 2. 攻击进度条 atk_progress_bar 最大值为 1
-# 3. 攻击速度 atk_speed 初始值为 1
-# 4. 攻击进度条每帧增加值为 delta
-# 	- delta = atk_speed * (1 + amplifier(x))
-# 	- amplifier 是非负单调递增收敛凹函数，暂定 1-e^-x
-# 	- x 与礼物价格、礼物数量有关
-# 		- 礼物价格越高，x 越大
-# 		- 礼物数量越多，x 越大
+func attack_player(monster_atk_int:int = 1):
+	if monster_atk_int - player.def_value == 0:
+		player.hp_value -= 1
+	else:
+		player.hp_value -= monster_atk_int - player.def_value
+		health_bar.value = player.hp_value
+	pass
