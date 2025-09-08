@@ -11,10 +11,14 @@ config_version=5
 [application]
 
 config/name="优里养成Demo"
-run/main_scene="res://场景/主界面.tscn"
+run/main_scene="res://场景/main_window.tscn"
 config/features=PackedStringArray("4.3", "Mobile")
 config/icon="res://icon.svg"
 run/canvas_textures/default_texture_filter=1
+
+[autoload]
+
+GlobalGameManager="*res://代码/global_game_manager.gd"
 
 [display]
 
