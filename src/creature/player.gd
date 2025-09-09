@@ -1,19 +1,21 @@
-﻿class_name MarisaPlayer
+class_name MarisaPlayer
 extends MarisaCreature
 ## 玩家基类
 
 ## 玩家独有基本属性
 
 ## 导入
-@onready var animation_player: AnimationPlayer = $Slime/AnimatedSprite2D/AnimationPlayer  ## 动画播放器
+@onready var animation_player: AnimationPlayer = $"动画立绘/动画播放器"  ## 动画播放器
 
 ## 内置函数
 ## 类初始化
 func _init() -> void:
+	super._init()
 	print_debug("初始化 Player 类实例 %s" % self.to_string())
 
 ## 该节点的所有子节点初始化后才初始化
 func _ready() -> void:
+	super._ready()
 	print_debug("Player 类准备完毕")
 
 ## 业务函数

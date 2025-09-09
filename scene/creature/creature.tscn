@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://0kr3ta7ttcyq"]
+[gd_scene load_steps=11 format=3 uid="uid://br683p8ei6s6y"]
 
 [ext_resource type="Script" uid="uid://dfm230h16iowr" path="res://src/creature/creature.gd" id="1_qg0ta"]
 [ext_resource type="Texture2D" uid="uid://cidapv1hna2km" path="res://resource/sprites/slime_green.png" id="2_lgbc1"]
