@@ -1,4 +1,4 @@
-﻿class_name Creature
+﻿class_name MarisaCreature
 extends CharacterBody2D
 ## 生物基类
 
@@ -7,7 +7,7 @@ extends CharacterBody2D
 enum Status {Idle, Move, InBattle, Attack, BeAttacked, BeDefeated }
 
 ## 生物基本属性
-@export var move_speed: float		= 1.0		## 移速
+@export var move_speed: float		= 0.0		## 移速 左负右整
 @export var health_point: float		= 100.0		## 生命值
 @export var attack_point: float		= 1.0		## 攻击力
 @export var defence_point: float	= 1.0		## 防御力
@@ -25,6 +25,7 @@ enum Status {Idle, Move, InBattle, Attack, BeAttacked, BeDefeated }
 ## 类初始化
 func _init() -> void:
 	## 初始化 UI 相关
+	print_debug("初始化 Creature 类")
 	self.bar_health_point.max_value = self.health_point
 	self.bar_health_point.value = self.bar_health_point.max_value
 
