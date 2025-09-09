@@ -12,7 +12,7 @@ config_version=5
 
 config/name="优里养成Demo"
 run/main_scene="res://场景/main_window.tscn"
-config/features=PackedStringArray("4.3", "Mobile")
+config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
 run/canvas_textures/default_texture_filter=1
 

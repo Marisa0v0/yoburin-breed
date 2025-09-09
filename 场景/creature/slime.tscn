@@ -1,9 +1,9 @@
 [gd_scene load_steps=15 format=3 uid="uid://btrr0ig6fq4hx"]
 
-[ext_resource type="Script" path="res://代码/creature/slime.gd" id="1_l1aur"]
+[ext_resource type="Script" uid="uid://e1qa62wpkl1" path="res://代码/creature/slime.gd" id="1_l1aur"]
 [ext_resource type="Texture2D" uid="uid://cidapv1hna2km" path="res://资源/sprites/slime_green.png" id="2_6dgat"]
 [ext_resource type="AudioStream" uid="uid://c5yvw3763m6wc" path="res://资源/sounds/jump.wav" id="3_wsp34"]
-[ext_resource type="Script" path="res://代码/utils/state_machine.gd" id="4_j4sod"]
+[ext_resource type="Script" uid="uid://daem552gmrtpg" path="res://代码/utils/state_machine.gd" id="4_j4sod"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qhxit"]
 atlas = ExtResource("2_6dgat")
@@ -105,9 +105,9 @@ resource_name = "dead"
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_w7pso"]
 _data = {
-"RESET": SubResource("Animation_321kj"),
-"attack": SubResource("Animation_7oql1"),
-"dead": SubResource("Animation_qtote")
+&"RESET": SubResource("Animation_321kj"),
+&"attack": SubResource("Animation_7oql1"),
+&"dead": SubResource("Animation_qtote")
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ryi23"]

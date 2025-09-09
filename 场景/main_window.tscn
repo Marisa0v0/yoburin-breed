@@ -1,10 +1,10 @@
 [gd_scene load_steps=7 format=3 uid="uid://c0w3ip3dlo1j7"]
 
-[ext_resource type="Script" path="res://代码/main_window.gd" id="1_7yc1a"]
-[ext_resource type="Script" path="res://代码/game_manager.gd" id="2_bdi8v"]
+[ext_resource type="Script" uid="uid://dk2v8f7bhq5nm" path="res://代码/main_window.gd" id="1_7yc1a"]
+[ext_resource type="Script" uid="uid://duyhb0at413ii" path="res://代码/game_manager.gd" id="2_bdi8v"]
 [ext_resource type="PackedScene" uid="uid://btrr0ig6fq4hx" path="res://场景/creature/slime.tscn" id="3_bp10o"]
-[ext_resource type="Script" path="res://代码/creature/monster.gd" id="3_tv1hd"]
-[ext_resource type="PackedScene" uid="uid://po2ydgwx1jy2" path="res://场景/creature/yoburin.tscn" id="4_3tujq"]
+[ext_resource type="Script" uid="uid://cumyjdbl0ql1h" path="res://代码/creature/monster.gd" id="3_tv1hd"]
+[ext_resource type="PackedScene" uid="uid://po2ydgwx1jy2" path="res://场景/Yoburin.tscn" id="4_3tujq"]
 
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_ec0nh"]
 a = Vector2(-1, -226)
@@ -37,6 +37,7 @@ unique_name_in_owner = true
 [node name="Yoburin" parent="Creature/Player" instance=ExtResource("4_3tujq")]
 unique_name_in_owner = true
 position = Vector2(130, 250)
+script = null
 
 [node name="Marker2D" type="Marker2D" parent="."]
 position = Vector2(794, 193)
