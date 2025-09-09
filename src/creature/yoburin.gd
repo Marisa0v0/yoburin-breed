@@ -4,7 +4,7 @@ extends MarisaPlayer
 ## 当前唯一玩家 - 优里
 
 ## 优里立绘
-@onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
+@onready var animated_sprite_2d: AnimatedSprite2D = $"优里立绘动画"
 
 ## 内置函数
 ## 类初始化
@@ -20,7 +20,7 @@ func _on_animated_sprite_2d_animation_finished() -> void:
 	self.animation_be_attacked_end = true	## TODO ? 好像不用分开两种动画
 	
 	self.can_attack = false  		  ## TODO ? 干嘛用的
-	GlobalGameManager.animated_end()  ## TODO ? 干嘛用的
+#	GlobalGameManager.animated_end()  ## TODO ? 干嘛用的
 
 ## 业务函数
 ## 每帧动作

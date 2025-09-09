@@ -18,7 +18,7 @@ run/canvas_textures/default_texture_filter=1
 
 [autoload]
 
-GlobalGameManager="*res://代码/global_game_manager.gd"
+GlobalGameManager="*res://src/global_game_manager.gd"
 
 [display]
 

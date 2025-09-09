@@ -16,8 +16,8 @@ enum Status { Default, Idle, Move, Attack, BeAttacked, BeDefeated }
 @export var attack_speed :=  1.0		## 攻击速度 游戏核心机制
 
 ## UI 相关
-@onready var bar_health_point: ProgressBar = $Control/bar_health_point	## 生命值 进度条
-@onready var bar_attack_ready: ProgressBar = $Control/bar_attack_ready  ## 能够发起攻击 进度条 游戏核心机制
+@onready var bar_health_point: ProgressBar = $"动画立绘/可视化界面/生命值进度条"	## 生命值 进度条
+@onready var bar_attack_ready: ProgressBar = $"动画立绘/可视化界面/攻击准备进度条"	## 能够发起攻击 进度条 游戏核心机制
 
 ## 业务逻辑相关
 @onready var in_battle_position := 	 		false  ## 生物进入攻击距离
@@ -31,14 +31,14 @@ enum Status { Default, Idle, Move, Attack, BeAttacked, BeDefeated }
 func _init() -> void:
 	## 初始化 UI 相关
 	print_debug("初始化 Creature 类实例 %s" % self.to_string())
-	self.bar_health_point.max_value = self.health_point
-	self.bar_health_point.value = self.bar_health_point.max_value
-
-	self.bar_attack_ready.value = self.bar_attack_ready.min_value
 
 ## 该节点的所有子节点初始化后才初始化
 func _ready() -> void:
 	print_debug("Creature 类准备完毕")
+	self.bar_health_point.max_value = self.health_point
+	self.bar_health_point.value = self.bar_health_point.max_value
+
+	self.bar_attack_ready.value = self.bar_attack_ready.min_value
 	
 ## 业务函数
 ## 攻击条自增

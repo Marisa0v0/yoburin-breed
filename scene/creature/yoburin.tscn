@@ -95,28 +95,45 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3c2sy"]
 size = Vector2(169, 213)
 
-[node name="Yoburin" type="CharacterBody2D"]
+[node name="优布林" type="CharacterBody2D"]
 script = ExtResource("1_yjsgg")
+name_ = "优布林"
 
-[node name="StateMachine" type="Node" parent="."]
+[node name="状态机" type="Node" parent="."]
 script = ExtResource("13_mo0k4")
 
 [node name="豆腐乳落点【其实是板砖】" type="Marker2D" parent="."]
 position = Vector2(119, 80)
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="优里立绘动画" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_h4dq1")
-animation = &"跑步"
+animation = &"待机"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
 position = Vector2(-5.25, 1.5)
 shape = SubResource("RectangleShape2D_3c2sy")
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="优里判定区域" type="Area2D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="优里碰撞箱" type="CollisionShape2D" parent="优里判定区域"]
 position = Vector2(-0.5, -3.5)
 shape = SubResource("RectangleShape2D_3c2sy")
 
-[connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="bar_health_point" type="ProgressBar" parent="Control"]
+layout_mode = 0
+offset_right = 4.0
+offset_bottom = 27.0
+
+[node name="bar_attack_ready" type="ProgressBar" parent="Control"]
+layout_mode = 0
+offset_right = 4.0
+offset_bottom = 27.0
+
+[connection signal="animation_finished" from="优里立绘动画" to="." method="_on_animated_sprite_2d_animation_finished"]
