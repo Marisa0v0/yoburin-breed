@@ -107,7 +107,7 @@ position = Vector2(119, 80)
 
 [node name="优里立绘动画" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_h4dq1")
-animation = &"待机"
+animation = &"攻击"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false

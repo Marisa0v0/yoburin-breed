@@ -17,7 +17,8 @@ func _ready() -> void:
 	super._ready()
 	print_debug("优里类准备完毕")
 
-func _on_animated_sprite_2d_animation_finished() -> void:
+func _on_animation_finished() -> void:
+	print_debug("优里动画结束啦")
 	self.animation_attack_end = true		## TODO ? 好像不用分开两种动画
 	self.animation_be_attacked_end = true	## TODO ? 好像不用分开两种动画
 	
