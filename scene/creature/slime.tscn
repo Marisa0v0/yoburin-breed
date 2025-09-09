@@ -117,6 +117,12 @@ size = Vector2(12, 12)
 position = Vector2(235, 265)
 scale = Vector2(5, 5)
 script = ExtResource("1_l1aur")
+name_ = null
+move_speed = null
+health = null
+atk_value = null
+spd_value = null
+def_value = null
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -12)

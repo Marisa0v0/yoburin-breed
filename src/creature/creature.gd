@@ -1,31 +1,36 @@
-﻿class_name MarisaCreature
+class_name MarisaCreature
 extends CharacterBody2D
 ## 生物基类
 
 ## 生物基本状态 
-##			闲置  移动	 准备战斗	   发起攻击  受到攻击	   被击败
-enum Status {Idle, Move, InBattle, Attack, BeAttacked, BeDefeated }
+##			 初始/默认   闲置  移动   发起攻击  受到攻击     被击败
+enum Status { Default, Idle, Move, Attack, BeAttacked, BeDefeated }
 
 ## 生物基本属性
-@export var move_speed: float		= 0.0		## 移速 左负右整
-@export var health_point: float		= 100.0		## 生命值
-@export var attack_point: float		= 1.0		## 攻击力
-@export var defence_point: float	= 1.0		## 防御力
-@export var attack_speed: float		= 1.0		## 攻击速度 游戏核心机制
+@export var name_ :=		 "咕咕嘎嘎"	## 名称
+
+@export var move_speed := 	 0.0		## 移速 左负右正
+@export var health_point :=  100.0		## 生命值
+@export var attack_point :=  1.0		## 攻击力
+@export var defence_point := 1.0		## 防御力
+@export var attack_speed :=  1.0		## 攻击速度 游戏核心机制
 
 ## UI 相关
 @onready var bar_health_point: ProgressBar = $Control/bar_health_point	## 生命值 进度条
 @onready var bar_attack_ready: ProgressBar = $Control/bar_attack_ready  ## 能够发起攻击 进度条 游戏核心机制
 
 ## 业务逻辑相关
-@onready var is_in_battle: bool = false  ## 生物准备战斗
-@onready var can_attack: bool   = false  ## 生物能够进行攻击
+@onready var in_battle_position := 	 		false  ## 生物进入攻击距离
+@onready var can_attack := 			 		false  ## 生物攻击进度条涨满 能够发起攻击
+@onready var be_attacked :=			 		false  ## 生物收到攻击
+@onready var animation_attack_end := 		false  ## 攻击动画结束
+@onready var animation_be_attacked_end := 	false  ## 受击动画结束
 
 ## 内置函数
 ## 类初始化
 func _init() -> void:
 	## 初始化 UI 相关
-	print_debug("初始化 Creature 类")
+	print_debug("初始化 Creature 类实例 %s" % self.to_string())
 	self.bar_health_point.max_value = self.health_point
 	self.bar_health_point.value = self.bar_health_point.max_value
 
@@ -33,11 +38,7 @@ func _init() -> void:
 
 ## 该节点的所有子节点初始化后才初始化
 func _ready() -> void:
-	pass
-	
-## 每帧调用一次
-func _process(delta: float) -> void:
-	pass
+	print_debug("Creature 类准备完毕")
 	
 ## 业务函数
 ## 攻击条自增
@@ -53,5 +54,5 @@ func bar_attack_ready_increase():
 
 ## 功能函数
 ## a 值越小，x 的差额引起的变化越平滑
-func amplifier(x: int = 0, a: float = 0.5):
+func amplifier(x: int = 0, a: float = 0.5) -> float:
 	return 1 - exp(-a*x)
