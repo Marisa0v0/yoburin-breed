@@ -25,7 +25,7 @@ enum 史莱姆状态 {移动,战斗,攻击,受击,战败}
 @onready var hp_bar: ProgressBar = $Control/hp_bar
 @onready var node_creature: Node = %Creature
 
-var slime_scene = preload("res://场景/creature/slime.tscn")
+var slime_scene = preload("res://scene/creature/slime.tscn")
 
 
 #func _init(name__: String = "我没有名字孩子们"):

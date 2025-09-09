@@ -1,7 +1,7 @@
 # 怪物 - 生成
 extends Node2D
 
-var slime_scene = preload("res://场景/creature/slime.tscn")
+var slime_scene = preload("res://scene/creature/slime.tscn")
 
 func _input(event):
 	# 按下空格生成史莱姆
