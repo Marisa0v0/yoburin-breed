@@ -19,8 +19,7 @@ func _ready() -> void:
 
 func _on_animation_finished() -> void:
 	print_debug("优里动画结束啦")
-	self.animation_attack_end = true		## TODO ? 好像不用分开两种动画
-	self.animation_be_attacked_end = true	## TODO ? 好像不用分开两种动画
+	self.animation_end = true
 	
 	self.can_attack = false  		  ## TODO ? 干嘛用的
 	self.bar_attack_ready.value = self.bar_attack_ready.min_value
@@ -43,3 +42,10 @@ func action(current_state: Status, delta: float) -> void:
 			self.animated_sprite_2d.play("战败动画")
 		_:  ## falback
 			self.animated_sprite_2d.play("闲置动画")
+
+## 具体状态切换时调用
+func on_state_change(current_state: Status, next_state: Status) -> void:
+	if current_state == Status.BeAttacked:
+		self.animation_end = false
+	elif current_state == Status.Attack and next_state == Status.Idle:
+		self.animation_end = false

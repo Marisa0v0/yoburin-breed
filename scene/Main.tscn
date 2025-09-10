@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3 uid="uid://cd6febu7xjvyn"]
+
+[ext_resource type="Script" uid="uid://dk2v8f7bhq5nm" path="res://src/main.gd" id="1_nbc6x"]
+[ext_resource type="PackedScene" uid="uid://c3dmwdgcgl2el" path="res://scene/creature/yoburin.tscn" id="2_h6nst"]
+
+[node name="主场景" type="Node2D"]
+script = ExtResource("1_nbc6x")
+
+[node name="生物组" type="Node" parent="."]
+
+[node name="优布林" parent="生物组" instance=ExtResource("2_h6nst")]
+
+[node name="图形界面" type="Node" parent="."]
+
+[node name="玩家生命值进度条" type="ProgressBar" parent="图形界面"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 480.0
+offset_bottom = 43.0
+show_percentage = false
+
+[node name="玩家攻击进度条" type="ProgressBar" parent="图形界面"]
+offset_left = 16.0
+offset_top = 48.0
+offset_right = 480.0
+offset_bottom = 64.0
+show_percentage = false

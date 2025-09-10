@@ -64,7 +64,7 @@ height = 195.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qg0ta"]
 
 [node name="优布林" type="CharacterBody2D"]
-position = Vector2(240, 244)
+position = Vector2(240, 288)
 script = ExtResource("1_yjsgg")
 metadata/_custom_type_script = "uid://dfm230h16iowr"
 
@@ -84,6 +84,7 @@ position = Vector2(0, -1.5)
 shape = SubResource("CapsuleShape2D_hlq24")
 
 [node name="可视化界面" type="Control" parent="动画立绘"]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0

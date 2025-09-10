@@ -1,42 +1,45 @@
-[gd_scene load_steps=7 format=3 uid="uid://c0w3ip3dlo1j7"]
+[gd_scene load_steps=9 format=3 uid="uid://c0w3ip3dlo1j7"]
 
-[ext_resource type="Script" uid="uid://dk2v8f7bhq5nm" path="res://src/main_window.gd" id="1_7yc1a"]
-[ext_resource type="Script" uid="uid://duyhb0at413ii" path="res://src/game_manager.gd" id="2_bdi8v"]
-[ext_resource type="PackedScene" uid="uid://btrr0ig6fq4hx" path="res://scene/creature/oldslime.tscn" id="3_bp10o"]
-[ext_resource type="Script" uid="uid://cumyjdbl0ql1h" path="res://src/creature/monster.gd" id="3_tv1hd"]
-[ext_resource type="PackedScene" uid="uid://po2ydgwx1jy2" path="res://scene/creature/yoburin.tscn" id="4_3tujq"]
+[ext_resource type="Script" uid="uid://dk2v8f7bhq5nm" path="res://src/main.gd" id="1_j72gh"]
+[ext_resource type="Script" uid="uid://duyhb0at413ii" path="res://src/game_manager.gd" id="2_2u14o"]
+[ext_resource type="Script" uid="uid://dfm230h16iowr" path="res://src/creature/creature.gd" id="3_2bmtk"]
+[ext_resource type="Script" uid="uid://cumyjdbl0ql1h" path="res://src/creature/monster.gd" id="4_6ciht"]
+[ext_resource type="PackedScene" uid="uid://2nocyx65ao20" path="res://scene/creature/slime.tscn" id="5_wh455"]
+[ext_resource type="Script" uid="uid://c571lkc84pn3k" path="res://src/creature/player.gd" id="6_mf5ea"]
+[ext_resource type="PackedScene" uid="uid://c3dmwdgcgl2el" path="res://scene/creature/yoburin.tscn" id="7_xle3t"]
 
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_ec0nh"]
 a = Vector2(-1, -226)
 b = Vector2(0, 185)
 
 [node name="主场景" type="Node2D"]
-script = ExtResource("1_7yc1a")
+script = ExtResource("1_j72gh")
 
 [node name="Camera2D2" type="Camera2D" parent="."]
 position = Vector2(250, 250)
 
 [node name="GameManager" type="Node" parent="."]
 unique_name_in_owner = true
-script = ExtResource("2_bdi8v")
+script = ExtResource("2_2u14o")
 
-[node name="Creature" type="Node" parent="."]
-unique_name_in_owner = true
+[node name="Creature" type="CharacterBody2D" parent="."]
+script = ExtResource("3_2bmtk")
+metadata/_custom_type_script = "uid://dfm230h16iowr"
 
-[node name="Monster" type="Node2D" parent="Creature"]
+[node name="Monster" type="CharacterBody2D" parent="Creature"]
 unique_name_in_owner = true
 position = Vector2(500, 0)
-script = ExtResource("3_tv1hd")
+script = ExtResource("4_6ciht")
+metadata/_custom_type_script = "uid://cumyjdbl0ql1h"
 
-[node name="Slime" parent="Creature/Monster" instance=ExtResource("3_bp10o")]
-position = Vector2(392, 294)
+[node name="史莱姆" parent="Creature/Monster" instance=ExtResource("5_wh455")]
 
-[node name="Player" type="Node2D" parent="Creature"]
+[node name="Player" type="CharacterBody2D" parent="Creature"]
 unique_name_in_owner = true
+script = ExtResource("6_mf5ea")
+metadata/_custom_type_script = "uid://c571lkc84pn3k"
 
-[node name="Yoburin" parent="Creature/Player" instance=ExtResource("4_3tujq")]
-unique_name_in_owner = true
-position = Vector2(130, 250)
+[node name="优布林" parent="Creature/Player" instance=ExtResource("7_xle3t")]
 
 [node name="Marker2D" type="Marker2D" parent="."]
 position = Vector2(794, 193)
@@ -103,5 +106,3 @@ position = Vector2(379, 289)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="atk_Area2D"]
 shape = SubResource("SegmentShape2D_ec0nh")
-
-[connection signal="area_entered" from="atk_Area2D" to="Creature/Player/Yoburin" method="_on_atk_area_2d_area_entered"]

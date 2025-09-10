@@ -43,12 +43,12 @@ func update_state(current_state: Status) -> Status:
 			return current_state
 			
 		Status.Attack:
-			if self.animation_attack_end:  ## 攻击动画结束 -> 返回闲置
+			if self.animation_end:  ## 攻击动画结束 -> 返回闲置
 				return Status.Idle 
 			return current_state
 			
 		Status.BeAttacked:
-			if self.animation_be_attacked_end:
+			if self.animation_end:
 				return Status.Idle
 			return current_state
 			
@@ -58,28 +58,3 @@ func update_state(current_state: Status) -> Status:
 			
 		_:  ## fallback 落回常规状态
 			return Status.Move
-	
-## 每帧动作
-func action(current_state: Status, delta: float) -> void:
-	match current_state:
-		Status.Move:
-			## 每帧移动
-			self.position.x += self.move_speed * delta
-		Status.Idle:
-			## 到达位置后攻击条自动增长
-			self.bar_attack_ready_increase()
-		Status.Attack:
-			## 播放动画 - 动画结束
-			self.animation_player.play("attack")
-	
-			self.can_attack = false  ## TODO ? 干嘛用的
-			self.animation_attack_end = true
-			self.animation_be_attacked_end = true
-			self.bar_attack_ready.value = self.bar_attack_ready.min_value
-		## TODO
-		Status.BeAttacked:
-			pass
-		Status.BeDefeated:
-			pass
-		_:  ## fallback
-			pass

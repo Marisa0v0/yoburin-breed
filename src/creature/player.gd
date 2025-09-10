@@ -4,9 +4,6 @@ extends MarisaCreature
 
 ## 玩家独有基本属性
 
-## 导入
-@onready var animation_player: AnimationPlayer = $"动画立绘/动画播放器"  ## 动画播放器
-
 ## 内置函数
 ## 类初始化
 func _init() -> void:
@@ -40,12 +37,12 @@ func update_state(current_state: Status) -> Status:
 			return current_state
 			
 		Status.Attack:
-			if self.animation_attack_end:  ## 攻击动画结束 -> 返回闲置
+			if self.animation_end:  ## 攻击动画结束 -> 返回闲置
 				return Status.Idle
 			return current_state
 			
 		Status.BeAttacked:
-			if self.animation_be_attacked_end:
+			if self.animation_end:
 				return Status.Idle
 			return current_state
 

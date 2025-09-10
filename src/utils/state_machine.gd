@@ -3,8 +3,11 @@ extends Node
 ## 状态机相关 - 生物行为核心机制
 
 ## 状态机相关变量
-var current_state: MarisaCreature.Status = MarisaCreature.Status.Default  ## 当前状态
-var next_state: MarisaCreature.Status = MarisaCreature.Status.Default  ## 下一状态
+## 当前状态
+var current_state: MarisaCreature.Status = MarisaCreature.Status.Default:  
+	set(next_state):
+		self.owner.on_state_change(current_state, next_state)
+		current_state = next_state
 
 ## 内置函数
 ## 该节点的所有子节点初始化后才初始化
@@ -19,12 +22,13 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	while true:
 		## 先获取下一状态
-		self.next_state = owner.update_state(self.current_state)
+		var next_state = owner.update_state(self.current_state)
 		## 仅在状态更新时，说明生物需要进行动作
-		if self.next_state == self.current_state:
+		if next_state == self.current_state:
 			break
 		## 状态滚动后移
-		self.current_state = self.next_state
+		## 同时重置状态
+		self.current_state = next_state
 
 	## 仅在状态更新时，说明生物需要进行动作
 	self.owner.action(self.current_state, delta)
