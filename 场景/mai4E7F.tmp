@@ -1,0 +1,113 @@
+[gd_scene load_steps=7 format=3 uid="uid://c0w3ip3dlo1j7"]
+
+[ext_resource type="Script" path="res://代码/main_window.gd" id="1_7yc1a"]
+[ext_resource type="Script" path="res://代码/game_manager.gd" id="2_bdi8v"]
+[ext_resource type="PackedScene" uid="uid://btrr0ig6fq4hx" path="res://场景/creature/slime.tscn" id="3_bp10o"]
+[ext_resource type="Script" path="res://代码/creature/monster.gd" id="3_tv1hd"]
+[ext_resource type="PackedScene" uid="uid://po2ydgwx1jy2" path="res://场景/creature/yoburin.tscn" id="4_3tujq"]
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_ec0nh"]
+a = Vector2(-1, -226)
+b = Vector2(0, 185)
+
+[node name="主场景" type="Node2D"]
+script = ExtResource("1_7yc1a")
+
+[node name="Camera2D2" type="Camera2D" parent="."]
+position = Vector2(250, 250)
+
+[node name="GameManager" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_bdi8v")
+
+[node name="Creature" type="Node" parent="."]
+unique_name_in_owner = true
+
+[node name="Monster" type="Node2D" parent="Creature"]
+unique_name_in_owner = true
+position = Vector2(500, 0)
+script = ExtResource("3_tv1hd")
+
+[node name="Slime" parent="Creature/Monster" instance=ExtResource("3_bp10o")]
+position = Vector2(392, 294)
+name_ = null
+move_speed = null
+health = null
+atk_value = null
+spd_value = null
+def_value = null
+
+[node name="Player" type="Node2D" parent="Creature"]
+unique_name_in_owner = true
+
+[node name="Yoburin" parent="Creature/Player" instance=ExtResource("4_3tujq")]
+unique_name_in_owner = true
+position = Vector2(130, 250)
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(794, 193)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="atk" type="Label" parent="UI/Control"]
+layout_mode = 0
+offset_left = 27.0
+offset_top = 444.0
+offset_right = 67.0
+offset_bottom = 467.0
+text = "攻击"
+
+[node name="atk_int" type="Label" parent="UI/Control/atk"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 40.0
+offset_right = 80.0
+offset_bottom = 23.0
+text = "1"
+
+[node name="def" type="Label" parent="UI/Control"]
+layout_mode = 0
+offset_left = 409.0
+offset_top = 444.0
+offset_right = 449.0
+offset_bottom = 467.0
+text = "防御"
+
+[node name="def_int" type="Label" parent="UI/Control/def"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 40.0
+offset_right = 80.0
+offset_bottom = 23.0
+text = "1"
+
+[node name="health_bar" type="ProgressBar" parent="UI/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 25.0
+offset_top = 15.0
+offset_right = 475.0
+offset_bottom = 42.0
+
+[node name="atk_speed_bar" type="ProgressBar" parent="UI/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 25.0
+offset_top = 45.0
+offset_right = 475.0
+offset_bottom = 57.0
+show_percentage = false
+
+[node name="atk_Area2D" type="Area2D" parent="."]
+position = Vector2(379, 289)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="atk_Area2D"]
+shape = SubResource("SegmentShape2D_ec0nh")
+
+[connection signal="area_entered" from="atk_Area2D" to="Creature/Player/Yoburin" method="_on_atk_area_2d_area_entered"]
