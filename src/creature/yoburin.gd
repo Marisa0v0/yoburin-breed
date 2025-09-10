@@ -23,6 +23,7 @@ func _on_animation_finished() -> void:
 	self.animation_be_attacked_end = true	## TODO ? 好像不用分开两种动画
 	
 	self.can_attack = false  		  ## TODO ? 干嘛用的
+	self.bar_attack_ready.value = self.bar_attack_ready.min_value
 #	GlobalGameManager.animated_end()  ## TODO ? 干嘛用的
 
 ## 业务函数

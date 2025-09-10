@@ -12,7 +12,6 @@ func _ready() -> void:
 	print_debug("状态机类准备完毕")
 	await self.owner.ready #这里是获取父节点准备信号，也就是说只有一个场景全准备好了他才会进行
 	self.current_state = MarisaCreature.Status.Default
-	# 节点准备好了就把状态设置为0
 	# 他这里必须异步，因为 godot 是从最下层节点开始初始化的，如果不写他找不到父节点，会报错
 	# 所以要等到父级节点初始化完成后再初始化他
 

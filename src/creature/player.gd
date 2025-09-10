@@ -27,11 +27,16 @@ func update_state(current_state: Status) -> Status:
 		Status.Default:  ## 初始状态
 			return Status.Idle
 			
+		Status.Move:
+			return current_state
+			
 		Status.Idle:  ## 常规状态
 			if self.be_attacked:
 				return Status.BeAttacked
+			
 			if self.can_attack:  ## 攻击条涨满 -> 发动攻击
 				return Status.Attack
+			
 			return current_state
 			
 		Status.Attack:
@@ -45,9 +50,6 @@ func update_state(current_state: Status) -> Status:
 			return current_state
 
 		## TODO
-		Status.Move:
-			return current_state
-			
 		Status.BeDefeated:
 			return current_state
 			

@@ -75,6 +75,7 @@ func action(current_state: Status, delta: float) -> void:
 			self.can_attack = false  ## TODO ? 干嘛用的
 			self.animation_attack_end = true
 			self.animation_be_attacked_end = true
+			self.bar_attack_ready.value = self.bar_attack_ready.min_value
 		## TODO
 		Status.BeAttacked:
 			pass
