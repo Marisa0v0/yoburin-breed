@@ -4,7 +4,7 @@ extends MarisaPlayer
 ## 当前唯一玩家 - 优里
 
 ## 优里立绘
-@onready var animated_sprite_2d: AnimatedSprite2D = $"动画立绘"
+@onready var animated_sprite_2d: AnimatedSprite2D = $"动画立绘相关/动画立绘"
 
 ## 内置函数
 ## 类初始化
