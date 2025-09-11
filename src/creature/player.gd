@@ -21,34 +21,41 @@ func _ready() -> void:
 func update_state(current_state: Status) -> Status:
 	## TODO 当前假设玩家默认站着不动，若玩家默认主动向右移动需改动逻辑
 	match current_state:
-		Status.Default:  ## 初始状态
+		## 初始状态
+		Status.Default:
 			return Status.Idle
-			
-		Status.Move:
-			return current_state
-			
-		Status.Idle:  ## 常规状态
+		
+		## 常规状态
+		Status.Idle:
 			if self.be_attacked:
 				return Status.BeAttacked
 			
-			if self.can_attack:  ## 攻击条涨满 -> 发动攻击
+			## 攻击条涨满 -> 发动攻击
+			if self.can_attack:
 				return Status.Attack
 			
-			return current_state
+			## 血量清零 -> 战败
+			if self.bar_health_point.value == self.bar_health_point.min_value:
+				return Status.BeDefeated
 			
 		Status.Attack:
-			if self.animation_end:  ## 攻击动画结束 -> 返回闲置
-				return Status.Idle
-			return current_state
-			
-		Status.BeAttacked:
+			## 攻击动画结束 -> 返回闲置
 			if self.animation_end:
 				return Status.Idle
-			return current_state
+			
+		Status.BeAttacked:
+			## 受击动画结束 -> 返回闲置
+			if self.animation_end:
+				return Status.Idle
 
 		## TODO
-		Status.BeDefeated:
-			return current_state
+		Status.Move:
+			pass
 			
-		_:  ## fallback 落回常规状态
-			return Status.Idle
+		Status.BeDefeated:
+			pass
+			
+		_:  ## fallback 落回默认状态
+			return Status.Default
+			
+	return current_state

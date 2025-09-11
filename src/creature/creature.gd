@@ -3,7 +3,7 @@ extends CharacterBody2D
 ## 生物基类
 
 ## 生物基本状态 
-##			 初始/默认   闲置  移动   发起攻击  受到攻击     被击败
+##			 初始/默认   闲置  移动  发起攻击  受到攻击     被击败
 enum Status { Default, Idle, Move, Attack, BeAttacked, BeDefeated }
 
 ## 生物基本属性

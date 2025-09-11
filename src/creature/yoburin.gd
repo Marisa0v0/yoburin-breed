@@ -23,7 +23,6 @@ func _on_animation_finished() -> void:
 	
 	self.can_attack = false  		  ## TODO ? 干嘛用的
 	self.bar_attack_ready.value = self.bar_attack_ready.min_value
-#	GlobalGameManager.animated_end()  ## TODO ? 干嘛用的
 
 ## 业务函数
 ## 每帧动作
@@ -35,9 +34,9 @@ func action(current_state: Status, delta: float) -> void:
 		Status.Attack:
 			self.animated_sprite_2d.play("攻击动画")
 		Status.BeAttacked:
-			self.animated_sprite_2d.play("受击")
+			self.animated_sprite_2d.play("受击动画")
 		Status.Move:
-			self.animated_sprite_2d.play("跑步")
+			self.animated_sprite_2d.play("移动动画")
 		Status.BeDefeated:
 			self.animated_sprite_2d.play("战败动画")
 		_:  ## falback

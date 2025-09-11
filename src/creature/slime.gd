@@ -40,13 +40,11 @@ func action(current_state: Status, delta: float) -> void:
 			self.bar_attack_ready_increase()
 		Status.Attack:
 			## 播放动画 - 动画结束
-			## TODO Timer
-			self.timer_before_attack.start(1)
-			self.shake(delta)
-			# self.animation_player.play("attack")
+			## TODO 攻击动画
+			## TODO 动画效果升级
+			self.animation_player.play("attack")
 	
 			self.can_attack = false  ## TODO ? 干嘛用的 #干嘛用的？
-			self.bar_attack_ready.value = self.bar_attack_ready.min_value
 		## TODO
 		Status.BeAttacked:
 			pass
@@ -54,6 +52,12 @@ func action(current_state: Status, delta: float) -> void:
 			pass
 		_:  ## fallback
 			pass
+
+## 具体状态切换时调用
+func on_state_change(current_state: Status, next_state: Status) -> void:
+	if current_state == Status.Attack:
+		self.bar_attack_ready.value = self.bar_attack_ready.min_value
+		self.animation_end = false
 
 ## 功能函数
 ## 攻击前抖动

@@ -81,6 +81,7 @@ _data = {
 size = Vector2(14, 15)
 
 [node name="史莱姆" instance=ExtResource("1_jkbhd")]
+position = Vector2(6, -92)
 script = ExtResource("1_l1aur")
 
 [node name="动画立绘" type="AnimatedSprite2D" parent="动画立绘相关" index="0"]
@@ -145,7 +146,3 @@ scale = Vector2(0.5, 0.5)
 step = 1.0
 show_percentage = false
 metadata/_edit_use_anchors_ = true
-
-[node name="攻击前摇计时器" type="Timer" parent="." index="3"]
-process_callback = 0
-one_shot = true

@@ -1,19 +1,30 @@
-[gd_scene load_steps=14 format=3 uid="uid://bio02arexbhoi"]
+[gd_scene load_steps=17 format=3 uid="uid://bio02arexbhoi"]
 
 [ext_resource type="Texture2D" uid="uid://bhel5dpfu2cy3" path="res://resource/yoburin/待机带砖1.png" id="1_8qxis"]
 [ext_resource type="PackedScene" uid="uid://ynrkr0s2463o" path="res://scene/creature/creature.tscn" id="1_hlq24"]
 [ext_resource type="Script" uid="uid://bleiqh8p3jbko" path="res://src/creature/yoburin.gd" id="1_yjsgg"]
 [ext_resource type="Texture2D" uid="uid://ut6btj2181km" path="res://resource/yoburin/待机2.png" id="2_ebelq"]
 [ext_resource type="Texture2D" uid="uid://dxm82tw6samtd" path="res://resource/yoburin/待机3.png" id="3_borl6"]
+[ext_resource type="Texture2D" uid="uid://gj03uh4bh6t5" path="res://resource/yoburin/挨打1.png" id="3_rxvwy"]
 [ext_resource type="Texture2D" uid="uid://cbvj3ekutxagc" path="res://resource/yoburin/攻击1.png" id="4_hkbpi"]
 [ext_resource type="Texture2D" uid="uid://d20bbdyus5gjj" path="res://resource/yoburin/攻击2.png" id="5_7v81q"]
 [ext_resource type="Texture2D" uid="uid://bq00gx8m1wrhx" path="res://resource/yoburin/攻击3.png" id="6_8yv13"]
 [ext_resource type="Texture2D" uid="uid://cgv7v3pjk2qe7" path="res://resource/yoburin/攻击4.png" id="7_djqan"]
 [ext_resource type="Texture2D" uid="uid://cvnxfvlvirxmw" path="res://resource/yoburin/战败1.png" id="8_xafb6"]
 [ext_resource type="Texture2D" uid="uid://b5xskjmi8v4pl" path="res://resource/yoburin/战败2.png" id="9_057ke"]
+[ext_resource type="Texture2D" uid="uid://csayx6886rg8x" path="res://resource/yoburin/奔跑1.png" id="9_cdm4q"]
+[ext_resource type="Texture2D" uid="uid://b7u5d52lmwf38" path="res://resource/yoburin/奔跑2.png" id="10_rxvwy"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_6b5qc"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_rxvwy")
+}],
+"loop": true,
+"name": &"受击动画",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("8_xafb6")
@@ -21,7 +32,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("9_057ke")
 }],
-"loop": true,
+"loop": false,
 "name": &"战败动画",
 "speed": 5.0
 }, {
@@ -40,6 +51,17 @@ animations = [{
 }],
 "loop": false,
 "name": &"攻击动画",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_cdm4q")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_rxvwy")
+}],
+"loop": true,
+"name": &"移动动画",
 "speed": 5.0
 }, {
 "frames": [{
@@ -64,9 +86,13 @@ height = 195.0
 [node name="优布林" instance=ExtResource("1_hlq24")]
 script = ExtResource("1_yjsgg")
 
+[node name="主角专用摄像机" type="Camera2D" parent="." index="0"]
+position = Vector2(272, -192)
+
 [node name="动画立绘" type="AnimatedSprite2D" parent="动画立绘相关" index="0"]
+position = Vector2(0, -128)
 sprite_frames = SubResource("SpriteFrames_6b5qc")
-animation = &"攻击动画"
+animation = &"移动动画"
 
 [node name="动画播放器" type="AnimationPlayer" parent="动画立绘相关/动画立绘" index="0"]
 
@@ -107,3 +133,5 @@ offset_right = 4.0
 step = 1.0
 show_percentage = false
 metadata/_edit_use_anchors_ = true
+
+[connection signal="animation_finished" from="动画立绘相关/动画立绘" to="." method="_on_animation_finished"]
