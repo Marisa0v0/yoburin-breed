@@ -13,7 +13,7 @@ metadata/_custom_type_script = "uid://dfm230h16iowr"
 script = ExtResource("2_lgbc1")
 metadata/_custom_type_script = "uid://daem552gmrtpg"
 
-[node name="动画立绘相关" type="Node" parent="."]
+[node name="动画立绘相关" type="Node2D" parent="."]
 
 [node name="默认碰撞箱 - 无用" type="CollisionShape2D" parent="."]
 visible = false

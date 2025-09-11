@@ -11,8 +11,8 @@ enum Status { Default, Idle, Move, Attack, BeAttacked, BeDefeated }
 
 @export var move_speed := 	 0.0		## 移速 左负右正
 @export var health_point :=  100.0		## 生命值
-@export var attack_point :=  1.0		## 攻击力
-@export var defence_point := 1.0		## 防御力
+@export var attack_point :=  5.0		## 攻击力
+@export var defence_point := 2.0		## 防御力
 @export var attack_speed :=  1.0		## 攻击速度 游戏核心机制
 
 ## UI 相关
@@ -36,13 +36,26 @@ func _init() -> void:
 ## 该节点的所有子节点初始化后才初始化
 func _ready() -> void:
 	print_debug("Creature 类准备完毕")
-	print_debug("生命值：%s" % self.bar_health_point)  ## FIXME 为什么是null！！！
 	self.bar_health_point.max_value = self.health_point
 	self.bar_health_point.value = self.bar_health_point.max_value
 
 	self.bar_attack_ready.value = self.bar_attack_ready.min_value
 	
 ## 业务函数
+## 攻击！
+func attack(target: MarisaCreature):
+	target.be_attacked = true
+	
+	var damage := self.attack_point - target.defence_point
+	if damage <= 0 :
+		return
+	
+	target.health_point -= damage
+	target.bar_health_point.value -= damage
+	if target.bar_health_point.value < 0:
+		pass
+		## TODO
+
 ## 攻击条自增
 func bar_attack_ready_increase():
 	## 攻击条涨满后能够发起攻击

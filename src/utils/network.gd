@@ -2,7 +2,6 @@ class_name Network
 extends Node
 ## 监听B站信息
 
-@onready var yoburin: Yoburin = $"../生物组/优布林"
 
 ## Python Websocket 服务端地址
 @onready var websocket_server_url := "ws://localhost:52000"
