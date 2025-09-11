@@ -10,6 +10,7 @@ extends MarisaMonster
 @onready var trauma := 0.0					## 攻击前摇 抖动底数
 @onready var trauma_power := 2				## 攻击前摇 抖动幂数
 
+@onready var timer_before_attack: Timer = $"攻击前摇计时器"  ## 攻击前摇
 
 ## 内置函数
 ## 类初始化
@@ -40,6 +41,7 @@ func action(current_state: Status, delta: float) -> void:
 		Status.Attack:
 			## 播放动画 - 动画结束
 			## TODO Timer
+			self.timer_before_attack.start(1)
 			self.shake(delta)
 			# self.animation_player.play("attack")
 	
@@ -56,15 +58,17 @@ func action(current_state: Status, delta: float) -> void:
 ## 功能函数
 ## 攻击前抖动
 func shake(delta: float) -> void:
+	if not self.trauma:
+		return
+
 	## 每帧执行：随时间衰减抖动强度
-	if trauma:
-		self.trauma = max(self.trauma - self.decay * delta, 0)
-		
-		## 每帧执行: 随机修改贴图位置
-		var amount = pow(trauma, trauma_power)
-		self.sprite.rotation = self.max_roll * amount * randf_range(-1, 1)
-		self.sprite.offset.x = max_offset.x * amount * randf_range(-1, 1)
-		self.sprite.offset.y = max_offset.y * amount * randf_range(-1, 1)
+	self.trauma = max(self.trauma - self.decay * delta, 0)
+	
+	## 每帧执行: 随机修改贴图位置
+	var amount := pow(trauma, trauma_power)
+	self.sprite.rotation = self.max_roll * amount * randf_range(-1, 1)
+	self.sprite.offset.x = max_offset.x * amount * randf_range(-1, 1)
+	self.sprite.offset.y = max_offset.y * amount * randf_range(-1, 1)
 	
 
 ## 隐式调用

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cd6febu7xjvyn"]
 
 [ext_resource type="Script" uid="uid://dk2v8f7bhq5nm" path="res://src/main.gd" id="1_nbc6x"]
-[ext_resource type="PackedScene" uid="uid://c3dmwdgcgl2el" path="res://scene/creature/yoburin.tscn" id="2_h6nst"]
+[ext_resource type="PackedScene" uid="uid://bio02arexbhoi" path="res://scene/creature/yoburin.tscn" id="2_h6nst"]
 
 [node name="主场景" type="Node2D"]
 script = ExtResource("1_nbc6x")

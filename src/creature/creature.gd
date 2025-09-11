@@ -16,9 +16,9 @@ enum Status { Default, Idle, Move, Attack, BeAttacked, BeDefeated }
 @export var attack_speed :=  1.0		## 攻击速度 游戏核心机制
 
 ## UI 相关
-@onready var sprite: AnimatedSprite2D = 	 $"动画立绘"							## 立绘
-@onready var bar_health_point: ProgressBar = $"动画立绘/可视化界面/生命值进度条"		## 生命值 进度条
-@onready var bar_attack_ready: ProgressBar = $"动画立绘/可视化界面/攻击准备进度条"	## 能够发起攻击 进度条 游戏核心机制
+@onready var sprite: AnimatedSprite2D = 	 $"动画立绘相关/动画立绘"							## 立绘
+@onready var bar_health_point: ProgressBar = $"动画立绘相关/动画立绘/可视化界面/生命值进度条"		## 生命值 进度条
+@onready var bar_attack_ready: ProgressBar = $"动画立绘相关/动画立绘/可视化界面/攻击准备进度条"		## 能够发起攻击 进度条 游戏核心机制
 
 ## 业务逻辑相关
 @onready var in_battle_position := 	 		false  ## 生物进入攻击距离

@@ -1,10 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://c0w3ip3dlo1j7"]
+[gd_scene load_steps=8 format=3 uid="uid://c0w3ip3dlo1j7"]
 
 [ext_resource type="Script" uid="uid://dk2v8f7bhq5nm" path="res://src/main.gd" id="1_j72gh"]
 [ext_resource type="Script" uid="uid://duyhb0at413ii" path="res://src/game_manager.gd" id="2_2u14o"]
 [ext_resource type="Script" uid="uid://dfm230h16iowr" path="res://src/creature/creature.gd" id="3_2bmtk"]
 [ext_resource type="Script" uid="uid://cumyjdbl0ql1h" path="res://src/creature/monster.gd" id="4_6ciht"]
-[ext_resource type="PackedScene" uid="uid://2nocyx65ao20" path="res://scene/creature/slime.tscn" id="5_wh455"]
 [ext_resource type="Script" uid="uid://c571lkc84pn3k" path="res://src/creature/player.gd" id="6_mf5ea"]
 [ext_resource type="PackedScene" uid="uid://c3dmwdgcgl2el" path="res://scene/creature/yoburin.tscn" id="7_xle3t"]
 
@@ -31,8 +30,6 @@ unique_name_in_owner = true
 position = Vector2(500, 0)
 script = ExtResource("4_6ciht")
 metadata/_custom_type_script = "uid://cumyjdbl0ql1h"
-
-[node name="史莱姆" parent="Creature/Monster" instance=ExtResource("5_wh455")]
 
 [node name="Player" type="CharacterBody2D" parent="Creature"]
 unique_name_in_owner = true
