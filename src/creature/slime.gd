@@ -30,6 +30,7 @@ func _on_in_battle_position(hurtbox: HurtBox) -> void:
 ## 业务函数 (帧)
 ## 每帧第一个运行 update_state 函数
 func update_state(current_state: Status) -> Status:
+
 	match current_state:
 		## 初始状态
 		Status.Default: 
@@ -47,7 +48,8 @@ func update_state(current_state: Status) -> Status:
 				return Status.Attack
 
 			## 挨打了 -> 挨打
-			if self.be_attacked: 
+			## BUG 原因在于这条头到尾都没满足
+			if self.be_attacked:
 				return Status.BeAttacked
 
 			## 血量清零 -> 战败
@@ -92,7 +94,6 @@ func action(current_state: Status, delta: float) -> void:
 			## 播放动画
 			## TODO 攻击动画
 			## TODO 动画效果升级
-			self.target_player.be_attacked = true
 			self.animation_player.play("攻击动画")
 		Status.BeAttacked:
 			self.animated_sprite_2d.play("挨打动画")
@@ -153,8 +154,6 @@ func _on_animation_player_finished(current_animation: StringName):
 		self.attack(self.target_player)
 		## 攻击动画结束
 		self.can_attack = false
-		## ：对方挨打动画结束
-		self.target_player.be_attacked = false
 
 	## 设置动画结束标识
 	self.animation_end = true

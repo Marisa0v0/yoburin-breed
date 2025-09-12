@@ -90,7 +90,6 @@ func action(current_state: Status, _delta: float) -> void:
 			if !self.pause:
 				self.bar_attack_ready_increase()
 		Status.Attack:
-			self.enemies_in_battle[0].be_attacked = true
 			self.animated_sprite_2d.play("攻击动画")
 		Status.BeAttacked:
 			self.animated_sprite_2d.play("挨打动画")
@@ -144,8 +143,6 @@ func _on_animation_finished() -> void:
 	
 		## 攻击动画结束
 		self.can_attack = false
-		## ：对方挨打动画结束
-		target.be_attacked = false
 	
 	elif current_animation == "挨打动画":
 		## 挨打动画结束

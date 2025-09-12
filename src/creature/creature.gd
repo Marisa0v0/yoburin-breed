@@ -59,6 +59,7 @@ func _ready() -> void:
 ## 攻击！攻击动画播放完后调用一次
 func attack(target: MarisaCreature):
 	## 掉血逻辑处理
+	target.be_attacked = true
 	var damage := self.attack_point - target.defence_point
 	if damage <= 0:
 		return

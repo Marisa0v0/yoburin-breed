@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://b82kuk86tpc7u"]
+[gd_scene load_steps=2 format=3 uid="uid://dur2tkf7vfdx7"]
 
-[ext_resource type="Script" uid="uid://bdnph57p7cljm" path="res://src/utils/network.gd" id="1_fghjm"]
+[ext_resource type="Script" uid="uid://b6j0ve5iv68h4" path="res://node.gd" id="1_fghjm"]
 
-[node name="测试用场景" type="Node"]
+[node name="Node" type="Node"]
 script = ExtResource("1_fghjm")
+"类型" = 2
