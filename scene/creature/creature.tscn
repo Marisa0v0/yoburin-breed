@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://ynrkr0s2463o"]
+
+[ext_resource type="Script" uid="uid://dfm230h16iowr" path="res://src/creature/creature.gd" id="1_qrhk6"]
+[ext_resource type="Script" uid="uid://daem552gmrtpg" path="res://src/utils/state_machine.gd" id="2_lgbc1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6jpij"]
+
+[node name="生物基类" type="CharacterBody2D"]
+script = ExtResource("1_qrhk6")
+metadata/_custom_type_script = "uid://dfm230h16iowr"
+
+[node name="通用行为状态机" type="Node" parent="."]
+script = ExtResource("2_lgbc1")
+metadata/_custom_type_script = "uid://daem552gmrtpg"
+
+[node name="动画立绘相关" type="Node2D" parent="."]
+
+[node name="默认碰撞箱 - 无用" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource("RectangleShape2D_6jpij")

@@ -1,0 +1,13 @@
+[project]
+name = "yoburin-breed"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "bilibili-api-python>=17.3.0",
+    "pydantic>=2.11.7",
+    "python-dotenv>=1.1.1",
+    "ujson>=5.11.0",
+    "websockets>=15.0.1",
+]

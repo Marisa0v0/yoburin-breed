@@ -11,22 +11,37 @@ config_version=5
 [application]
 
 config/name="优里养成Demo"
-run/main_scene="res://场景/main_window.tscn"
-config/features=PackedStringArray("4.3", "Mobile")
+run/main_scene="uid://cd6febu7xjvyn"
+config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
 run/canvas_textures/default_texture_filter=1
 
 [autoload]
 
-GlobalGameManager="*res://代码/global_game_manager.gd"
+Log="*res://addons/logger/logger.gd"
 
 [display]
 
-window/size/viewport_width=500
-window/size/viewport_height=500
+window/size/viewport_width=960
+window/size/viewport_height=540
 window/size/borderless=true
 window/size/transparent=true
+window/size/window_width_override=1920
+window/size/window_height_override=1080
+window/stretch/mode="canvas_items"
 window/per_pixel_transparency/allowed=true
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/logger/plugin.cfg")
+
+[layer_names]
+
+2d_physics/layer_1="世界"
+2d_physics/layer_5="玩家攻击区域"
+2d_physics/layer_6="玩家受击区域"
+2d_physics/layer_7="怪物攻击区域"
+2d_physics/layer_8="怪物受击区域"
 
 [rendering]
 

@@ -1,0 +1,224 @@
+[gd_scene load_steps=21 format=3 uid="uid://crqgmg0vndg6a"]
+
+[ext_resource type="Texture2D" uid="uid://ehkj63201b8o" path="res://resource/sprites/coin.png" id="1_aticb"]
+[ext_resource type="Script" uid="uid://dy26lcjtjdo0f" path="res://src/creature/coin.gd" id="1_try2a"]
+[ext_resource type="AudioStream" uid="uid://dggf834272ls1" path="res://resource/sounds/coin.wav" id="3_wmrq1"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3f74s"]
+atlas = ExtResource("1_aticb")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a1i6s"]
+atlas = ExtResource("1_aticb")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g7euf"]
+atlas = ExtResource("1_aticb")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ipv6i"]
+atlas = ExtResource("1_aticb")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r1k1c"]
+atlas = ExtResource("1_aticb")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eoofy"]
+atlas = ExtResource("1_aticb")
+region = Rect2(80, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w1ofa"]
+atlas = ExtResource("1_aticb")
+region = Rect2(96, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x8wyc"]
+atlas = ExtResource("1_aticb")
+region = Rect2(112, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m8jx6"]
+atlas = ExtResource("1_aticb")
+region = Rect2(128, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6rsqw"]
+atlas = ExtResource("1_aticb")
+region = Rect2(144, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4yank"]
+atlas = ExtResource("1_aticb")
+region = Rect2(160, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_carfs"]
+atlas = ExtResource("1_aticb")
+region = Rect2(176, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_dkvhc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3f74s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a1i6s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g7euf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ipv6i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r1k1c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eoofy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w1ofa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x8wyc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m8jx6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6rsqw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4yank")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_carfs")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vbln8"]
+size = Vector2(10, 10)
+
+[sub_resource type="Animation" id="Animation_asaeq"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CollisionShape2D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AudioStreamPlayer2D:playing")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_dbcmu"]
+resource_name = "拾取货币"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CollisionShape2D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AudioStreamPlayer2D:playing")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/3/type = "method"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(1),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"queue_free"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_3ww87"]
+_data = {
+&"RESET": SubResource("Animation_asaeq"),
+&"拾取货币": SubResource("Animation_dbcmu")
+}
+
+[node name="coin" type="Area2D"]
+z_index = 1
+scale = Vector2(5, 5)
+script = ExtResource("1_try2a")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -5)
+sprite_frames = SubResource("SpriteFrames_dkvhc")
+autoplay = "default"
+frame_progress = 0.34055
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -5)
+shape = SubResource("RectangleShape2D_vbln8")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_wmrq1")
+volume_db = -10.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_3ww87")
+}
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

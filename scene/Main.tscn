@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://cd6febu7xjvyn"]
+
+[ext_resource type="Script" uid="uid://dk2v8f7bhq5nm" path="res://src/main.gd" id="1_nbc6x"]
+[ext_resource type="Script" uid="uid://bdnph57p7cljm" path="res://src/utils/network.gd" id="3_hr7lf"]
+
+[node name="主场景" type="Node2D"]
+script = ExtResource("1_nbc6x")
+metadata/_edit_horizontal_guides_ = [0.0]
+metadata/_edit_vertical_guides_ = [256.0, 752.0, 832.0]
+
+[node name="生物组" type="Node" parent="."]
+
+[node name="图形界面" type="Node" parent="."]
+
+[node name="玩家生命值进度条" type="ProgressBar" parent="图形界面"]
+offset_left = -64.0
+offset_top = -432.0
+offset_right = 640.0
+offset_bottom = -405.0
+show_percentage = false
+
+[node name="玩家攻击进度条" type="ProgressBar" parent="图形界面"]
+offset_left = -64.0
+offset_top = -400.0
+offset_right = 640.0
+offset_bottom = -384.0
+show_percentage = false
+
+[node name="网络通信" type="Node" parent="."]
+script = ExtResource("3_hr7lf")
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(576, -128)
