@@ -14,7 +14,7 @@ var current_state: MarisaCreature.Status = MarisaCreature.Status.Default:
 ## 内置函数
 ## 该节点的所有子节点初始化后才初始化
 func _ready() -> void:
-	print_debug("状态机类准备完毕")
+	Log.debug("状态机类准备完毕")
 	await self.owner.ready #这里是获取父节点准备信号，也就是说只有一个场景全准备好了他才会进行
 	self.current_state = MarisaCreature.Status.Default
 

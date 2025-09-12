@@ -11,10 +11,10 @@ extends MarisaCreature
 ## 类初始化
 func _init() -> void:
 	super._init()
-	print_debug("初始化 Player 类实例 %s" % self.to_string())
+	self.logger.debug("初始化 Player 类实例 %s" % self.to_string())
 
 
 ## 该节点的所有子节点初始化后才初始化
 func _ready() -> void:
 	super._ready()
-	print_debug("Player 类准备完毕")
+	self.logger.debug("Player 类准备完毕")

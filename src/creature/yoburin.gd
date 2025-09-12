@@ -11,13 +11,13 @@ extends MarisaPlayer
 ## 类初始化
 func _init() -> void:
 	super._init()
-	print_debug("初始化优里类实例 %s" % self.to_string())
+	self.logger.debug("初始化优里类实例 %s" % self.to_string())
 
 
 ## 该节点的所有子节点初始化后才初始化
 func _ready() -> void:
 	super._ready()
-	print_debug("优里类准备完毕")
+	self.logger.debug("优里类准备完毕")
 	self.attack_speed = 5.0
 
 
@@ -60,7 +60,7 @@ func update_state(current_state: Status) -> Status:
 
 		Status.BeAttacked:
 			## 受击动画结束 -> 返回闲置
-			print_debug("优里挨打了！")
+			self.logger.debug("优里挨打了！")
 			if self.animation_end:
 				return Status.Idle
 
@@ -109,7 +109,7 @@ func on_state_change(current_state: Status, next_state: Status) -> void:
 
 ## 动画结束了
 func _on_animation_finished() -> void:
-	print_debug("优里动画结束啦")
+	self.logger.debug("优里动画结束啦")
 	self.attack(self.enemies_in_battle[0])
 	self.animation_end = true
 

@@ -16,7 +16,7 @@ const scene_yoburin = preload("res://scene/creature/yoburin.tscn")
 ## 该节点的所有子节点初始化后才初始化
 func _ready() -> void:
 	# 窗口初始化
-	print_debug("主窗口准备完毕")
+	Log.debug("主窗口准备完毕")
 	get_viewport().transparent_bg = true
 
 	## 动态实例化

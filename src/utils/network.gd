@@ -25,7 +25,7 @@ const reconnect_interval := 5                        ## 重连间隔
 const server_url         := "ws://localhost:52000"    ## 服务端地址
 var _client              := WebSocketPeer.new()        ## 客户端
 var connected            := false                   ## 连接状态
-var logger               := LogStream.new("Network", LogStream.LogLevel.INFO)
+var logger               := LogStream.new("Network", LogStream.LogLevel.DEBUG)
 
 
 ## 内置函数
@@ -135,7 +135,7 @@ func handle_server_message(message: String) -> void:
 		LiveEvent.ACTIVITY_BANNER_UPDATE_V2:
 			self.logger.debug("%s直播间小时榜: %s")
 		_:
-			print_debug("消息类型未知：%s" % json_data.get("type"))
+			self.logger.debug("消息类型未知：%s" % json_data.get("type"))
 
 
 ## 向服务端发送消息

@@ -2,6 +2,7 @@ class_name MarisaCreature
 extends CharacterBody2D
 ## 生物基类
 
+
 ## 生物基本状态
 ##			 初始/默认   闲置  移动  发起攻击  受到攻击     被击败
 enum Status { Default, Idle, Move, Attack, BeAttacked, BeDefeated }
@@ -23,18 +24,20 @@ enum Status { Default, Idle, Move, Attack, BeAttacked, BeDefeated }
 @onready var be_attacked := false  ## 生物收到攻击
 @onready var animation_end := false  ## 动画结束
 
+var logger := LogStream.new("Creature", LogStream.LogLevel.DEBUG)
+
 
 ## 内置函数
 ## 类初始化
 func _init() -> void:
 	## 初始化 UI 相关
-	print_debug("初始化 Creature 类实例 %s" % self.to_string())
+	self.logger.debug("初始化 Creature 类实例 %s" % self.to_string())
 	randomize()  ## 随机化随机器发生器种子
 
 
 ## 该节点的所有子节点初始化后才初始化
 func _ready() -> void:
-	print_debug("Creature 类准备完毕")
+	self.logger.debug("Creature 类准备完毕")
 	self.bar_health_point.max_value = self.health_point
 	self.bar_health_point.value = self.bar_health_point.max_value
 

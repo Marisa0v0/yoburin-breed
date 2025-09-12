@@ -18,13 +18,13 @@ extends MarisaMonster
 ## 类初始化
 func _init() -> void:
 	super._init()
-	print_debug("初始化 Slime 类实例 %s" % self.to_string())
+	self.logger.debug("初始化 Slime 类实例 %s" % self.to_string())
 
 
 ## 该节点的所有子节点初始化后才初始化
 func _ready() -> void:
 	super._ready()
-	print_debug("Slime 类准备完毕")
+	self.logger.debug("Slime 类准备完毕")
 
 
 ## 判定进入攻击位置
@@ -57,7 +57,7 @@ func update_state(current_state: Status) -> Status:
 			return current_state
 
 		Status.BeAttacked:
-			print_debug("史莱姆挨打了")
+			self.logger.debug("史莱姆挨打了")
 			if self.animation_end:
 				return Status.Idle
 			return current_state
@@ -110,7 +110,7 @@ func on_state_change(current_state: Status, next_state: Status) -> void:
 
 ## 隐式调用
 func _on_animation_finished(anim_name: StringName) -> void:
-	print_debug("史莱姆动画结束啦！")
+	self.logger.debug("史莱姆动画结束啦！")
 	self.attack(self.target_player)
 	self.animation_end = true
 
