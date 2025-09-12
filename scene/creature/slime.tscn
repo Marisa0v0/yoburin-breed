@@ -91,7 +91,7 @@ tracks/0/keys = {
 }
 
 [sub_resource type="Animation" id="Animation_jpaaj"]
-resource_name = "attack"
+resource_name = "攻击动画"
 length = 0.25
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -120,7 +120,7 @@ tracks/1/keys = {
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_e80sk"]
 _data = {
 &"RESET": SubResource("Animation_w0lxy"),
-&"attack": SubResource("Animation_jpaaj")
+&"攻击动画": SubResource("Animation_jpaaj")
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_w0lxy"]
@@ -138,7 +138,6 @@ position = Vector2(0, -12)
 scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_jpaaj")
 animation = &"挨打动画"
-autoplay = "闲置动画"
 flip_h = true
 
 [node name="动画播放器" type="AnimationPlayer" parent="动画立绘相关/动画立绘" index="0"]
@@ -147,6 +146,7 @@ libraries = {
 }
 
 [node name="攻击区域" type="Area2D" parent="动画立绘相关/动画立绘" index="1"]
+visible = false
 collision_layer = 64
 collision_mask = 32
 script = ExtResource("4_oa5pk")
@@ -157,6 +157,7 @@ position = Vector2(0, 6)
 shape = SubResource("RectangleShape2D_w0lxy")
 
 [node name="受击区域" type="Area2D" parent="动画立绘相关/动画立绘" index="2"]
+visible = false
 collision_layer = 128
 collision_mask = 0
 script = ExtResource("5_a0ytv")
@@ -189,5 +190,6 @@ offset_right = 8.4
 offset_bottom = -1.6
 show_percentage = false
 
-[connection signal="animation_finished" from="动画立绘相关/动画立绘/动画播放器" to="." method="_on_animation_finished"]
+[connection signal="animation_finished" from="动画立绘相关/动画立绘" to="." method="_on_animation_finished"]
+[connection signal="animation_finished" from="动画立绘相关/动画立绘/动画播放器" to="." method="_on_animation_player_finished"]
 [connection signal="hit" from="动画立绘相关/动画立绘/攻击区域" to="." method="_on_in_battle_position"]

@@ -2,13 +2,6 @@ class_name MarisaSlime
 extends MarisaMonster
 ## 怪物 - 史莱姆
 
-## 史莱姆独有属性
-@onready var decay := 0.8                    ## 衰减系数
-@onready var max_offset := Vector2(100, 75)    ## 
-@onready var max_roll := 0.1                ##
-@onready var follow_node: AnimatedSprite2D    ## 抖动跟随节点 (史莱姆立绘)
-@onready var trauma := 0.0                    ## 攻击前摇 抖动底数
-@onready var trauma_power := 2                ## 攻击前摇 抖动幂数
 ## 导入
 @onready var animation_player: AnimationPlayer = $"动画立绘相关/动画立绘/动画播放器"  ## 动画播放器
 @onready var animated_sprite_2d: AnimatedSprite2D = $"动画立绘相关/动画立绘"        ## 动画立绘
@@ -29,92 +22,139 @@ func _ready() -> void:
 
 ## 判定进入攻击位置
 func _on_in_battle_position(hurtbox: HurtBox) -> void:
+	## 玩家设为攻击目标
 	self.target_player = hurtbox.owner
 	self.in_battle_position = true
 
 
-## 业务函数
-## 仅在生物需要进行动作时更新当前状态
+## 业务函数 (帧)
+## 每帧第一个运行 update_state 函数
 func update_state(current_state: Status) -> Status:
-	## TODO
 	match current_state:
-		Status.Default: ## 初始状态
+		## 初始状态
+		Status.Default: 
 			return Status.Move
 
-		Status.Move: ## 常规状态
-			if self.in_battle_position: ## 移动到位 -> 停止移动 闲置
+		## 常规状态
+		Status.Move:
+			## 移动到位 -> 停止移动 闲置
+			if self.in_battle_position: 
 				return Status.Idle
-			return current_state
 
 		Status.Idle:
-			if self.can_attack: ## 攻击条涨满 -> 发动攻击
+		## 攻击条涨满 -> 发动攻击
+			if self.can_attack:
 				return Status.Attack
-			return current_state
+
+			## 挨打了 -> 挨打
+			if self.be_attacked: 
+				return Status.BeAttacked
+
+			## 血量清零 -> 战败
+			if self.bar_health_point.value == self.bar_health_point.min_value:
+				return Status.BeDefeated
 
 		Status.Attack:
-			if self.animation_end: ## 攻击动画结束 -> 返回闲置
-				return Status.Idle
-			return current_state
-
-		Status.BeAttacked:
-			self.logger.debug("史莱姆挨打了")
+			## 攻击动画结束 -> 返回闲置
 			if self.animation_end:
 				return Status.Idle
-			return current_state
+
+		Status.BeAttacked:
+			## 受击动画结束 -> 返回闲置
+			## NOTE 此处 animation_end 初次应该为 false 才能正常运行
+			if self.animation_end:
+				return Status.Idle
 
 		## TODO
 		Status.BeDefeated:
-			return current_state
+			pass
 
 		_: ## fallback 落回常规状态
-			return Status.Move
+			return Status.Default
+	
+	return current_state
 
 
-## 每帧动作
+## 每帧动作 (帧)
+## 若状态维持不变，则运行 action
 func action(current_state: Status, delta: float) -> void:
 	match current_state:
 		Status.Move:
+			animated_sprite_2d.play("闲置动画")
 			## 每帧移动
 			self.position.x += self.move_speed * delta
 		Status.Idle:
+			animated_sprite_2d.play("闲置动画")
 			## 到达位置后攻击条自动增长
-			self.bar_attack_ready_increase()
+			if !self.pause:
+				self.bar_attack_ready_increase()
 		Status.Attack:
-			## 播放动画 - 动画结束
+			## 播放动画
 			## TODO 攻击动画
 			## TODO 动画效果升级
-			self.animation_player.play("attack")
-		## TODO
+			self.target_player.be_attacked = true
+			self.animation_player.play("攻击动画")
 		Status.BeAttacked:
 			self.animated_sprite_2d.play("挨打动画")
+		## TODO
 		Status.BeDefeated:
 			pass
 		_: ## fallback
-			pass
+			self.animated_sprite_2d.play("闲置动画")
 
 
 ## 具体状态切换时调用
+## 每帧仅在状态从 current_state 切换至 next_state 时调用
 func on_state_change(current_state: Status, next_state: Status) -> void:
-	if current_state == Status.Attack and next_state == Status.Idle:
+	## 总之先重设动画结束标识
+	self.animation_end = false
+	
+	## 进入攻击状态
+	if current_state == Status.Idle and next_state == Status.Attack:
+		## 每次进入攻击状态都需重设攻击进度条，防御性
 		self.bar_attack_ready.value = self.bar_attack_ready.min_value
+	
+	## 攻击结束 (目标死亡)
+	elif current_state == Status.Attack and next_state == Status.Idle:
+		## 防御性重设攻击标识
 		self.can_attack = false
+		## 防御性，以免条涨到一半目标死亡了
+		self.bar_attack_ready.value = self.bar_attack_ready.min_value
+	
+	## 进入挨打状态
+	elif current_state == Status.Idle and next_state == Status.BeAttacked:
+		self.be_attacked = true
 
-		self.animation_end = false
-
+	## 挨打结束
 	elif current_state == Status.BeAttacked and next_state == Status.Idle:
-		self.bar_attack_ready.value = self.bar_attack_ready.min_value
-		self.can_attack = false
-
-		self.animation_end = false
+		self.be_attacked = false
 
 
 ## 隐式调用
-func _on_animation_finished(anim_name: StringName) -> void:
-	self.logger.debug("史莱姆动画结束啦！")
-	self.attack(self.target_player)
+## 贴图动画播放完后调用
+func _on_animation_finished() -> void:
+	var current_animation := self.animated_sprite_2d.animation
+	self.logger.info("%s的'%s'动画结束了" % [self.name, current_animation])
+	
+	if current_animation == "挨打动画":
+		## 挨打动画结束
+		self.be_attacked = false
+	
+	## 设置动画结束标识
 	self.animation_end = true
+		
 
-	self.can_attack = false
-	self.be_attacked = false
+## 播放器动画播放完后调用
+func _on_animation_player_finished(current_animation: StringName):
+	self.logger.info("%s的'%s'动画结束了" % [self.name, current_animation])
 
-	self.bar_attack_ready.value = self.bar_attack_ready.min_value
+	if current_animation == "攻击动画":
+		## 播放完攻击动画之后才运行对方掉血逻辑
+		self.attack(self.target_player)
+		## 攻击动画结束
+		self.can_attack = false
+		## ：对方挨打动画结束
+		self.target_player.be_attacked = false
+
+	## 设置动画结束标识
+	self.animation_end = true

@@ -4,7 +4,7 @@ extends MarisaCreature
 
 ## 玩家独有基本属性
 ## 按顺序将要与玩家作战的怪物
-@onready var enemies_in_battle: Array[MarisaMonster] = []
+@onready var enemies_in_battle: Array[MarisaMonster] = []#
 
 
 ## 内置函数

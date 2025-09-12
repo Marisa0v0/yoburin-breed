@@ -18,18 +18,19 @@ func _init() -> void:
 func _ready() -> void:
 	super._ready()
 	self.logger.debug("优里类准备完毕")
-	self.attack_speed = 5.0
+	self.attack_speed = 5.0  ## TODO 测试用
 
 
 ## 敌人撞上来了
 func _on_in_battle_position(hurtbox: HurtBox) -> void:
-	self.in_battle_position = true
 	## 怪物加入将要攻击的序列
 	self.enemies_in_battle.append(hurtbox.owner)
+	self.in_battle_position = true
 
 
-## 业务函数
-## 仅在生物需要进行动作时更新当前状态
+## 业务函数 (帧)
+## 每帧第一个运行 update_state 函数
+## 状态切换发生在每帧第一位
 func update_state(current_state: Status) -> Status:
 	match current_state:
 		## 初始状态
@@ -38,16 +39,18 @@ func update_state(current_state: Status) -> Status:
 
 		## 常规状态
 		Status.Move:
-			if self.in_battle_position: ## 移动到位 -> 停止移动 闲置
+			## 移动到位 -> 停止移动 闲置
+			if self.in_battle_position: 
 				return Status.Idle
 
 		Status.Idle:
-			if self.be_attacked:
-				return Status.BeAttacked
-
 			## 攻击条涨满 -> 发动攻击
 			if self.can_attack:
 				return Status.Attack
+			
+			## 挨打了 -> 挨打
+			if self.be_attacked:
+				return Status.BeAttacked
 
 			## 血量清零 -> 战败
 			if self.bar_health_point.value == self.bar_health_point.min_value:
@@ -60,7 +63,7 @@ func update_state(current_state: Status) -> Status:
 
 		Status.BeAttacked:
 			## 受击动画结束 -> 返回闲置
-			self.logger.debug("优里挨打了！")
+			## NOTE 此处 animation_end 初次应该为 false 才能正常运行
 			if self.animation_end:
 				return Status.Idle
 
@@ -74,46 +77,79 @@ func update_state(current_state: Status) -> Status:
 	return current_state
 
 
-## 每帧动作
-func action(current_state: Status, delta: float) -> void:
+## 每帧动作 (帧)
+## 若状态维持不变，则运行 action
+## 调用具体行为发生在每帧最后一位
+func action(current_state: Status, _delta: float) -> void:
 	match current_state:
 		Status.Move:
 			self.animated_sprite_2d.play("移动动画")
 		Status.Idle:
 			self.animated_sprite_2d.play("闲置动画")
-			self.bar_attack_ready_increase()
+			## 到达位置后攻击条自动增长
+			if !self.pause:
+				self.bar_attack_ready_increase()
 		Status.Attack:
+			self.enemies_in_battle[0].be_attacked = true
 			self.animated_sprite_2d.play("攻击动画")
 		Status.BeAttacked:
-			self.animated_sprite_2d.play("受击动画")
+			self.animated_sprite_2d.play("挨打动画")
 		Status.BeDefeated:
-			self.animated_sprite_2d.play("战败动画")
+			if animation_end == false:
+				self.animated_sprite_2d.play("战败动画")
 		_: ## falback
 			self.animated_sprite_2d.play("闲置动画")
 
 
 ## 具体状态切换时调用
+## 每帧仅在状态从 current_state 切换至 next_state 时调用
+## 每帧可能发生多次状态切换，也可能一次都不发生
+## 若发生则在 update 与 action 之间调用
 func on_state_change(current_state: Status, next_state: Status) -> void:
-	if current_state == Status.BeAttacked and next_state == Status.Idle:
+	## 总之先重设动画结束标识
+	self.animation_end = false
+
+	## 进入攻击状态
+	if current_state == Status.Idle and next_state == Status.Attack:
+		## 每次进入攻击状态都需重设攻击进度条，防御性
 		self.bar_attack_ready.value = self.bar_attack_ready.min_value
-		self.can_attack = false
 
-		self.animation_end = false
-
+	## 攻击结束 (目标死亡)
 	elif current_state == Status.Attack and next_state == Status.Idle:
-		self.bar_attack_ready.value = self.bar_attack_ready.min_value
+		## 防御性重设攻击标识
 		self.can_attack = false
+		## 防御性，以免条涨到一半目标死亡了
+		self.bar_attack_ready.value = self.bar_attack_ready.min_value
 
-		self.animation_end = false
+	## 进入挨打状态
+	elif current_state == Status.Idle and next_state == Status.BeAttacked:
+		self.be_attacked = true
+
+	## 挨打结束
+	elif current_state == Status.BeAttacked and next_state == Status.Idle:
+		self.be_attacked = false
 
 
-## 动画结束了
+## 隐式调用
+## 贴图动画播放完后调用
+## 动画播放在 action 调用后调用，即每帧最后运行
 func _on_animation_finished() -> void:
-	self.logger.debug("优里动画结束啦")
-	self.attack(self.enemies_in_battle[0])
+	var current_animation := self.animated_sprite_2d.animation
+	self.logger.info("%s的'%s'动画结束了" % [self.name, current_animation])
+	
+	if current_animation == "攻击动画":
+		## 播放完攻击动画之后才运行对方掉血逻辑
+		var target := self.enemies_in_battle[0]
+		self.attack(target)
+	
+		## 攻击动画结束
+		self.can_attack = false
+		## ：对方挨打动画结束
+		target.be_attacked = false
+	
+	elif current_animation == "挨打动画":
+		## 挨打动画结束
+		self.be_attacked = false
+	
+	## 设置动画结束标识
 	self.animation_end = true
-
-	self.can_attack = false
-	self.be_attacked = false
-
-	self.bar_attack_ready.value = self.bar_attack_ready.min_value

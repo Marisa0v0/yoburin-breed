@@ -14,6 +14,5 @@ func _init() -> void:
 ## 功能函数
 ## 攻击区域接触到受击区域时发出信号
 func _on_area_entered(hurtbox: HurtBox) -> void:
-	Log.debug("%s攻击了%s" % [self.owner.name, hurtbox.owner.name])
 	self.hit.emit(hurtbox)
 	hurtbox.hurt.emit(self)

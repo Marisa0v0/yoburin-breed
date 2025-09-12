@@ -17,7 +17,7 @@ func _init() -> void:
 func _ready() -> void:
 	super._ready()
 	self.logger.debug("Monster 类准备完毕")
-	self.move_speed = -30.0  ## 怪物向左移动
+	self.move_speed = -50.0  ## 怪物向左移动
 
 
 ## 怪物碰撞箱接触到玩家的攻击范围后触发战斗
