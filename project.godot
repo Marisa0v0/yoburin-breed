@@ -31,13 +31,17 @@ window/size/window_height_override=1080
 window/stretch/mode="canvas_items"
 window/per_pixel_transparency/allowed=true
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/logger/plugin.cfg")
+
 [layer_names]
 
+2d_physics/layer_1="世界"
 2d_physics/layer_5="玩家攻击区域"
 2d_physics/layer_6="玩家受击区域"
 2d_physics/layer_7="怪物攻击区域"
 2d_physics/layer_8="怪物受击区域"
-2d_physics/layer_1="世界"
 
 [rendering]
 
