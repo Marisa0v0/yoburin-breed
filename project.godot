@@ -18,7 +18,7 @@ run/canvas_textures/default_texture_filter=1
 
 [autoload]
 
-GlobalGameManager="*res://src/global_game_manager.gd"
+Log="*res://addons/logger/logger.gd"
 
 [display]
 

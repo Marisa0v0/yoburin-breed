@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b82kuk86tpc7u"]
+
+[ext_resource type="Script" uid="uid://bdnph57p7cljm" path="res://src/utils/network.gd" id="1_fghjm"]
+
+[node name="测试用场景" type="Node"]
+script = ExtResource("1_fghjm")
