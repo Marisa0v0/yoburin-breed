@@ -7,7 +7,6 @@ extends CharacterBody2D
 ## 生物基本状态
 ##			 初始/默认   闲置  移动  发起攻击  受到攻击     被击败
 enum Status { Default, Idle, Move, Attack, BeAttacked, BeDefeated }
-
 ## UI 相关
 @onready var animated_sprite_2d: AnimatedSprite2D = $"动画立绘相关/动画立绘"
 @onready var animation_player: AnimationPlayer = $"动画立绘相关/动画立绘/动画播放器"  ## 动画播放器                         ## 立绘
@@ -17,22 +16,23 @@ enum Status { Default, Idle, Move, Attack, BeAttacked, BeDefeated }
 ## 生物基本属性
 @export var name_ := "咕咕嘎嘎"    ## 名称
 @export var move_speed := 0.0        ## 移速 左负右正
-@export var health_point:= 100.0:			## 生命值
+
+@export var health_point := 100.0: ## 生命值
 	set(value):
 		## 限制在 0~100 之间
 		value = max(0, min(value, 100.0))
 		## 若血量被设为比当前值小的值 -> 受到攻击了 / 扣血了
 		if health_point > value:
 			self.be_attacked = true
-			
+
 		## 生命条成功初始化后再赋值
 		if self.bar_health_point != null:
 			self.bar_health_point.value = value
-		
+
 		## 血量清零则战败
 		if value == 0:
 			self.be_defeated = true
-			
+
 		health_point = value
 
 @export var attack_point := 5.0        ## 攻击力
@@ -47,8 +47,7 @@ enum Status { Default, Idle, Move, Attack, BeAttacked, BeDefeated }
 @onready var pause := false  ## 暂停生物逻辑，用于在其他生物进行行动/攻击时避免同时行动/攻击产生bug
 @onready var be_defeated := false  ## 生物是否战败（血量清零）
 
-var logger := LogStream.new("Creature", LogStream.LogLevel.DEBUG)
-var GROUP_CREATURE: StringName = GameManager.NodeGroup.keys()[GameManager.NodeGroup.Creature]
+var GROUP_CREATURE: StringName          = GameManager.NodeGroup.keys()[GameManager.NodeGroup.Creature]
 var GROUP_ENEMIES_IN_BATTLE: StringName = GameManager.NodeGroup.keys()[GameManager.NodeGroup.EnemiesInBattle]
 
 
@@ -56,15 +55,15 @@ var GROUP_ENEMIES_IN_BATTLE: StringName = GameManager.NodeGroup.keys()[GameManag
 ## 类初始化
 func _init() -> void:
 	## 初始化 UI 相关
-	self.logger.debug("初始化生物类实例 %s" % self.to_string())
+	Log.debug("初始化生物类实例 %s" % self.to_string())
 	randomize()  ## 随机化随机器发生器种子
 
 
 ## 该节点的所有子节点初始化后才初始化
 func _ready() -> void:
-	self.logger.debug("生物类准备完毕")
+	Log.debug("生物类准备完毕")
 	self.health_point = 100.0
-	
+
 	self.bar_health_point.max_value = self.health_point
 	self.bar_health_point.value = self.bar_health_point.max_value
 
@@ -84,7 +83,7 @@ func _on_attack_before_state_change() -> void:
 	## 以免我攻击时对面还在攻击
 	for attack_creature in get_tree().get_nodes_in_group(GROUP_CREATURE):
 		attack_creature.pause = true
-	
+
 
 ## 攻击，在攻击动画播放完后调用一次
 func _on_attack_after_animation_end(target: MarisaCreature) -> void:
@@ -93,16 +92,16 @@ func _on_attack_after_animation_end(target: MarisaCreature) -> void:
 	if damage <= 0:
 		return
 
-	self.logger.info("%s攻击%s, 血量 %s -> %s" % [self.name, target.name, target.health_point, target.health_point-damage])
+	Log.info("%s攻击%s, 血量 %s -> %s" % [self.name, target.name, target.health_point, target.health_point-damage])
 	target.health_point -= damage
 	target.bar_health_point.value = target.health_point
 	if target.bar_health_point.value < 0:
 		pass
-		
+
 	## 攻击结束，攻击状态重置
 	self.can_attack = false
 
-		
+
 ## 被攻击，在挨打动画播放完后调用一次
 func _on_be_attacked_after_animation_end() -> void:
 	self.be_attacked = false
@@ -110,7 +109,7 @@ func _on_be_attacked_after_animation_end() -> void:
 	for attack_creature in get_tree().get_nodes_in_group(GROUP_CREATURE):
 		attack_creature.pause = false
 
-		
+
 ## 被击败，在进入战败状态前调用一次
 func _on_be_defeated_before_state_change() -> void:
 	## 即将战败（播放动画前）
@@ -118,10 +117,10 @@ func _on_be_defeated_before_state_change() -> void:
 	## 以免战败时对面还在攻击
 	for attack_creature in get_tree().get_nodes_in_group(GROUP_CREATURE):
 		attack_creature.pause = true
-	
+
 	## 在进入动画前就需要设置战败状态
 	self.be_defeated = true
-		
+
 
 ## 被击败，在战败动画播放完后调用一次
 func _on_be_defeated_after_animation_end() -> void:
@@ -130,14 +129,13 @@ func _on_be_defeated_after_animation_end() -> void:
 	## 战败动画结束，继续游戏进程
 	for attack_creature in get_tree().get_nodes_in_group(GROUP_CREATURE):
 		attack_creature.pause = false
-		
-		
+
+
 ## 击败敌人，在进入跑步状态前播放一次
 func _on_enemy_killed_before_state_change() -> void:
 	## 防御性重设攻击进度条
 	self.bar_attack_ready.value = self.bar_attack_ready.min_value
-	
-		
+
 
 ## 攻击条自增
 ## 每帧最后调用 action 时调用一次

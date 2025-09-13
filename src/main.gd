@@ -8,9 +8,8 @@ var dragging := false
 @onready var bar_health_point: ProgressBar = $"图形界面/玩家生命值进度条"
 @onready var bar_attack_ready: ProgressBar = $"图形界面/玩家攻击进度条"
 @onready var node_creatures: Node = $生物组
-
 ## 场景
-const scene_slime := preload("res://scene/creature/slime.tscn")
+const scene_slime   := preload("res://scene/creature/slime.tscn")
 const scene_yoburin := preload("res://scene/creature/yoburin.tscn")
 
 
@@ -44,7 +43,7 @@ func _input(event):
 	if event is InputEventMouseMotion and dragging:
 		# 鼠标右键拖动窗口
 		var current_position := get_window().position
-		var new_position := current_position + Vector2i(event.relative)
+		var new_position     := current_position + Vector2i(event.relative)
 		get_window().set_position(new_position)
 
 	## FIXME 测试用

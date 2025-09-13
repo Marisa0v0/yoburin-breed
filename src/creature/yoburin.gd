@@ -7,13 +7,13 @@ extends MarisaCreature
 ## 类初始化
 func _init() -> void:
 	super._init()
-	self.logger.debug("初始化优里类实例 %s" % self.to_string())
+	Log.debug("初始化优里类实例 %s" % self.to_string())
 
 
 ## 该节点的所有子节点初始化后才初始化
 func _ready() -> void:
 	super._ready()
-	self.logger.debug("优里类准备完毕")
+	Log.debug("优里类准备完毕")
 	self.attack_speed = 5.0  ## FIXME 测试用
 	self.attack_point = 50
 
@@ -30,14 +30,14 @@ func update_state(current_state: Status) -> Status:
 		## 常规状态
 		Status.Move:
 			## 移动到位 -> 停止移动 闲置
-			if self.in_battle_position: 
+			if self.in_battle_position:
 				return Status.Idle
 
 		Status.Idle:
 			## 攻击条涨满 -> 发动攻击
 			if self.can_attack:
 				return Status.Attack
-			
+
 			## 挨打了 -> 挨打
 			if self.be_attacked:
 				return Status.BeAttacked
@@ -45,7 +45,7 @@ func update_state(current_state: Status) -> Status:
 			## 血量清零 -> 战败
 			if self.be_defeated:
 				return Status.BeDefeated
-			
+
 			## 不处于战斗位置（敌人死亡） -> 继续跑
 			if !self.in_battle_position:
 				return Status.Move
@@ -105,8 +105,8 @@ func _before_state_change(current_state: Status, next_state: Status) -> void:
 	## 无论何种情况下进入攻击状态
 	if next_state == Status.Attack:
 		self._on_attack_before_state_change()
-	
-	## 从就位转至跑步状态（敌人死亡）
+
+		## 从就位转至跑步状态（敌人死亡）
 	elif current_state == Status.Idle and next_state == Status.Move:
 		self._on_enemy_killed_before_state_change()
 
@@ -121,8 +121,8 @@ func _before_state_change(current_state: Status, next_state: Status) -> void:
 	## 无论何种情况下进入战败
 	elif next_state == Status.BeDefeated:
 		self._on_be_defeated_before_state_change()
-		
-		
+
+
 ## 作为玩家，战败后可以复活，而非从场上移除
 func _on_be_defeated() -> void:
 	## TODO 复活机制
@@ -136,11 +136,12 @@ func _on_yoburin_in_battle_position(hurtbox: HurtBox) -> void:
 	hurtbox.owner.add_to_group(GROUP_ENEMIES_IN_BATTLE)
 	self.in_battle_position = true
 
+
 ## 敌人死亡
 ## 此时敌人已从敌对组及场景中移除
 func _on_enemy_killed(_hurtbox: HurtBox) -> void:
-	self.logger.debug("敌人死亡了啊啊啊")
-	self.logger.debug("此时敌人还有 %d" % len(get_tree().get_nodes_in_group(GROUP_ENEMIES_IN_BATTLE)))
+	Log.debug("敌人死亡了啊啊啊")
+	Log.debug("此时敌人还有 %d" % len(get_tree().get_nodes_in_group(GROUP_ENEMIES_IN_BATTLE)))
 	## 确实没有敌人了再退出战斗状态
 	if get_tree().get_nodes_in_group(GROUP_ENEMIES_IN_BATTLE).is_empty():
 		self.in_battle_position = false
@@ -150,14 +151,14 @@ func _on_enemy_killed(_hurtbox: HurtBox) -> void:
 ## 动画播放在 action 调用后调用，即每帧最后运行
 func _on_yoburin_animation_finished() -> void:
 	var current_animation := self.animated_sprite_2d.animation
-	self.logger.info("%s的'%s'动画结束了" % [self.name, current_animation])
-	
+	Log.info("%s的'%s'动画结束了" % [self.name, current_animation])
+
 	if current_animation == "攻击动画":
 		## 播放完攻击动画之后才运行对方掉血逻辑
 		var target: MarisaCreature = get_tree().get_nodes_in_group(GROUP_ENEMIES_IN_BATTLE)[0]
 		## 攻击动画结束，调用攻击函数
 		self._on_attack_after_animation_end(target)
-	
+
 	elif current_animation == "挨打动画":
 		## 挨打动画结束，调用挨打函数
 		self._on_be_attacked_after_animation_end()
@@ -165,6 +166,6 @@ func _on_yoburin_animation_finished() -> void:
 	elif current_animation == "战败动画":
 		## 挨打动画结束，调用战败函数
 		self._on_be_defeated()
-	
+
 	## 设置动画结束标识
 	self.animation_end = true

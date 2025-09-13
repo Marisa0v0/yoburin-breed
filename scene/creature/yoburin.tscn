@@ -56,7 +56,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"攻击动画",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -102,7 +102,9 @@ position = Vector2(272, -192)
 [node name="动画立绘" type="AnimatedSprite2D" parent="动画立绘相关" index="0"]
 position = Vector2(0, -128)
 sprite_frames = SubResource("SpriteFrames_6b5qc")
-animation = &"挨打动画"
+animation = &"攻击动画"
+frame = 3
+frame_progress = 1.0
 
 [node name="动画播放器" type="AnimationPlayer" parent="动画立绘相关/动画立绘" index="0"]
 

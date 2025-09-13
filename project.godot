@@ -16,24 +16,20 @@ config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
 run/canvas_textures/default_texture_filter=1
 
-[autoload]
-
-Log="*res://addons/logger/logger.gd"
-
 [display]
 
-window/size/viewport_width=960
-window/size/viewport_height=540
+window/size/viewport_width=500
+window/size/viewport_height=500
 window/size/borderless=true
 window/size/transparent=true
-window/size/window_width_override=1920
-window/size/window_height_override=1080
+window/size/window_width_override=500
+window/size/window_height_override=500
 window/stretch/mode="canvas_items"
 window/per_pixel_transparency/allowed=true
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/logger/plugin.cfg")
+enabled=PackedStringArray("res://addons/log/plugin.cfg")
 
 [layer_names]
 
@@ -42,6 +38,10 @@ enabled=PackedStringArray("res://addons/logger/plugin.cfg")
 2d_physics/layer_6="玩家受击区域"
 2d_physics/layer_7="怪物攻击区域"
 2d_physics/layer_8="怪物受击区域"
+
+[log_gd]
+
+config/log_level=0
 
 [rendering]
 

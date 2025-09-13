@@ -2,6 +2,8 @@
 import websockets
 import json
 import socket
+import time
+import threading
 
 from bilibili_api import Credential
 from bilibili_api.live import LiveDanmaku, LiveRoom
@@ -9,11 +11,10 @@ from bilibili_api.utils.network import get_client, HEADERS, BiliWsMsgType
 
 from pathlib import Path
 from python.config import settings
+from python.log import logger
 
 
 credential = Credential(**settings.bilibili.model_dump())
-
-ROOT = Path(r"D:\Tools\Codes\Python\bilibili-api-project").resolve()
 
 room_id = 1820703922
 room = LiveDanmaku(
@@ -21,9 +22,24 @@ room = LiveDanmaku(
     credential=credential,
 )
 
+@room.on("DANMU_MSG")
+async def _(event: dict):
+    logger.info("收到弹幕")
+    logger.debug(event)
+    godot_server.send_data(
+        json.dumps(
+            {
+                "type": event["type"],
+                "user": event["data"]["info"][2][1],
+                "content": event["data"]["info"][1]
+            },
+            ensure_ascii=False
+        )
+    )
+
 
 # 处理B站WebSocket消息
-async def bilibili_websocket_client():
+async def bilibili_websocket_client(godot_server):
     room._LiveDanmaku__status = room.STATUS_CONNECTING
 
     room.room = LiveRoom(
@@ -94,6 +110,7 @@ async def bilibili_websocket_client():
                     room._LiveDanmaku__status = room.STATUS_ERROR
                     room.logger.error("出现错误")
                     break
+
                 if flag == BiliWsMsgType.BINARY:
                     room.logger.debug(f"收到原始数据：{data}")
                     await room._LiveDanmaku__handle_data(data)
@@ -129,43 +146,155 @@ async def bilibili_websocket_client():
             await asyncio.sleep(room.retry_after)
 
 
+class GodotTCPServer:
+    def __init__(self, host='localhost', port=9090):
+        self.host = host
+        self.port = port
+        self.server_socket = None
+        self.client_socket = None
+        self.client_address = None
+        self.is_running = False
+        self.reconnect_interval = 5  # 重连间隔(秒)
+
+    def start_server(self):
+        """启动TCP服务器"""
+        self.is_running = True
+        while self.is_running:
+            try:
+                self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                self.server_socket.bind((self.host, self.port))
+                self.server_socket.listen(1)
+                logger.info(f"TCP服务器启动，等待Godot连接在 {self.host}:{self.port}...")
+
+                # 等待客户端连接
+                self.client_socket, self.client_address = self.server_socket.accept()
+                logger.info(f"Godot已连接: {self.client_address}")
+
+                # 保持连接直到断开
+                self._keep_connection()
+
+            except Exception as e:
+                logger.error(f"服务器错误: {e}")
+                time.sleep(self.reconnect_interval)
+            finally:
+                self._cleanup()
+
+    def _keep_connection(self):
+        """保持连接并处理心跳"""
+        last_activity = time.time()
+        while self.is_running and self.client_socket:
+            try:
+                # 检查是否有数据可读（可选，用于接收Godot的心跳或消息）
+                # 这里我们主要关注发送数据，所以简单保持连接
+                time.sleep(1)
+
+                # 发送心跳包保持连接（可选）
+                current_time = time.time()
+                if current_time - last_activity > 30:  # 每30秒发送一次心跳
+                    try:
+                        self.client_socket.sendall(b'ping')
+                        last_activity = current_time
+                    except:
+                        logger.warning("发送心跳失败，连接可能已断开")
+                        break
+
+            except Exception as e:
+                logger.error(f"连接保持错误: {e}")
+                break
+
+    def send_data(self, data):
+        """向Godot客户端发送数据"""
+        if self.client_socket:
+            try:
+                if isinstance(data, str):
+                    data = data.encode('utf-8')
+                self.client_socket.sendall(data)
+                return True
+            except Exception as e:
+                logger.error(f"发送数据失败: {e}")
+                self.client_socket = None
+                return False
+        else:
+            logger.warning("没有活动的Godot连接")
+            return False
+
+    def _cleanup(self):
+        """清理资源"""
+        if self.client_socket:
+            try:
+                self.client_socket.close()
+            except:
+                pass
+            self.client_socket = None
+
+        if self.server_socket:
+            try:
+                self.server_socket.close()
+            except:
+                pass
+            self.server_socket = None
+
+    def stop_server(self):
+        """停止服务器"""
+        self.is_running = False
+        self._cleanup()
+
+
+# 处理B站WebSocket消息
+# async def bilibili_websocket_client(godot_server):
+#     uri = "wss://your-bilibili-websocket-url"
+#     reconnect_interval = 10  # 重连间隔(秒)
+#
+#     while True:
+#         try:
+#             logger.info("尝试连接B站WebSocket...")
+#             async with websockets.connect(uri) as websocket:
+#                 logger.info("已连接到B站WebSocket")
+#                 while True:
+#                     try:
+#                         message = await websocket.recv()
+#                         processed_data = process_message(message)
+#                         # 发送到Godot客户端
+#                         if not godot_server.send_data(processed_data):
+#                             logger.warning("发送到Godot失败，但继续接收B站数据")
+#                     except websockets.exceptions.ConnectionClosed:
+#                         logger.warning("B站WebSocket连接已关闭，尝试重连...")
+#                         break
+#                     except Exception as e:
+#                         logger.error(f"处理B站消息错误: {e}")
+#                         break
+#         except Exception as e:
+#             logger.error(f"连接B站WebSocket失败: {e}")
+#
+#         logger.info(f"{reconnect_interval}秒后尝试重连B站WebSocket...")
+#         await asyncio.sleep(reconnect_interval)
+
+
 def process_message(raw_data):
+    """处理B站消息"""
     # 这里实现你的消息处理逻辑
     # 返回处理后的数据
     return json.dumps({
-        "type"   : "danmaku",
-        "content": "示例弹幕内容",
-        "user"   : "示例用户"
+        "type"     : "danmaku",
+        "content"  : "示例弹幕内容",
+        "user"     : "示例用户",
+        "timestamp": time.time()
     })
 
 
-# TCP服务器用于向Godot发送数据
-def start_tcp_server():
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind(('localhost', 9090))
-    server_socket.listen(1)
-    print("TCP服务器启动，等待Godot连接...")
-
-    while True:
-        client_socket, addr = server_socket.accept()
-        print(f"Godot已连接: {addr}")
-
-        # 这里需要维护连接并在有数据时发送
-        # 实际实现可能需要多线程或异步处理
-
-
-def send_to_godot(data):
-    # 这里实现向已连接的Godot客户端发送数据
-    pass
-
-
 if __name__ == "__main__":
-    # 启动TCP服务器线程
-    import threading
+    # 创建Godot TCP服务器
+    godot_server = GodotTCPServer()
 
-    tcp_thread = threading.Thread(target=start_tcp_server)
+    # 启动TCP服务器线程
+    tcp_thread = threading.Thread(target=godot_server.start_server)
     tcp_thread.daemon = True
     tcp_thread.start()
 
-    # 启动WebSocket客户端
-    asyncio.get_event_loop().run_until_complete(bilibili_websocket_client())
+    try:
+        # 启动WebSocket客户端
+        asyncio.get_event_loop().run_until_complete(bilibili_websocket_client(godot_server))
+    except KeyboardInterrupt:
+        logger.info("正在关闭服务器...")
+        godot_server.stop_server()

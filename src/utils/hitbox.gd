@@ -19,7 +19,8 @@ func _init() -> void:
 func _on_area_entered(hurtbox: HurtBox) -> void:
 	self.hit.emit(hurtbox)
 	hurtbox.hurt.emit(self)
-	
+
+
 ## 受击区域离开（敌人死亡）时发出信号
 func _on_area_exited(hurtbox: HurtBox) -> void:
 	self.kill.emit(hurtbox)
