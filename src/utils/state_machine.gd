@@ -10,6 +10,7 @@ var current_state: MarisaCreature.Status = MarisaCreature.Status.Default:
 		self.owner.on_state_change(current_state, next_state)
 		current_state = next_state
 
+
 ## 内置函数
 ## 该节点的所有子节点初始化后才初始化
 func _ready() -> void:
@@ -17,6 +18,7 @@ func _ready() -> void:
 	await self.owner.ready #这里是获取父节点准备信号，也就是说只有一个场景全准备好了他才会进行
 	self.current_state = MarisaCreature.Status.Default
 
+	
 ## 每物理帧调用一次
 func _physics_process(delta: float) -> void:
 	while true:

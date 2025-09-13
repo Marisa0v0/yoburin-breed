@@ -1,11 +1,7 @@
 @icon("res://resource/yoburin/待机1.png")
 class_name Yoburin
-extends MarisaPlayer
-## 当前唯一玩家 - 优里
-
-## 优里立绘
-@onready var animated_sprite_2d: AnimatedSprite2D = $"动画立绘相关/动画立绘"
-
+extends MarisaCreature
+## 当前唯一玩家 - 优里e
 
 ## 内置函数
 ## 类初始化
@@ -18,14 +14,8 @@ func _init() -> void:
 func _ready() -> void:
 	super._ready()
 	self.logger.debug("优里类准备完毕")
-	self.attack_speed = 5.0  ## TODO 测试用
-
-
-## 敌人撞上来了
-func _on_in_battle_position(hurtbox: HurtBox) -> void:
-	## 怪物加入将要攻击的序列
-	self.enemies_in_battle.append(hurtbox.owner)
-	self.in_battle_position = true
+	self.attack_speed = 5.0  ## FIXME 测试用
+	self.attack_point = 50
 
 
 ## 业务函数 (帧)
@@ -53,8 +43,12 @@ func update_state(current_state: Status) -> Status:
 				return Status.BeAttacked
 
 			## 血量清零 -> 战败
-			if self.bar_health_point.value == self.bar_health_point.min_value:
+			if self.be_defeated:
 				return Status.BeDefeated
+			
+			## 不处于战斗位置（敌人死亡） -> 继续跑
+			if !self.in_battle_position:
+				return Status.Move
 
 		Status.Attack:
 			## 攻击动画结束 -> 返回闲置
@@ -69,7 +63,7 @@ func update_state(current_state: Status) -> Status:
 
 		## TODO
 		Status.BeDefeated:
-			pass
+			self.remove_from_group(GROUP_CREATURE)
 
 		_: ## fallback 落回默认状态
 			return Status.Default
@@ -88,7 +82,7 @@ func action(current_state: Status, _delta: float) -> void:
 			self.animated_sprite_2d.play("闲置动画")
 			## 到达位置后攻击条自动增长
 			if !self.pause:
-				self.bar_attack_ready_increase()
+				self.increase_bar_attack_ready()
 		Status.Attack:
 			self.animated_sprite_2d.play("攻击动画")
 		Status.BeAttacked:
@@ -108,17 +102,13 @@ func on_state_change(current_state: Status, next_state: Status) -> void:
 	## 总之先重设动画结束标识
 	self.animation_end = false
 
-	## 进入攻击状态
-	if current_state == Status.Idle and next_state == Status.Attack:
-		## 每次进入攻击状态都需重设攻击进度条，防御性
-		self.bar_attack_ready.value = self.bar_attack_ready.min_value
-
-	## 攻击结束 (目标死亡)
-	elif current_state == Status.Attack and next_state == Status.Idle:
-		## 防御性重设攻击标识
-		self.can_attack = false
-		## 防御性，以免条涨到一半目标死亡了
-		self.bar_attack_ready.value = self.bar_attack_ready.min_value
+	## 无论何种情况下进入攻击状态
+	if next_state == Status.Attack:
+		self._on_attack_before_state_change()
+	
+	## 从就位转至跑步状态（敌人死亡）
+	elif current_state == Status.Idle and next_state == Status.Move:
+		self._on_enemy_killed_before_state_change()
 
 	## 进入挨打状态
 	elif current_state == Status.Idle and next_state == Status.BeAttacked:
@@ -126,27 +116,52 @@ func on_state_change(current_state: Status, next_state: Status) -> void:
 
 	## 挨打结束
 	elif current_state == Status.BeAttacked and next_state == Status.Idle:
-		self.be_attacked = false
+		pass
+
+	## 无论何种情况下进入战败
+	elif next_state == Status.BeDefeated:
+		self._on_be_defeated_before_state_change()
+		
+		
+## 作为玩家，战败后可以复活，而非从场上移除
+func _on_be_defeated() -> void:
+	## TODO 复活机制
+	pass
 
 
-## 隐式调用
+## 信号连接
+## 敌人撞上来了
+func _on_yoburin_in_battle_position(hurtbox: HurtBox) -> void:
+	## 怪物加入将要攻击的序列
+	hurtbox.owner.add_to_group(GROUP_ENEMIES_IN_BATTLE)
+	self.in_battle_position = true
+
+## 敌人死亡
+## 此时敌人已从敌对组及场景中移除
+func _on_enemy_killed(_hurtbox: HurtBox) -> void:
+	self.logger.debug("敌人死亡了啊啊啊")
+	self.in_battle_position = false
+
+
 ## 贴图动画播放完后调用
 ## 动画播放在 action 调用后调用，即每帧最后运行
-func _on_animation_finished() -> void:
+func _on_yoburin_animation_finished() -> void:
 	var current_animation := self.animated_sprite_2d.animation
 	self.logger.info("%s的'%s'动画结束了" % [self.name, current_animation])
 	
 	if current_animation == "攻击动画":
 		## 播放完攻击动画之后才运行对方掉血逻辑
-		var target := self.enemies_in_battle[0]
-		self.attack(target)
-	
-		## 攻击动画结束
-		self.can_attack = false
+		var target: MarisaCreature = get_tree().get_nodes_in_group(GROUP_ENEMIES_IN_BATTLE)[0]
+		## 攻击动画结束，调用攻击函数
+		self._on_attack_after_animation_end(target)
 	
 	elif current_animation == "挨打动画":
-		## 挨打动画结束
-		self.be_attacked = false
+		## 挨打动画结束，调用挨打函数
+		self._on_be_attacked_after_animation_end()
+
+	elif current_animation == "战败动画":
+		## 挨打动画结束，调用战败函数
+		self._on_be_defeated()
 	
 	## 设置动画结束标识
 	self.animation_end = true

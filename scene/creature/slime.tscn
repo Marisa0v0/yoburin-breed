@@ -1,10 +1,26 @@
-[gd_scene load_steps=20 format=3 uid="uid://bp3vtw4efrr5c"]
+[gd_scene load_steps=24 format=3 uid="uid://bp3vtw4efrr5c"]
 
 [ext_resource type="PackedScene" uid="uid://ynrkr0s2463o" path="res://scene/creature/creature.tscn" id="1_jkbhd"]
 [ext_resource type="Script" uid="uid://e1qa62wpkl1" path="res://src/creature/slime.gd" id="1_q8ldp"]
 [ext_resource type="Texture2D" uid="uid://cidapv1hna2km" path="res://resource/sprites/slime_green.png" id="3_pxagv"]
 [ext_resource type="Script" uid="uid://b60ni10gpo0ib" path="res://src/utils/hitbox.gd" id="4_oa5pk"]
 [ext_resource type="Script" uid="uid://8dxdgpj5q8qi" path="res://src/utils/hurtbox.gd" id="5_a0ytv"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ne6ur"]
+atlas = ExtResource("3_pxagv")
+region = Rect2(72, 48, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3w3g1"]
+atlas = ExtResource("3_pxagv")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4145h"]
+atlas = ExtResource("3_pxagv")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2pwds"]
+atlas = ExtResource("3_pxagv")
+region = Rect2(0, 0, 24, 24)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jpaaj"]
 atlas = ExtResource("3_pxagv")
@@ -40,6 +56,23 @@ region = Rect2(72, 24, 24, 24)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_jpaaj"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ne6ur")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3w3g1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4145h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2pwds")
+}],
+"loop": false,
+"name": &"战败动画",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_jpaaj")
@@ -137,7 +170,7 @@ script = ExtResource("1_q8ldp")
 position = Vector2(0, -12)
 scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_jpaaj")
-animation = &"挨打动画"
+animation = &"战败动画"
 flip_h = true
 
 [node name="动画播放器" type="AnimationPlayer" parent="动画立绘相关/动画立绘" index="0"]
@@ -190,6 +223,7 @@ offset_right = 8.4
 offset_bottom = -1.6
 show_percentage = false
 
-[connection signal="animation_finished" from="动画立绘相关/动画立绘" to="." method="_on_animation_finished"]
-[connection signal="animation_finished" from="动画立绘相关/动画立绘/动画播放器" to="." method="_on_animation_player_finished"]
-[connection signal="hit" from="动画立绘相关/动画立绘/攻击区域" to="." method="_on_in_battle_position"]
+[connection signal="animation_finished" from="动画立绘相关/动画立绘" to="." method="_on_slime_animation_finished"]
+[connection signal="animation_finished" from="动画立绘相关/动画立绘/动画播放器" to="." method="_on_slime_animation_player_finished"]
+[connection signal="hit" from="动画立绘相关/动画立绘/攻击区域" to="." method="_on_slime_in_battle_position"]
+[connection signal="kill" from="动画立绘相关/动画立绘/攻击区域" to="." method="_on_player_killed"]

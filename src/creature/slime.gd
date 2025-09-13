@@ -1,36 +1,27 @@
 class_name MarisaSlime
-extends MarisaMonster
+extends MarisaCreature
 ## 怪物 - 史莱姆
 
-## 导入
-@onready var animation_player: AnimationPlayer = $"动画立绘相关/动画立绘/动画播放器"  ## 动画播放器
-@onready var animated_sprite_2d: AnimatedSprite2D = $"动画立绘相关/动画立绘"        ## 动画立绘
-
+var target_player: MarisaCreature = null
 
 ## 内置函数
 ## 类初始化
 func _init() -> void:
 	super._init()
-	self.logger.debug("初始化 Slime 类实例 %s" % self.to_string())
+	self.logger.debug("初始化史莱姆类实例 %s" % self.to_string())
 
 
 ## 该节点的所有子节点初始化后才初始化
 func _ready() -> void:
 	super._ready()
-	self.logger.debug("Slime 类准备完毕")
-
-
-## 判定进入攻击位置
-func _on_in_battle_position(hurtbox: HurtBox) -> void:
-	## 玩家设为攻击目标
-	self.target_player = hurtbox.owner
-	self.in_battle_position = true
+	self.logger.debug("史莱姆类准备完毕")
+	self.move_speed = -100.0	## 怪物向左移动
 
 
 ## 业务函数 (帧)
 ## 每帧第一个运行 update_state 函数
+## 状态切换发生在每帧第一位
 func update_state(current_state: Status) -> Status:
-
 	match current_state:
 		## 初始状态
 		Status.Default: 
@@ -53,8 +44,12 @@ func update_state(current_state: Status) -> Status:
 				return Status.BeAttacked
 
 			## 血量清零 -> 战败
-			if self.bar_health_point.value == self.bar_health_point.min_value:
+			if self.be_defeated:
 				return Status.BeDefeated
+
+			## 不处于战斗位置（敌人死亡） -> 继续跑
+			if !self.in_battle_position:
+				return Status.Move
 
 		Status.Attack:
 			## 攻击动画结束 -> 返回闲置
@@ -89,7 +84,7 @@ func action(current_state: Status, delta: float) -> void:
 			animated_sprite_2d.play("闲置动画")
 			## 到达位置后攻击条自动增长
 			if !self.pause:
-				self.bar_attack_ready_increase()
+				self.increase_bar_attack_ready()
 		Status.Attack:
 			## 播放动画
 			## TODO 攻击动画
@@ -97,9 +92,8 @@ func action(current_state: Status, delta: float) -> void:
 			self.animation_player.play("攻击动画")
 		Status.BeAttacked:
 			self.animated_sprite_2d.play("挨打动画")
-		## TODO
 		Status.BeDefeated:
-			pass
+			self.animated_sprite_2d.play("战败动画")
 		_: ## fallback
 			self.animated_sprite_2d.play("闲置动画")
 
@@ -110,17 +104,9 @@ func on_state_change(current_state: Status, next_state: Status) -> void:
 	## 总之先重设动画结束标识
 	self.animation_end = false
 	
-	## 进入攻击状态
-	if current_state == Status.Idle and next_state == Status.Attack:
-		## 每次进入攻击状态都需重设攻击进度条，防御性
-		self.bar_attack_ready.value = self.bar_attack_ready.min_value
-	
-	## 攻击结束 (目标死亡)
-	elif current_state == Status.Attack and next_state == Status.Idle:
-		## 防御性重设攻击标识
-		self.can_attack = false
-		## 防御性，以免条涨到一半目标死亡了
-		self.bar_attack_ready.value = self.bar_attack_ready.min_value
+	## 无论何种情况下进入攻击状态
+	if next_state == Status.Attack:
+		self._on_attack_before_state_change()
 	
 	## 进入挨打状态
 	elif current_state == Status.Idle and next_state == Status.BeAttacked:
@@ -128,32 +114,52 @@ func on_state_change(current_state: Status, next_state: Status) -> void:
 
 	## 挨打结束
 	elif current_state == Status.BeAttacked and next_state == Status.Idle:
-		self.be_attacked = false
+		pass
+		
+	## 无论何种情况下进入战败
+	elif next_state == Status.BeDefeated:
+		self._on_be_defeated_before_state_change()
 
 
-## 隐式调用
+## 信号连接
+## 判定进入攻击位置
+func _on_slime_in_battle_position(hurtbox: HurtBox) -> void:
+	## 玩家设为攻击目标
+	self.target_player = hurtbox.owner
+	self.in_battle_position = true
+
+	
+## 击杀玩家 TODO 相关处理
+func _on_player_killed(_hurtbox: HurtBox) -> void:
+	self.target_player = null
+	self.in_battle_position = false
+
+
 ## 贴图动画播放完后调用
-func _on_animation_finished() -> void:
+func _on_slime_animation_finished() -> void:
 	var current_animation := self.animated_sprite_2d.animation
 	self.logger.info("%s的'%s'动画结束了" % [self.name, current_animation])
 	
 	if current_animation == "挨打动画":
-		## 挨打动画结束
-		self.be_attacked = false
+		## 挨打动画结束，调用挨打函数
+		self._on_be_attacked_after_animation_end()
+		
+	elif current_animation == "战败动画":
+		## 战败动画结束，调用战败函数
+		self._on_be_defeated_after_animation_end()
 	
 	## 设置动画结束标识
 	self.animation_end = true
 		
 
 ## 播放器动画播放完后调用
-func _on_animation_player_finished(current_animation: StringName):
+func _on_slime_animation_player_finished(current_animation: StringName):
 	self.logger.info("%s的'%s'动画结束了" % [self.name, current_animation])
 
 	if current_animation == "攻击动画":
 		## 播放完攻击动画之后才运行对方掉血逻辑
-		self.attack(self.target_player)
-		## 攻击动画结束
-		self.can_attack = false
+		## 攻击动画结束，调用攻击函数
+		self._on_attack_after_animation_end(self.target_player)
 
 	## 设置动画结束标识
 	self.animation_end = true
