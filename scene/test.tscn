@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://dur2tkf7vfdx7"]
-
-[ext_resource type="Script" uid="uid://b6j0ve5iv68h4" path="res://node.gd" id="1_fghjm"]
-
-[node name="Node" type="Node"]
-script = ExtResource("1_fghjm")
-"类型" = 2
