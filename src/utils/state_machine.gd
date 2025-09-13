@@ -7,7 +7,7 @@ extends Node
 var current_state: MarisaCreature.Status = MarisaCreature.Status.Default:
 	set(next_state):
 		## 仅在状态更新时，调用 on_state_change
-		self.owner.on_state_change(current_state, next_state)
+		self.owner._before_state_change(current_state, next_state)
 		current_state = next_state
 
 

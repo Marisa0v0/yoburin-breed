@@ -99,8 +99,10 @@ func action(current_state: Status, delta: float) -> void:
 
 
 ## 具体状态切换时调用
-## 每帧仅在状态从 current_state 切换至 next_state 时调用
-func on_state_change(current_state: Status, next_state: Status) -> void:
+## 每帧仅在状态从 current_state 切换至 next_state 前调用
+## 每帧可能发生多次状态切换，也可能一次都不发生
+## 若发生则在 update 与 action 之间调用
+func _before_state_change(current_state: Status, next_state: Status) -> void:
 	## 总之先重设动画结束标识
 	self.animation_end = false
 	
@@ -147,6 +149,8 @@ func _on_slime_animation_finished() -> void:
 	elif current_animation == "战败动画":
 		## 战败动画结束，调用战败函数
 		self._on_be_defeated_after_animation_end()
+		## 从玩家的攻击序列中移除 
+		self.remove_from_group(GROUP_ENEMIES_IN_BATTLE)
 	
 	## 设置动画结束标识
 	self.animation_end = true

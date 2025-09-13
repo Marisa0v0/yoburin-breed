@@ -95,10 +95,10 @@ func action(current_state: Status, _delta: float) -> void:
 
 
 ## 具体状态切换时调用
-## 每帧仅在状态从 current_state 切换至 next_state 时调用
+## 每帧仅在状态从 current_state 切换至 next_state 前调用
 ## 每帧可能发生多次状态切换，也可能一次都不发生
 ## 若发生则在 update 与 action 之间调用
-func on_state_change(current_state: Status, next_state: Status) -> void:
+func _before_state_change(current_state: Status, next_state: Status) -> void:
 	## 总之先重设动画结束标识
 	self.animation_end = false
 
@@ -140,7 +140,10 @@ func _on_yoburin_in_battle_position(hurtbox: HurtBox) -> void:
 ## 此时敌人已从敌对组及场景中移除
 func _on_enemy_killed(_hurtbox: HurtBox) -> void:
 	self.logger.debug("敌人死亡了啊啊啊")
-	self.in_battle_position = false
+	self.logger.debug("此时敌人还有 %d" % len(get_tree().get_nodes_in_group(GROUP_ENEMIES_IN_BATTLE)))
+	## 确实没有敌人了再退出战斗状态
+	if get_tree().get_nodes_in_group(GROUP_ENEMIES_IN_BATTLE).is_empty():
+		self.in_battle_position = false
 
 
 ## 贴图动画播放完后调用
