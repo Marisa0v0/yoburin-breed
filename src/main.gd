@@ -8,6 +8,11 @@ var dragging := false
 @onready var bar_health_point: ProgressBar = $"图形界面/玩家生命值进度条"
 @onready var bar_attack_ready: ProgressBar = $"图形界面/玩家攻击进度条"
 @onready var node_creatures: Node = $生物组
+## 接收 B 站发给 Python 客户端处理后发来的信息
+@onready var ws_server: WebsocketServer = $网络通信服务器
+
+
+
 ## 场景
 const scene_slime   := preload("res://scene/creature/slime.tscn")
 const scene_yoburin := preload("res://scene/creature/yoburin.tscn")
@@ -19,6 +24,9 @@ func _ready() -> void:
 	# 窗口初始化
 	Log.debug("主窗口准备完毕")
 	get_viewport().transparent_bg = true
+	
+	## 启动网络通信
+	self.ws_server.start_server()
 
 	## 动态实例化
 	var yoburin: Yoburin = scene_yoburin.instantiate()

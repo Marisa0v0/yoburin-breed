@@ -141,8 +141,6 @@ func _on_player_killed(_hurtbox: HurtBox) -> void:
 ## 贴图动画播放完后调用
 func _on_slime_animation_finished() -> void:
 	var current_animation := self.animated_sprite_2d.animation
-	Log.info("%s的'%s'动画结束了" % [self.name, current_animation])
-
 	if current_animation == "挨打动画":
 		## 挨打动画结束，调用挨打函数
 		self._on_be_attacked_after_animation_end()
@@ -159,8 +157,6 @@ func _on_slime_animation_finished() -> void:
 
 ## 播放器动画播放完后调用
 func _on_slime_animation_player_finished(current_animation: StringName):
-	Log.info("%s的'%s'动画结束了" % [self.name, current_animation])
-
 	if current_animation == "攻击动画":
 		## 播放完攻击动画之后才运行对方掉血逻辑
 		## 攻击动画结束，调用攻击函数

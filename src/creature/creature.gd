@@ -92,7 +92,7 @@ func _on_attack_after_animation_end(target: MarisaCreature) -> void:
 	if damage <= 0:
 		return
 
-	Log.info("%s攻击%s, 血量 %s -> %s" % [self.name, target.name, target.health_point, target.health_point-damage])
+	Log.debug("%s攻击%s, 血量 %s -> %s" % [self.name, target.name, target.health_point, target.health_point-damage])
 	target.health_point -= damage
 	target.bar_health_point.value = target.health_point
 	if target.bar_health_point.value < 0:

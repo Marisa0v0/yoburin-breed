@@ -1,7 +1,7 @@
 @icon("res://resource/yoburin/待机1.png")
 class_name Yoburin
 extends MarisaCreature
-## 当前唯一玩家 - 优里e
+## 当前唯一玩家 - 优里
 
 ## 内置函数
 ## 类初始化
@@ -140,8 +140,6 @@ func _on_yoburin_in_battle_position(hurtbox: HurtBox) -> void:
 ## 敌人死亡
 ## 此时敌人已从敌对组及场景中移除
 func _on_enemy_killed(_hurtbox: HurtBox) -> void:
-	Log.debug("敌人死亡了啊啊啊")
-	Log.debug("此时敌人还有 %d" % len(get_tree().get_nodes_in_group(GROUP_ENEMIES_IN_BATTLE)))
 	## 确实没有敌人了再退出战斗状态
 	if get_tree().get_nodes_in_group(GROUP_ENEMIES_IN_BATTLE).is_empty():
 		self.in_battle_position = false
@@ -151,7 +149,6 @@ func _on_enemy_killed(_hurtbox: HurtBox) -> void:
 ## 动画播放在 action 调用后调用，即每帧最后运行
 func _on_yoburin_animation_finished() -> void:
 	var current_animation := self.animated_sprite_2d.animation
-	Log.info("%s的'%s'动画结束了" % [self.name, current_animation])
 
 	if current_animation == "攻击动画":
 		## 播放完攻击动画之后才运行对方掉血逻辑
