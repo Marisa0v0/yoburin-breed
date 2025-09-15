@@ -1,4 +1,4 @@
-@icon("res://resource/yoburin/待机1.png")
+@icon("res://resource/assets/sprites/yoburin/待机1.png")
 class_name Yoburin
 extends MarisaCreature
 ## 当前唯一玩家 - 优里
