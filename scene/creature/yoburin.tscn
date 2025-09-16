@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://bio02arexbhoi"]
+[gd_scene load_steps=38 format=3 uid="uid://bio02arexbhoi"]
 
 [ext_resource type="Texture2D" uid="uid://bhel5dpfu2cy3" path="res://resource/assets/sprites/yoburin/待机带砖1.png" id="1_8qxis"]
 [ext_resource type="PackedScene" uid="uid://ynrkr0s2463o" path="res://scene/creature/creature.tscn" id="1_hlq24"]
@@ -16,6 +16,8 @@
 [ext_resource type="Texture2D" uid="uid://b7u5d52lmwf38" path="res://resource/assets/sprites/yoburin/奔跑2.png" id="10_rxvwy"]
 [ext_resource type="Script" uid="uid://b60ni10gpo0ib" path="res://src/utils/hitbox.gd" id="15_0vtg0"]
 [ext_resource type="Script" uid="uid://8dxdgpj5q8qi" path="res://src/utils/hurtbox.gd" id="16_orvxo"]
+[ext_resource type="Texture2D" uid="uid://33b0n73y67tm" path="res://resource/assets/Legacy-Fantasy - High Forest 2.0/Legacy-Fantasy - High Forest 2.3/HUD/Base-01.png" id="17_0mndr"]
+[ext_resource type="Texture2D" uid="uid://bekayusv2dq2i" path="res://resource/assets/sprites/yoburin/roguelikeitems.png" id="18_p2gjn"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_6b5qc"]
 animations = [{
@@ -91,25 +93,92 @@ a = Vector2(0, -248)
 a = Vector2(0, -240)
 b = Vector2(0, 16)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_p2gjn"]
+atlas = ExtResource("17_0mndr")
+region = Rect2(308, 86, 56, 4)
+margin = Rect2(1, 1, 0, 0)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vok62"]
+atlas = ExtResource("17_0mndr")
+region = Rect2(307, 21, 58, 6)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3f1je"]
+atlas = ExtResource("17_0mndr")
+region = Rect2(308, 118, 56, 4)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0mndr"]
+atlas = ExtResource("17_0mndr")
+region = Rect2(308, 150, 56, 4)
+margin = Rect2(1, 1, 0, 0)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_avcws"]
+atlas = ExtResource("17_0mndr")
+region = Rect2(307, 21, 58, 6)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_clni0"]
+atlas = ExtResource("17_0mndr")
+region = Rect2(308, 54, 56, 4)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_p2gjn"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+texture = ExtResource("17_0mndr")
+region_rect = Rect2(243, 203, 58, 26)
+
+[sub_resource type="Theme" id="Theme_p2gjn"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0mndr"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
+texture = ExtResource("17_0mndr")
+region_rect = Rect2(323, 203, 26, 26)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hmrfj"]
+atlas = ExtResource("18_p2gjn")
+region = Rect2(96, 224, 16, 16)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p2gjn"]
+content_margin_right = 2.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_p2gjn"]
+font_size = 8
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n2w54"]
+atlas = ExtResource("18_p2gjn")
+region = Rect2(81, 161, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iefey"]
+atlas = ExtResource("18_p2gjn")
+region = Rect2(48, 112, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rrisu"]
+atlas = ExtResource("18_p2gjn")
+region = Rect2(81, 176, 16, 16)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6jpij"]
 
 [node name="优布林" instance=ExtResource("1_hlq24")]
+position = Vector2(154, 402)
 script = ExtResource("1_yjsgg")
 
 [node name="主角专用摄像机" type="Camera2D" parent="." index="0"]
-position = Vector2(272, -192)
+position = Vector2(96, -152)
 
 [node name="动画立绘" type="AnimatedSprite2D" parent="动画立绘相关" index="0"]
 position = Vector2(0, -128)
 sprite_frames = SubResource("SpriteFrames_6b5qc")
-animation = &"攻击动画"
-frame = 3
-frame_progress = 1.0
+animation = &"闲置动画"
+frame_progress = 0.670265
 
 [node name="动画播放器" type="AnimationPlayer" parent="动画立绘相关/动画立绘" index="0"]
 
 [node name="攻击区域" type="Area2D" parent="动画立绘相关/动画立绘" index="1"]
 visible = false
+position = Vector2(-108, 0)
 collision_layer = 16
 collision_mask = 128
 script = ExtResource("15_0vtg0")
@@ -121,6 +190,7 @@ shape = SubResource("SegmentShape2D_orvxo")
 
 [node name="受击区域" type="Area2D" parent="动画立绘相关/动画立绘" index="2"]
 visible = false
+position = Vector2(-108, 3)
 collision_layer = 32
 collision_mask = 0
 script = ExtResource("16_orvxo")
@@ -131,36 +201,193 @@ position = Vector2(256, 112)
 shape = SubResource("SegmentShape2D_0vtg0")
 
 [node name="可视化界面" type="Control" parent="动画立绘相关/动画立绘" index="3"]
-visible = false
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchor_left = -0.101
+anchor_top = -0.57
+anchor_right = -0.101
+anchor_bottom = -0.57
+offset_left = 25.856
+offset_top = 145.92
+offset_right = 65.856
+offset_bottom = 185.92
 metadata/_edit_use_anchors_ = true
 
-[node name="生命值进度条" type="ProgressBar" parent="动画立绘相关/动画立绘/可视化界面" index="0"]
+[node name="生命值进度条" type="TextureProgressBar" parent="动画立绘相关/动画立绘/可视化界面" index="0"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = -1.9
-anchor_top = -3.275
-anchor_right = 1.8
-anchor_bottom = -2.925
-offset_right = 4.0
-step = 1.0
-show_percentage = false
+anchor_left = 0.125
+anchor_top = 3.525
+anchor_right = 0.125
+anchor_bottom = 3.525
+offset_right = 58.0
+offset_bottom = 6.0
+scale = Vector2(3, 3)
+value = 60.0
+texture_under = SubResource("AtlasTexture_p2gjn")
+texture_over = SubResource("AtlasTexture_vok62")
+texture_progress = SubResource("AtlasTexture_3f1je")
+texture_progress_offset = Vector2(1, 1)
 metadata/_edit_use_anchors_ = true
 
-[node name="攻击准备进度条" type="ProgressBar" parent="动画立绘相关/动画立绘/可视化界面" index="1"]
+[node name="攻击准备进度条" type="TextureProgressBar" parent="动画立绘相关/动画立绘/可视化界面" index="1"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = -1.9
-anchor_top = -2.875
-anchor_right = 1.8
-anchor_bottom = -2.625
-offset_right = 4.0
-step = 1.0
-show_percentage = false
+anchor_left = 0.125
+anchor_top = 3.925
+anchor_right = 0.125
+anchor_bottom = 3.925
+offset_top = 8.0
+offset_right = 58.0
+offset_bottom = 14.0
+scale = Vector2(3, 3)
+value = 50.0
+texture_under = SubResource("AtlasTexture_0mndr")
+texture_over = SubResource("AtlasTexture_avcws")
+texture_progress = SubResource("AtlasTexture_clni0")
+texture_progress_offset = Vector2(1, 1)
 metadata/_edit_use_anchors_ = true
+
+[node name="生命值属性背景" type="PanelContainer" parent="动画立绘相关/动画立绘/可视化界面" index="2"]
+layout_mode = 2
+offset_left = -115.0
+offset_top = 125.0
+offset_right = -50.0
+offset_bottom = 145.0
+scale = Vector2(1.5, 1.5)
+theme_override_styles/panel = SubResource("StyleBoxTexture_p2gjn")
+
+[node name="生命值可视化" type="HBoxContainer" parent="动画立绘相关/动画立绘/可视化界面/生命值属性背景" index="0"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = SubResource("Theme_p2gjn")
+theme_override_constants/separation = 0
+
+[node name="生命值图标容器" type="PanelContainer" parent="动画立绘相关/动画立绘/可视化界面/生命值属性背景/生命值可视化" index="0"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_0mndr")
+
+[node name="生命值图标" type="TextureRect" parent="动画立绘相关/动画立绘/可视化界面/生命值属性背景/生命值可视化/生命值图标容器" index="0"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_hmrfj")
+stretch_mode = 3
+
+[node name="生命值数值容器" type="PanelContainer" parent="动画立绘相关/动画立绘/可视化界面/生命值属性背景/生命值可视化" index="1"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_p2gjn")
+
+[node name="生命值数值" type="Label" parent="动画立绘相关/动画立绘/可视化界面/生命值属性背景/生命值可视化/生命值数值容器" index="0"]
+custom_minimum_size = Vector2(43, 0)
+layout_mode = 2
+text = "000001"
+label_settings = SubResource("LabelSettings_p2gjn")
+horizontal_alignment = 2
+
+[node name="移动速度属性背景" type="PanelContainer" parent="动画立绘相关/动画立绘/可视化界面" index="3"]
+offset_left = -115.0
+offset_top = 173.0
+offset_right = -50.0
+offset_bottom = 193.0
+scale = Vector2(1.5, 1.5)
+theme_override_styles/panel = SubResource("StyleBoxTexture_p2gjn")
+
+[node name="移动速度可视化" type="HBoxContainer" parent="动画立绘相关/动画立绘/可视化界面/移动速度属性背景" index="0"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = SubResource("Theme_p2gjn")
+theme_override_constants/separation = 0
+
+[node name="移动速度图标容器" type="PanelContainer" parent="动画立绘相关/动画立绘/可视化界面/移动速度属性背景/移动速度可视化" index="0"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_0mndr")
+
+[node name="移动速度图标" type="TextureRect" parent="动画立绘相关/动画立绘/可视化界面/移动速度属性背景/移动速度可视化/移动速度图标容器" index="0"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_n2w54")
+
+[node name="移动速度数值容器" type="PanelContainer" parent="动画立绘相关/动画立绘/可视化界面/移动速度属性背景/移动速度可视化" index="1"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_p2gjn")
+
+[node name="移动速度数值" type="Label" parent="动画立绘相关/动画立绘/可视化界面/移动速度属性背景/移动速度可视化/移动速度数值容器" index="0"]
+custom_minimum_size = Vector2(43, 0)
+layout_mode = 2
+text = "000001"
+label_settings = SubResource("LabelSettings_p2gjn")
+horizontal_alignment = 2
+
+[node name="攻击力属性背景" type="PanelContainer" parent="动画立绘相关/动画立绘/可视化界面" index="4"]
+offset_left = 205.0
+offset_top = 125.0
+offset_right = 270.0
+offset_bottom = 145.0
+scale = Vector2(1.5, 1.5)
+theme_override_styles/panel = SubResource("StyleBoxTexture_p2gjn")
+
+[node name="攻击力可视化" type="HBoxContainer" parent="动画立绘相关/动画立绘/可视化界面/攻击力属性背景" index="0"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = SubResource("Theme_p2gjn")
+theme_override_constants/separation = 0
+
+[node name="攻击力图标容器" type="PanelContainer" parent="动画立绘相关/动画立绘/可视化界面/攻击力属性背景/攻击力可视化" index="0"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_0mndr")
+
+[node name="攻击力图标" type="TextureRect" parent="动画立绘相关/动画立绘/可视化界面/攻击力属性背景/攻击力可视化/攻击力图标容器" index="0"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_iefey")
+
+[node name="攻击力数值容器" type="PanelContainer" parent="动画立绘相关/动画立绘/可视化界面/攻击力属性背景/攻击力可视化" index="1"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_p2gjn")
+
+[node name="攻击力数值" type="Label" parent="动画立绘相关/动画立绘/可视化界面/攻击力属性背景/攻击力可视化/攻击力数值容器" index="0"]
+custom_minimum_size = Vector2(43, 0)
+layout_mode = 2
+text = "000001"
+label_settings = SubResource("LabelSettings_p2gjn")
+horizontal_alignment = 2
+
+[node name="防御力属性背景" type="PanelContainer" parent="动画立绘相关/动画立绘/可视化界面" index="5"]
+offset_left = 205.0
+offset_top = 173.0
+offset_right = 270.0
+offset_bottom = 193.0
+scale = Vector2(1.5, 1.5)
+theme_override_styles/panel = SubResource("StyleBoxTexture_p2gjn")
+
+[node name="防御力可视化" type="HBoxContainer" parent="动画立绘相关/动画立绘/可视化界面/防御力属性背景" index="0"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = SubResource("Theme_p2gjn")
+theme_override_constants/separation = 0
+
+[node name="防御力图标容器" type="PanelContainer" parent="动画立绘相关/动画立绘/可视化界面/防御力属性背景/防御力可视化" index="0"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_0mndr")
+
+[node name="防御力图标" type="TextureRect" parent="动画立绘相关/动画立绘/可视化界面/防御力属性背景/防御力可视化/防御力图标容器" index="0"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_rrisu")
+
+[node name="防御力数值容器" type="PanelContainer" parent="动画立绘相关/动画立绘/可视化界面/防御力属性背景/防御力可视化" index="1"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_p2gjn")
+
+[node name="防御力数值" type="Label" parent="动画立绘相关/动画立绘/可视化界面/防御力属性背景/防御力可视化/防御力数值容器" index="0"]
+custom_minimum_size = Vector2(43, 0)
+layout_mode = 2
+text = "000001"
+label_settings = SubResource("LabelSettings_p2gjn")
+horizontal_alignment = 2
 
 [node name="默认碰撞箱 - 无用" parent="." index="3"]
 shape = SubResource("RectangleShape2D_6jpij")

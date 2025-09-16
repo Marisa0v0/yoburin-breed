@@ -3,6 +3,12 @@ class_name Yoburin
 extends MarisaCreature
 ## 当前唯一玩家 - 优里
 
+## 节点
+#@onready var attack_panel_main_background: ColorRect = $"动画立绘相关/动画立绘/可视化界面/攻击力总容器/攻击力总容器-边框背景"  ## 攻击力总容器背景框
+#@onready var attack_panel_container: HBoxContainer = $"动画立绘相关/动画立绘/可视化界面/攻击力总容器/攻击力可视化"			 ## 攻击力内部容器
+#@onready var attack_panel_label: Label = $"动画立绘相关/动画立绘/可视化界面/攻击力总容器/攻击力可视化/攻击力数值容器/攻击力数值"  ## 攻击力数值文本
+
+
 ## 内置函数
 ## 类初始化
 func _init() -> void:
@@ -16,6 +22,11 @@ func _ready() -> void:
 	Log.debug("优里类准备完毕")
 	self.attack_speed = 5.0  ## FIXME 测试用
 	self.attack_point = 50
+	
+	## 修改数字大小 TODO 动态跟随设置
+#	self.attack_panel_label.set("theme_override_font_sizes/font_size", 8)
+#	self.attack_panel_main_background.custom_minimum_size = self.attack_panel_container.size
+#	self.attack_panel_main_background.size = self.attack_panel_container.size
 
 
 ## 业务函数 (帧)
@@ -81,7 +92,8 @@ func action(current_state: Status, _delta: float) -> void:
 		Status.Idle:
 			self.animated_sprite_2d.play("闲置动画")
 			## 到达位置后攻击条自动增长
-			if !self.pause:
+			## 仅在有敌人需要攻击时才增长
+			if !self.pause and !get_tree().get_nodes_in_group(GROUP_ENEMIES_IN_BATTLE).is_empty():
 				self.increase_bar_attack_ready()
 		Status.Attack:
 			self.animated_sprite_2d.play("攻击动画")
@@ -105,8 +117,13 @@ func _before_state_change(current_state: Status, next_state: Status) -> void:
 	## 无论何种情况下进入攻击状态
 	if next_state == Status.Attack:
 		self._on_attack_before_state_change()
+	
+	## 攻击状态结束，进入进度条蓄力状态前
+	elif current_state == Status.Attack and next_state == Status.Idle:
+		var target: MarisaCreature = get_tree().get_nodes_in_group(GROUP_ENEMIES_IN_BATTLE)[0]
+		self._on_attack_end_before_state_change(target)
 
-		## 从就位转至跑步状态（敌人死亡）
+	## 从就位转至跑步状态（敌人死亡）
 	elif current_state == Status.Idle and next_state == Status.Move:
 		self._on_enemy_killed_before_state_change()
 
@@ -121,12 +138,6 @@ func _before_state_change(current_state: Status, next_state: Status) -> void:
 	## 无论何种情况下进入战败
 	elif next_state == Status.BeDefeated:
 		self._on_be_defeated_before_state_change()
-
-
-## 作为玩家，战败后可以复活，而非从场上移除
-func _on_be_defeated() -> void:
-	## TODO 复活机制
-	pass
 
 
 ## 信号连接
@@ -145,10 +156,19 @@ func _on_enemy_killed(_hurtbox: HurtBox) -> void:
 		self.in_battle_position = false
 
 
+## 作为玩家，战败后可以复活，而非从场上移除
+## 优布林独有
+func _on_be_defeated() -> void:
+	## TODO 复活机制
+	pass
+	
+
 ## 贴图动画播放完后调用
 ## 动画播放在 action 调用后调用，即每帧最后运行
 func _on_yoburin_animation_finished() -> void:
 	var current_animation := self.animated_sprite_2d.animation
+	## 播放完动画后调用
+	self._on_after_animation_end(current_animation, get_tree().get_nodes_in_group(GROUP_ENEMIES_IN_BATTLE)[0])
 
 	if current_animation == "攻击动画":
 		## 播放完攻击动画之后才运行对方掉血逻辑
@@ -163,6 +183,3 @@ func _on_yoburin_animation_finished() -> void:
 	elif current_animation == "战败动画":
 		## 挨打动画结束，调用战败函数
 		self._on_be_defeated()
-
-	## 设置动画结束标识
-	self.animation_end = true

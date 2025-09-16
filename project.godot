@@ -31,6 +31,10 @@ window/per_pixel_transparency/allowed=true
 
 enabled=PackedStringArray("res://addons/log/plugin.cfg")
 
+[gui]
+
+theme/custom_font="uid://c8bddt80in81b"
+
 [layer_names]
 
 2d_physics/layer_1="世界"

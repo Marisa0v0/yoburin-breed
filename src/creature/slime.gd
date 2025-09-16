@@ -63,6 +63,9 @@ func update_state(current_state: Status) -> Status:
 			if self.animation_end:
 				return Status.Idle
 
+			if self.health_point <= 0:
+				return Status.BeDefeated
+
 		## TODO
 		Status.BeDefeated:
 			pass
@@ -136,11 +139,14 @@ func _on_slime_in_battle_position(hurtbox: HurtBox) -> void:
 func _on_player_killed(_hurtbox: HurtBox) -> void:
 	self.target_player = null
 	self.in_battle_position = false
-
-
+	
+	
 ## 贴图动画播放完后调用
 func _on_slime_animation_finished() -> void:
 	var current_animation := self.animated_sprite_2d.animation
+	## 播放完动画后调用
+	self._on_after_animation_end(current_animation, self.target_player)
+	
 	if current_animation == "挨打动画":
 		## 挨打动画结束，调用挨打函数
 		self._on_be_attacked_after_animation_end()
@@ -151,16 +157,12 @@ func _on_slime_animation_finished() -> void:
 		## 从玩家的攻击序列中移除 
 		self.remove_from_group(GROUP_ENEMIES_IN_BATTLE)
 
-	## 设置动画结束标识
-	self.animation_end = true
-
 
 ## 播放器动画播放完后调用
 func _on_slime_animation_player_finished(current_animation: StringName):
+	## 播放完动画后调用
+	self._on_after_animation_end(current_animation, self.target_player)
 	if current_animation == "攻击动画":
 		## 播放完攻击动画之后才运行对方掉血逻辑
 		## 攻击动画结束，调用攻击函数
 		self._on_attack_after_animation_end(self.target_player)
-
-	## 设置动画结束标识
-	self.animation_end = true

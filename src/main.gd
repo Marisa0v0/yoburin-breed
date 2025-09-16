@@ -5,17 +5,17 @@ extends Node2D
 
 var dragging := false
 
-@onready var bar_health_point: ProgressBar = $"图形界面/玩家生命值进度条"
-@onready var bar_attack_ready: ProgressBar = $"图形界面/玩家攻击进度条"
 @onready var node_creatures: Node = $生物组
 ## 接收 B 站发给 Python 客户端处理后发来的信息
 @onready var ws_server: WebsocketServer = $网络通信服务器
 
 
-
 ## 场景
 const scene_slime   := preload("res://scene/creature/slime.tscn")
 const scene_yoburin := preload("res://scene/creature/yoburin.tscn")
+
+@onready var background: Sprite2D = $图形界面/背景图
+
 
 
 ## 内置函数
@@ -30,16 +30,17 @@ func _ready() -> void:
 
 	## 动态实例化
 	var yoburin: Yoburin = scene_yoburin.instantiate()
+	Log.debug("优里位置：%s, %s" % [yoburin.position.x, yoburin.position.y])
 	self.node_creatures.add_child(yoburin)
 	## 实例化进度条
-	self.bar_health_point.max_value = yoburin.health_point
-	self.bar_health_point.value = self.bar_health_point.max_value
+	# self.bar_health_point.max_value = yoburin.health_point
+	# self.bar_health_point.value = self.bar_health_point.max_value
 
-	self.bar_attack_ready.value = yoburin.bar_attack_ready.min_value
+	# self.bar_attack_ready.value = yoburin.bar_attack_ready.min_value
 
 	## 覆写玩家（优布林）进度条
-	yoburin.bar_health_point = self.bar_health_point
-	yoburin.bar_attack_ready = self.bar_attack_ready
+	# yoburin.bar_health_point = self.bar_health_point
+	# yoburin.bar_attack_ready = self.bar_attack_ready
 
 
 ## 接收输入事件
@@ -59,5 +60,6 @@ func _input(event):
 		if event.keycode == KEY_E:
 			var slime: MarisaSlime = scene_slime.instantiate()
 			self.node_creatures.add_child(slime)
-			slime.position = Vector2(576, -128.0)
+			slime.position = Vector2(576, 302.0)
+			Log.debug("史莱姆位置：%s, %s" % [slime.position.x, slime.position.y])
 		

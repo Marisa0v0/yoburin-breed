@@ -28,6 +28,7 @@ func _physics_process(delta: float) -> void:
 
 		## 若状态切换，则调用 on_state_change 一次，继续循环，当前帧继续处理
 		if next_state != self.current_state:
+			Log.debug("%s状态切换: %s -> %s" % [owner.name, MarisaCreature.Status.keys()[self.current_state], MarisaCreature.Status.keys()[next_state]])
 			## 状态滚动后移 同时重置状态
 			self.current_state = next_state
 			continue

@@ -10,8 +10,8 @@ enum Status { Default, Idle, Move, Attack, BeAttacked, BeDefeated }
 ## UI 相关
 @onready var animated_sprite_2d: AnimatedSprite2D = $"动画立绘相关/动画立绘"
 @onready var animation_player: AnimationPlayer = $"动画立绘相关/动画立绘/动画播放器"  ## 动画播放器                         ## 立绘
-@onready var bar_health_point: ProgressBar = $"动画立绘相关/动画立绘/可视化界面/生命值进度条"        ## 生命值 进度条
-@onready var bar_attack_ready: ProgressBar = $"动画立绘相关/动画立绘/可视化界面/攻击准备进度条"        ## 能够发起攻击 进度条 游戏核心机制
+@onready var bar_health_point: TextureProgressBar = $"动画立绘相关/动画立绘/可视化界面/生命值进度条"        ## 生命值 进度条
+@onready var bar_attack_ready: TextureProgressBar = $"动画立绘相关/动画立绘/可视化界面/攻击准备进度条"        ## 能够发起攻击 进度条 游戏核心机制
 
 ## 生物基本属性
 @export var name_ := "咕咕嘎嘎"    ## 名称
@@ -73,16 +73,30 @@ func _ready() -> void:
 
 
 ## 业务函数
+## 在任一动画播放完后用
+func _on_after_animation_end(animation: StringName, target: MarisaCreature) -> void:
+	## 设置动画结束标识
+	Log.debug("%s的动画“%s”结束了" % [self.name, animation])
+	self.animation_end = true
+	if animation == "挨打动画" or animation == "战败动画":
+		target.bar_attack_ready.value = target.bar_attack_ready.min_value
+
+	
 ## 攻击，在进入攻击状态前调用一次
 func _on_attack_before_state_change() -> void:
-	## 每次进入攻击状态都需重设攻击进度条，防御性
-	self.bar_attack_ready.value = self.bar_attack_ready.min_value
 	self.add_to_group("attack_ready")  ## FIXME ? 干嘛的
 	## 即将发动攻击（播放动画前）
 	## 暂停所有生物
 	## 以免我攻击时对面还在攻击
 	for attack_creature in get_tree().get_nodes_in_group(GROUP_CREATURE):
 		attack_creature.pause = true
+
+		
+## 攻击状态结束，进入闲置状态（攻击条蓄力）之前
+func _on_attack_end_before_state_change(target: MarisaCreature) -> void:
+	## 对方挨打/战败动画播放结束后，重置攻击进度条
+	if target.animation_end:
+		self.bar_attack_ready.value = self.bar_attack_ready.min_value
 
 
 ## 攻击，在攻击动画播放完后调用一次
@@ -133,8 +147,7 @@ func _on_be_defeated_after_animation_end() -> void:
 
 ## 击败敌人，在进入跑步状态前播放一次
 func _on_enemy_killed_before_state_change() -> void:
-	## 防御性重设攻击进度条
-	self.bar_attack_ready.value = self.bar_attack_ready.min_value
+	pass
 
 
 ## 攻击条自增
