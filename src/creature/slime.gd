@@ -16,7 +16,11 @@ func _init() -> void:
 func _ready() -> void:
 	super._ready()
 	Log.debug("史莱姆类准备完毕")
+	self.health_point = 100.0
 	self.move_speed = -100.0    ## 怪物向左移动
+
+	self.bar_health_point.max_value = self.health_point
+	self.bar_health_point.value = self.bar_health_point.max_value
 
 
 ## 业务函数 (帧)

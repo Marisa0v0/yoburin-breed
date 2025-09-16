@@ -3,11 +3,35 @@ class_name Yoburin
 extends MarisaCreature
 ## 当前唯一玩家 - 优里
 
-## 节点
-#@onready var attack_panel_main_background: ColorRect = $"动画立绘相关/动画立绘/可视化界面/攻击力总容器/攻击力总容器-边框背景"  ## 攻击力总容器背景框
-#@onready var attack_panel_container: HBoxContainer = $"动画立绘相关/动画立绘/可视化界面/攻击力总容器/攻击力可视化"			 ## 攻击力内部容器
-#@onready var attack_panel_label: Label = $"动画立绘相关/动画立绘/可视化界面/攻击力总容器/攻击力可视化/攻击力数值容器/攻击力数值"  ## 攻击力数值文本
 
+## 特有属性
+
+func _set_health_point(value: float, scale_: int = 1):
+	super._set_health_point(value)
+	if self.health_point_label:
+		self.health_point_label.text = "%06.0f" % (value * scale_)
+	
+func _set_attack_speed(value: float, scale_: int = 1):
+	super._set_attack_speed(value)
+	if self.attack_speed_label:
+		self.attack_speed_label.text = "%06.0f" % (value * scale_)
+	
+func _set_attack_point(value: float, scale_: int = 1):
+	super._set_attack_point(value)
+	if self.attack_point_label:
+		self.attack_point_label.text = "%06.0f" % (value * scale_)
+	
+func _set_defence_point(value: float, scale_: int = 1):
+	super._set_defence_point(value)
+	if self.defence_point_label:
+		self.defence_point_label.text = "%06.0f" % (value * scale_)
+
+
+## 节点
+@onready var health_point_label: Label = $"动画立绘相关/动画立绘/可视化界面/生命值属性背景/生命值可视化/生命值数值容器/生命值数值"
+@onready var attack_speed_label: Label = $"动画立绘相关/动画立绘/可视化界面/攻击速度属性背景/攻击速度可视化/攻击速度数值容器/攻击速度数值"
+@onready var attack_point_label: Label = $"动画立绘相关/动画立绘/可视化界面/攻击力属性背景/攻击力可视化/攻击力数值容器/攻击力数值"
+@onready var defence_point_label: Label = $"动画立绘相关/动画立绘/可视化界面/防御力属性背景/防御力可视化/防御力数值容器/防御力数值"
 
 ## 内置函数
 ## 类初始化
@@ -20,13 +44,13 @@ func _init() -> void:
 func _ready() -> void:
 	super._ready()
 	Log.debug("优里类准备完毕")
+	self.health_point = 100.0
 	self.attack_speed = 5.0  ## FIXME 测试用
-	self.attack_point = 50
-	
-	## 修改数字大小 TODO 动态跟随设置
-#	self.attack_panel_label.set("theme_override_font_sizes/font_size", 8)
-#	self.attack_panel_main_background.custom_minimum_size = self.attack_panel_container.size
-#	self.attack_panel_main_background.size = self.attack_panel_container.size
+	self.attack_point = 50.0
+	self.defence_point = 1.0
+
+	self.bar_health_point.max_value = self.health_point
+	self.bar_health_point.value = self.bar_health_point.max_value
 
 
 ## 业务函数 (帧)
@@ -183,3 +207,10 @@ func _on_yoburin_animation_finished() -> void:
 	elif current_animation == "战败动画":
 		## 挨打动画结束，调用战败函数
 		self._on_be_defeated()
+
+
+## 属性发生变更后，更新属性栏使用
+## 属性栏是六位数字，前面没用到的位数填0代替
+func change_label() -> void:
+	
+	pass

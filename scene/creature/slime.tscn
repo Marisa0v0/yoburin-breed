@@ -1,10 +1,11 @@
-[gd_scene load_steps=24 format=3 uid="uid://bp3vtw4efrr5c"]
+[gd_scene load_steps=31 format=3 uid="uid://bp3vtw4efrr5c"]
 
 [ext_resource type="PackedScene" uid="uid://ynrkr0s2463o" path="res://scene/creature/creature.tscn" id="1_jkbhd"]
 [ext_resource type="Script" uid="uid://e1qa62wpkl1" path="res://src/creature/slime.gd" id="1_q8ldp"]
 [ext_resource type="Texture2D" uid="uid://cidapv1hna2km" path="res://resource/assets/sprites/slime_green.png" id="3_pxagv"]
 [ext_resource type="Script" uid="uid://b60ni10gpo0ib" path="res://src/utils/hitbox.gd" id="4_oa5pk"]
 [ext_resource type="Script" uid="uid://8dxdgpj5q8qi" path="res://src/utils/hurtbox.gd" id="5_a0ytv"]
+[ext_resource type="Texture2D" uid="uid://33b0n73y67tm" path="res://resource/assets/Legacy-Fantasy - High Forest 2.0/Legacy-Fantasy - High Forest 2.3/HUD/Base-01.png" id="6_w0lxy"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ne6ur"]
 atlas = ExtResource("3_pxagv")
@@ -162,6 +163,32 @@ size = Vector2(14, 12)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e80sk"]
 size = Vector2(14, 12)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_rkx7m"]
+atlas = ExtResource("6_w0lxy")
+region = Rect2(308, 71, 56, 2)
+margin = Rect2(1, 1, 0, 0)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hsi2l"]
+atlas = ExtResource("6_w0lxy")
+region = Rect2(307, 6, 58, 4)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r7tum"]
+atlas = ExtResource("6_w0lxy")
+region = Rect2(308, 103, 56, 2)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_86pkr"]
+atlas = ExtResource("6_w0lxy")
+region = Rect2(308, 135, 56, 2)
+margin = Rect2(1, 1, 0, 0)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_30wj0"]
+atlas = ExtResource("6_w0lxy")
+region = Rect2(307, 6, 58, 4)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u2smi"]
+atlas = ExtResource("6_w0lxy")
+region = Rect2(308, 39, 56, 2)
+
 [node name="史莱姆" instance=ExtResource("1_jkbhd")]
 position = Vector2(680, 320)
 script = ExtResource("1_q8ldp")
@@ -209,17 +236,28 @@ metadata/_edit_use_anchors_ = true
 
 [node name="生命值进度条" type="TextureProgressBar" parent="动画立绘相关/动画立绘/可视化界面" index="0"]
 layout_mode = 0
-offset_left = -9.6
-offset_top = -12.0
-offset_right = 8.4
-offset_bottom = -8.0
+offset_left = -14.4
+offset_top = -5.6
+offset_right = 43.6
+offset_bottom = -1.6
+scale = Vector2(0.5, 0.5)
+value = 50.0
+texture_under = SubResource("AtlasTexture_rkx7m")
+texture_over = SubResource("AtlasTexture_hsi2l")
+texture_progress = SubResource("AtlasTexture_r7tum")
+texture_progress_offset = Vector2(1, 1)
 
 [node name="攻击准备进度条" type="TextureProgressBar" parent="动画立绘相关/动画立绘/可视化界面" index="1"]
 layout_mode = 0
-offset_left = -9.6
-offset_top = -5.6
-offset_right = 8.4
-offset_bottom = -1.6
+offset_left = -14.4
+offset_top = -4.0
+offset_right = 43.6
+scale = Vector2(0.5, 0.5)
+value = 10.0
+texture_under = SubResource("AtlasTexture_86pkr")
+texture_over = SubResource("AtlasTexture_30wj0")
+texture_progress = SubResource("AtlasTexture_u2smi")
+texture_progress_offset = Vector2(1, 1)
 
 [connection signal="animation_finished" from="动画立绘相关/动画立绘" to="." method="_on_slime_animation_finished"]
 [connection signal="animation_finished" from="动画立绘相关/动画立绘/动画播放器" to="." method="_on_slime_animation_player_finished"]

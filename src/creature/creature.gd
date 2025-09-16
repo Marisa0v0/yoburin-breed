@@ -14,30 +14,54 @@ enum Status { Default, Idle, Move, Attack, BeAttacked, BeDefeated }
 @onready var bar_attack_ready: TextureProgressBar = $"动画立绘相关/动画立绘/可视化界面/攻击准备进度条"        ## 能够发起攻击 进度条 游戏核心机制
 
 ## 生物基本属性
-@export var name_ := "咕咕嘎嘎"    ## 名称
-@export var move_speed := 0.0        ## 移速 左负右正
+const MIN_VALUE := 0.0					## 数值可以设置的最小值
+const MAX_VALUE := 99_9999.0			## FIXME UI 机制限制，最大显示六位数 999999
+@export var name_ := "咕咕嘎嘎"    		## 名称
+@export var move_speed := 0.0        	## 移速 左负右正
 
-@export var health_point := 100.0: ## 生命值
-	set(value):
-		## 限制在 0~100 之间
-		value = max(0, min(value, 100.0))
-		## 若血量被设为比当前值小的值 -> 受到攻击了 / 扣血了
-		if health_point > value:
-			self.be_attacked = true
+@export var health_point := 1.0:
+	set = _set_health_point
 
-		## 生命条成功初始化后再赋值
-		if self.bar_health_point != null:
-			self.bar_health_point.value = value
+func _set_health_point(value: float):
+	value = max(MIN_VALUE, min(value, MAX_VALUE))
+	## 若血量被设为比当前值小的值 -> 受到攻击了 / 扣血了
+	if health_point > value:
+		self.be_attacked = true
 
-		## 血量清零则战败
-		if value == 0:
-			self.be_defeated = true
+	## 生命条成功初始化后再赋值
+	if self.bar_health_point != null:
+		self.bar_health_point.value = value
 
-		health_point = value
+	## 血量清零则战败
+	if value == 0:
+		self.be_defeated = true
 
-@export var attack_point := 5.0        ## 攻击力
-@export var defence_point := 2.0        ## 防御力
-@export var attack_speed := 1.0        ## 攻击速度 游戏核心机制
+	## 为 label 赋值
+	health_point = value
+
+	
+@export var attack_speed := 1.0:        ## 攻击速度 游戏核心机制
+	set = _set_attack_speed
+
+func _set_attack_speed(value: float):
+	value = max(MIN_VALUE, min(value, MAX_VALUE))
+	attack_speed = value
+	
+	
+@export var attack_point := 1.0:        ## 攻击力
+	set = _set_attack_point
+
+func _set_attack_point(value: float):
+	value = max(MIN_VALUE, min(value, MAX_VALUE))
+	attack_point = value
+	
+	
+@export var defence_point := 1.0:        ## 防御力
+	set = _set_defence_point
+
+func _set_defence_point(value: float):
+	value = max(MIN_VALUE, min(value, MAX_VALUE))
+	defence_point = value
 
 ## 标识变量
 @onready var in_battle_position := false  ## 该生物是否进入能发动攻击的区域
@@ -62,8 +86,16 @@ func _init() -> void:
 ## 该节点的所有子节点初始化后才初始化
 func _ready() -> void:
 	Log.debug("生物类准备完毕")
-	self.health_point = 100.0
-
+	## 防御性初始化
+	self.health_point = 1.0
+	self.attack_speed = 1.0
+	self.attack_point = 1.0
+	self.defence_point = 1.0
+	
+	## 禁用步长
+	# self.bar_health_point.step = 0
+	# self.bar_attack_ready.step = 0
+	
 	self.bar_health_point.max_value = self.health_point
 	self.bar_health_point.value = self.bar_health_point.max_value
 
@@ -102,15 +134,12 @@ func _on_attack_end_before_state_change(target: MarisaCreature) -> void:
 ## 攻击，在攻击动画播放完后调用一次
 func _on_attack_after_animation_end(target: MarisaCreature) -> void:
 	## 掉血逻辑处理
-	var damage := self.attack_point - target.defence_point
-	if damage <= 0:
-		return
+	## 仿照明日方舟
+	var damage: float = max(0.05 * self.attack_point, self.attack_point - target.defence_point)
 
 	Log.debug("%s攻击%s, 血量 %s -> %s" % [self.name, target.name, target.health_point, target.health_point-damage])
 	target.health_point -= damage
 	target.bar_health_point.value = target.health_point
-	if target.bar_health_point.value < 0:
-		pass
 
 	## 攻击结束，攻击状态重置
 	self.can_attack = false
