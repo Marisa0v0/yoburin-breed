@@ -9,32 +9,32 @@ func _set_health_point(value: float, scale_: int = 1):
 	super._set_health_point(value)
 	value = max(MIN_VALUE, min(value, MAX_VALUE))
 	if self.health_point_label:
-		self.health_point_label.text = "%06.0f" % (value * scale_)
+		self.health_point_label.real_value = int("%06.0f" % (value * scale_))
 	
 func _set_attack_speed(value: float, scale_: int = 1):
 	value = max(MIN_VALUE, min(value, MAX_VALUE))
 	super._set_attack_speed(value)
 	if self.attack_speed_label:
-		self.attack_speed_label.text = "%06.0f" % (value * scale_)
+		self.attack_speed_label.real_value = int("%06.0f" % (value * scale_))
 	
 func _set_attack_point(value: float, scale_: int = 1):
 	value = max(MIN_VALUE, min(value, MAX_VALUE))
 	super._set_attack_point(value)
 	if self.attack_point_label:
-		self.attack_point_label.text = "%06.0f" % (value * scale_)
+		self.attack_point_label.real_value = int("%06.0f" % (value * scale_))
 	
 func _set_defence_point(value: float, scale_: int = 1):
 	value = max(MIN_VALUE, min(value, MAX_VALUE))
 	super._set_defence_point(value)
 	if self.defence_point_label:
-		self.defence_point_label.text = "%06.0f" % (value * scale_)
+		self.defence_point_label.real_value = int("%06.0f" % (value * scale_))
 
 
 ## 节点
-@onready var health_point_label: Label = $"动画立绘相关/动画立绘/可视化界面/生命值属性背景/生命值可视化/生命值数值容器/生命值数值"
-@onready var attack_speed_label: Label = $"动画立绘相关/动画立绘/可视化界面/攻击速度属性背景/攻击速度可视化/攻击速度数值容器/攻击速度数值"
-@onready var attack_point_label: Label = $"动画立绘相关/动画立绘/可视化界面/攻击力属性背景/攻击力可视化/攻击力数值容器/攻击力数值"
-@onready var defence_point_label: Label = $"动画立绘相关/动画立绘/可视化界面/防御力属性背景/防御力可视化/防御力数值容器/防御力数值"
+@onready var health_point_label: AnimatedNumber = $动画立绘相关/动画立绘/可视化界面/生命值属性背景/生命值可视化/生命值数值容器/生命值数值
+@onready var attack_speed_label: AnimatedNumber = $"动画立绘相关/动画立绘/可视化界面/攻击速度属性背景/攻击速度可视化/攻击速度数值容器/攻击速度数值"
+@onready var attack_point_label: AnimatedNumber = $"动画立绘相关/动画立绘/可视化界面/攻击力属性背景/攻击力可视化/攻击力数值容器/攻击力数值"
+@onready var defence_point_label: AnimatedNumber = $"动画立绘相关/动画立绘/可视化界面/防御力属性背景/防御力可视化/防御力数值容器/防御力数值"
 
 ## 内置函数
 ## 类初始化

@@ -165,6 +165,13 @@ region = Rect2(81, 176, 16, 16)
 [node name="优布林" instance=ExtResource("1_hlq24")]
 position = Vector2(154, 402)
 script = ExtResource("1_yjsgg")
+name_ = null
+type_ = null
+move_speed = null
+health_point = null
+attack_speed = null
+attack_point = null
+defence_point = null
 
 [node name="主角专用摄像机" type="Camera2D" parent="." index="0"]
 position = Vector2(96, -152)
@@ -286,6 +293,11 @@ text = "000001"
 label_settings = SubResource("LabelSettings_p2gjn")
 horizontal_alignment = 2
 script = ExtResource("19_3f1je")
+duration = null
+start_value = null
+default_color = null
+increasing_color = null
+decreasing_color = null
 metadata/_custom_type_script = "uid://dy7j3c57scgs4"
 
 [node name="攻击速度属性背景" type="PanelContainer" parent="动画立绘相关/动画立绘/可视化界面" index="3"]
@@ -323,8 +335,6 @@ layout_mode = 2
 text = "000001"
 label_settings = SubResource("LabelSettings_p2gjn")
 horizontal_alignment = 2
-script = ExtResource("19_3f1je")
-metadata/_custom_type_script = "uid://dy7j3c57scgs4"
 
 [node name="攻击力属性背景" type="PanelContainer" parent="动画立绘相关/动画立绘/可视化界面" index="4"]
 layout_mode = 0
@@ -361,8 +371,6 @@ layout_mode = 2
 text = "000001"
 label_settings = SubResource("LabelSettings_p2gjn")
 horizontal_alignment = 2
-script = ExtResource("19_3f1je")
-metadata/_custom_type_script = "uid://dy7j3c57scgs4"
 
 [node name="防御力属性背景" type="PanelContainer" parent="动画立绘相关/动画立绘/可视化界面" index="5"]
 layout_mode = 0
@@ -399,8 +407,6 @@ layout_mode = 2
 text = "000001"
 label_settings = SubResource("LabelSettings_p2gjn")
 horizontal_alignment = 2
-script = ExtResource("19_3f1je")
-metadata/_custom_type_script = "uid://dy7j3c57scgs4"
 
 [node name="默认碰撞箱 - 无用" parent="." index="3"]
 shape = SubResource("RectangleShape2D_6jpij")

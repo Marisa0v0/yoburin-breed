@@ -77,7 +77,7 @@ func _input(event):
 				"defence_point": yoburin.defence_point
 			}
 			yoburin.save_data(default_data)
-		
+
 
 func add_monster_timer() -> void:#生成怪物倒计时，按本地的实际时间流动进行生成
 	Log.debug("计时器成功启动")
