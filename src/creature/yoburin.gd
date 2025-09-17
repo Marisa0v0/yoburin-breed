@@ -5,23 +5,26 @@ extends MarisaCreature
 
 
 ## 特有属性
-
 func _set_health_point(value: float, scale_: int = 1):
 	super._set_health_point(value)
+	value = max(MIN_VALUE, min(value, MAX_VALUE))
 	if self.health_point_label:
 		self.health_point_label.text = "%06.0f" % (value * scale_)
 	
 func _set_attack_speed(value: float, scale_: int = 1):
+	value = max(MIN_VALUE, min(value, MAX_VALUE))
 	super._set_attack_speed(value)
 	if self.attack_speed_label:
 		self.attack_speed_label.text = "%06.0f" % (value * scale_)
 	
 func _set_attack_point(value: float, scale_: int = 1):
+	value = max(MIN_VALUE, min(value, MAX_VALUE))
 	super._set_attack_point(value)
 	if self.attack_point_label:
 		self.attack_point_label.text = "%06.0f" % (value * scale_)
 	
 func _set_defence_point(value: float, scale_: int = 1):
+	value = max(MIN_VALUE, min(value, MAX_VALUE))
 	super._set_defence_point(value)
 	if self.defence_point_label:
 		self.defence_point_label.text = "%06.0f" % (value * scale_)
@@ -42,15 +45,24 @@ func _init() -> void:
 
 ## 该节点的所有子节点初始化后才初始化
 func _ready() -> void:
+	self.type_ = "yoburin"
 	super._ready()
-	Log.debug("优里类准备完毕")
-	self.health_point = 100.0
-	self.attack_speed = 5.0  ## FIXME 测试用
-	self.attack_point = 50.0
-	self.defence_point = 1.0
-
+	#self.health_point = 100.0
+	#self.attack_speed = 5.0  ## FIXME 测试用
+	#self.attack_point = 50.0
+	#self.defence_point = 1.0
+	
+	#var data := self.load_data()
+	#
+	#self.health_point = data["health_point"]
+	#self.attack_speed = data["attack_speed"]
+	#self.attack_point = data["attack_point"]
+	#self.defence_point = data["defence_point"]
+	
 	self.bar_health_point.max_value = self.health_point
 	self.bar_health_point.value = self.bar_health_point.max_value
+	
+	Log.debug("优里类准备完毕")
 
 
 ## 业务函数 (帧)
@@ -110,6 +122,10 @@ func update_state(current_state: Status) -> Status:
 ## 若状态维持不变，则运行 action
 ## 调用具体行为发生在每帧最后一位
 func action(current_state: Status, _delta: float) -> void:
+	if self.bar_health_point.value > self.health_point:
+		self.bar_health_point.value -= 1
+	if self.bar_health_point.value < self.health_point:
+		self.bar_health_point.value += 1
 	match current_state:
 		Status.Move:
 			self.animated_sprite_2d.play("移动动画")
@@ -150,6 +166,13 @@ func _before_state_change(current_state: Status, next_state: Status) -> void:
 	## 从就位转至跑步状态（敌人死亡）
 	elif current_state == Status.Idle and next_state == Status.Move:
 		self._on_enemy_killed_before_state_change()
+		var default_data: Dictionary = {
+				"health_point": self.health_point,
+				"attack_speed": self.attack_speed,
+				"attack_point": self.attack_point,
+				"defence_point": self.defence_point
+			}
+		self.save_data(default_data)
 
 	## 进入挨打状态
 	elif current_state == Status.Idle and next_state == Status.BeAttacked:
@@ -199,6 +222,7 @@ func _on_yoburin_animation_finished() -> void:
 		var target: MarisaCreature = get_tree().get_nodes_in_group(GROUP_ENEMIES_IN_BATTLE)[0]
 		## 攻击动画结束，调用攻击函数
 		self._on_attack_after_animation_end(target)
+		remove_from_group("attack_round")
 
 	elif current_animation == "挨打动画":
 		## 挨打动画结束，调用挨打函数
@@ -207,10 +231,12 @@ func _on_yoburin_animation_finished() -> void:
 	elif current_animation == "战败动画":
 		## 挨打动画结束，调用战败函数
 		self._on_be_defeated()
-
-
-## 属性发生变更后，更新属性栏使用
-## 属性栏是六位数字，前面没用到的位数填0代替
-func change_label() -> void:
 	
-	pass
+
+## 读写数据
+func save_data(data: Dictionary) -> Dictionary:
+	return super.save_data(data)
+	
+
+func load_data() -> Dictionary:
+	return super.load_data()

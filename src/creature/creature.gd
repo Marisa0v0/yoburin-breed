@@ -12,32 +12,29 @@ enum Status { Default, Idle, Move, Attack, BeAttacked, BeDefeated }
 @onready var animation_player: AnimationPlayer = $"动画立绘相关/动画立绘/动画播放器"  ## 动画播放器                         ## 立绘
 @onready var bar_health_point: TextureProgressBar = $"动画立绘相关/动画立绘/可视化界面/生命值进度条"        ## 生命值 进度条
 @onready var bar_attack_ready: TextureProgressBar = $"动画立绘相关/动画立绘/可视化界面/攻击准备进度条"        ## 能够发起攻击 进度条 游戏核心机制
-
 ## 生物基本属性
-const MIN_VALUE := 0.0					## 数值可以设置的最小值
-const MAX_VALUE := 99_9999.0			## FIXME UI 机制限制，最大显示六位数 999999
-@export var name_ := "咕咕嘎嘎"    		## 名称
-@export var move_speed := 0.0        	## 移速 左负右正
+const MIN_VALUE := 0.0                    ## 数值可以设置的最小值
+const MAX_VALUE := 99_9999.0            ## FIXME UI 机制限制，最大显示六位数 999999
+@export var name_ := "咕咕嘎嘎"            ## 名称
+@export var type_ := "creature"			## 类型，唯一标识符
+@export var move_speed := 0.0            ## 移速 左负右正
 
 @export var health_point := 1.0:
 	set = _set_health_point
 
+
 func _set_health_point(value: float):
 	value = max(MIN_VALUE, min(value, MAX_VALUE))
-	Log.debug("health setter触发了")
+	Log.debug("health setter: %s" % value)
 	## 若血量被设为比当前值小的值 -> 受到攻击了 / 扣血了
 	if health_point > value:
 		self.be_attacked = true
 
 	## 生命条成功初始化后再赋值
-	if self.bar_health_point != null:
-		self.bar_health_point.value = value
-		
 	## 生命值大于生命条上限（过量回复）时，将生命条上限设置成当前生命
 	if self.bar_health_point != null and self.bar_health_point.max_value < value:
 		self.bar_health_point.max_value = value
-		self.bar_health_point.value = value
-		
+
 	## 血量清零则战败
 	if value == 0:
 		self.be_defeated = true
@@ -45,25 +42,25 @@ func _set_health_point(value: float):
 	## 为 label 赋值
 	health_point = value
 
-	
-@export var attack_speed := 1.0:        ## 攻击速度 游戏核心机制
+@export var attack_speed := 1.0: ## 攻击速度 游戏核心机制
 	set = _set_attack_speed
+
 
 func _set_attack_speed(value: float):
 	value = max(MIN_VALUE, min(value, MAX_VALUE))
 	attack_speed = value
-	
-	
-@export var attack_point := 1.0:        ## 攻击力
+
+@export var attack_point := 1.0: ## 攻击力
 	set = _set_attack_point
+
 
 func _set_attack_point(value: float):
 	value = max(MIN_VALUE, min(value, MAX_VALUE))
 	attack_point = value
-	
-	
-@export var defence_point := 1.0:        ## 防御力
+
+@export var defence_point := 1.0: ## 防御力
 	set = _set_defence_point
+
 
 func _set_defence_point(value: float):
 	value = max(MIN_VALUE, min(value, MAX_VALUE))
@@ -97,11 +94,18 @@ func _ready() -> void:
 	self.attack_speed = 1.0
 	self.attack_point = 1.0
 	self.defence_point = 1.0
-	
+
 	## 禁用步长
 	# self.bar_health_point.step = 0
 	# self.bar_attack_ready.step = 0
 	
+	var data := self.load_data()
+	
+	self.health_point = data["health_point"]
+	self.attack_speed = data["attack_speed"]
+	self.attack_point = data["attack_point"]
+	self.defence_point = data["defence_point"]
+
 	self.bar_health_point.max_value = self.health_point
 	self.bar_health_point.value = self.bar_health_point.max_value
 
@@ -119,7 +123,7 @@ func _on_after_animation_end(animation: StringName, target: MarisaCreature) -> v
 	if animation == "挨打动画" or animation == "战败动画":
 		target.bar_attack_ready.value = target.bar_attack_ready.min_value
 
-	
+
 ## 攻击，在进入攻击状态前调用一次
 func _on_attack_before_state_change() -> void:
 	self.add_to_group("attack_ready")  ## FIXME ? 干嘛的
@@ -129,7 +133,7 @@ func _on_attack_before_state_change() -> void:
 	for attack_creature in get_tree().get_nodes_in_group(GROUP_CREATURE):
 		attack_creature.pause = true
 
-		
+
 ## 攻击状态结束，进入闲置状态（攻击条蓄力）之前
 func _on_attack_end_before_state_change(target: MarisaCreature) -> void:
 	## 对方挨打/战败动画播放结束后，重置攻击进度条
@@ -141,11 +145,11 @@ func _on_attack_end_before_state_change(target: MarisaCreature) -> void:
 func _on_attack_after_animation_end(target: MarisaCreature) -> void:
 	## 掉血逻辑处理
 	## 仿照明日方舟
-	var damage: float = max(0.05 * self.attack_point, self.attack_point - target.defence_point)
+	var damage: float = max(0.05 * self.attack_point, max(self.attack_point - target.defence_point, 1))
 
 	Log.debug("%s攻击%s, 血量 %s -> %s" % [self.name, target.name, target.health_point, target.health_point-damage])
 	target.health_point -= damage
-	target.bar_health_point.value = target.health_point
+	Log.debug("%s, 挨打后的血量为 %s" % [target.name, target.health_point])
 
 	## 攻击结束，攻击状态重置
 	self.can_attack = false
@@ -191,7 +195,9 @@ func increase_bar_attack_ready() -> void:
 	## 攻击条涨满后能够发起攻击
 	if self.bar_attack_ready.value == self.bar_attack_ready.max_value:
 		## 当前生物能够发动攻击
-		self.can_attack = true
+		self.add_to_group("attack_round")
+		if self == get_tree().get_nodes_in_group("attack_round")[0]:
+			self.can_attack = true
 
 	## TODO 攻击条每帧自增步长与礼物价值/数量挂钩
 	## TODO 即 amplifier 中的 x：价值越高 x 越大，数量越多 x 越大
@@ -199,7 +205,69 @@ func increase_bar_attack_ready() -> void:
 	self.bar_attack_ready.value += increase_step
 
 
+## 持久化存储
+func save_data(data: Dictionary) -> Dictionary:
+	## 要存储的数据
+	var data_text := JSON.stringify(data,"\t")
+
+	## 数据写入本地文件
+	var filepath_relative := "data/%s.json" % self.type_
+	var filepath_absolute := GameManager.ROOT.path_join(filepath_relative)
+
+	## 若第一次存储，则创建目录
+	if !FileAccess.file_exists(filepath_absolute):
+		## 创建目录
+		DirAccess.make_dir_recursive_absolute(filepath_absolute.get_base_dir())
+
+	## 写入数据
+	var data_file := FileAccess.open(filepath_absolute, FileAccess.WRITE)
+	## 错误处理
+	if data_file == null:
+		Log.error("文件打开失败: %s" % filepath_absolute)
+		return data
+		
+	data_file.store_string(data_text)
+	data_file.close()
+	Log.info("%s(%s)的数据已经保存至%s" % [self.name, self.type_, filepath_absolute])
+	return data
+
+
+## 读取本地数据
+func load_data() -> Dictionary:
+	var default_data: Dictionary = {
+		"health_point": self.health_point,
+		"attack_speed": self.attack_speed,
+		"attack_point": self.attack_point,
+		"defence_point": self.defence_point
+	}
+	## 数据写入的本地文件
+	var filepath_relative := "data/%s.json" % self.type_
+	var filepath_absolute := GameManager.ROOT.path_join(filepath_relative)
+	
+	## 检查有没有数据
+	if !FileAccess.file_exists(filepath_absolute):
+		## 创建目录
+		DirAccess.make_dir_recursive_absolute(filepath_absolute.get_base_dir())
+		## 写入默认数据
+		return self.save_data(default_data)
+		
+	var data_file := FileAccess.open(filepath_absolute, FileAccess.READ)
+	## 错误处理，仅返回默认数据
+	if data_file == null:
+		Log.error("文件打开失败: %s" % filepath_absolute)
+		return default_data
+		
+	var data_text := data_file.get_as_text()
+	data_file.close()
+	Log.debug("读取到%s(%s)的数据: %s" % [self.name, self.type_, data_text])
+	var data: Dictionary = JSON.parse_string(data_text)
+	return data
+	
+
+
 ## 功能函数
 ## a 值越小，x 的差额引起的变化越平滑
+
+
 static func _amplifier(x: int = 0, a: float = 0.5) -> float:
 	return 1 - exp(-a*x)

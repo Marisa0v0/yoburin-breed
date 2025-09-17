@@ -14,14 +14,15 @@ func _init() -> void:
 
 ## 该节点的所有子节点初始化后才初始化
 func _ready() -> void:
+	self.type_ = "slime"
 	super._ready()
-	Log.debug("史莱姆类准备完毕")
 	self.health_point = 100.0
 	self.move_speed = -100.0    ## 怪物向左移动
 
 	self.bar_health_point.max_value = self.health_point
 	self.bar_health_point.value = self.bar_health_point.max_value
-
+	
+	Log.debug("史莱姆类准备完毕")
 
 ## 业务函数 (帧)
 ## 每帧第一个运行 update_state 函数
@@ -83,6 +84,10 @@ func update_state(current_state: Status) -> Status:
 ## 每帧动作 (帧)
 ## 若状态维持不变，则运行 action
 func action(current_state: Status, delta: float) -> void:
+	if self.bar_health_point.value > self.health_point:
+		self.bar_health_point.value -= 1
+	if self.bar_health_point.value < self.health_point:
+		self.bar_health_point.value += 1
 	match current_state:
 		Status.Move:
 			animated_sprite_2d.play("闲置动画")
@@ -117,8 +122,8 @@ func _before_state_change(current_state: Status, next_state: Status) -> void:
 	## 无论何种情况下进入攻击状态
 	if next_state == Status.Attack:
 		self._on_attack_before_state_change()
-
 		## 进入挨打状态
+
 	elif current_state == Status.Idle and next_state == Status.BeAttacked:
 		self.be_attacked = true
 
@@ -129,6 +134,7 @@ func _before_state_change(current_state: Status, next_state: Status) -> void:
 	## 无论何种情况下进入战败
 	elif next_state == Status.BeDefeated:
 		self._on_be_defeated_before_state_change()
+		
 
 
 ## 信号连接
@@ -140,6 +146,7 @@ func _on_slime_in_battle_position(hurtbox: HurtBox) -> void:
 
 
 ## 击杀玩家 TODO 相关处理
+## 需要玩家受击区域碰撞箱消失以触发
 func _on_player_killed(_hurtbox: HurtBox) -> void:
 	self.target_player = null
 	self.in_battle_position = false
@@ -170,3 +177,13 @@ func _on_slime_animation_player_finished(current_animation: StringName):
 		## 播放完攻击动画之后才运行对方掉血逻辑
 		## 攻击动画结束，调用攻击函数
 		self._on_attack_after_animation_end(self.target_player)
+		remove_from_group("attack_round")
+
+
+## 读写数据
+func save_data(data: Dictionary) -> Dictionary:
+	return super.save_data(data)
+
+
+func load_data() -> Dictionary:
+	return super.load_data()

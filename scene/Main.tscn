@@ -9,6 +9,12 @@ script = ExtResource("1_nbc6x")
 metadata/_edit_horizontal_guides_ = [0.0, 311.0, -312.0]
 metadata/_edit_vertical_guides_ = [256.0, 752.0, 832.0]
 
+[node name="刷怪倒计时" type="Timer" parent="."]
+process_callback = 0
+wait_time = 3.0
+autostart = true
+ignore_time_scale = true
+
 [node name="生物组" type="Node" parent="."]
 
 [node name="图形界面" type="Control" parent="."]
@@ -22,3 +28,5 @@ texture = ExtResource("2_hr7lf")
 [node name="网络通信服务器" type="Node" parent="."]
 script = ExtResource("2_h6nst")
 metadata/_custom_type_script = "uid://bxw0plocisiau"
+
+[connection signal="timeout" from="刷怪倒计时" to="." method="add_monster_timer"]

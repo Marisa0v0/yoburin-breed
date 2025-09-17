@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://cidapv1hna2km" path="res://resource/assets/sprites/slime_green.png" id="3_pxagv"]
 [ext_resource type="Script" uid="uid://b60ni10gpo0ib" path="res://src/utils/hitbox.gd" id="4_oa5pk"]
 [ext_resource type="Script" uid="uid://8dxdgpj5q8qi" path="res://src/utils/hurtbox.gd" id="5_a0ytv"]
-[ext_resource type="Texture2D" uid="uid://33b0n73y67tm" path="res://resource/assets/Legacy-Fantasy - High Forest 2.0/Legacy-Fantasy - High Forest 2.3/HUD/Base-01.png" id="6_w0lxy"]
+[ext_resource type="Texture2D" uid="uid://33b0n73y67tm" path="res://resource/references/Legacy-Fantasy - High Forest 2.0/Legacy-Fantasy - High Forest 2.3/HUD/Base-01.png" id="6_w0lxy"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ne6ur"]
 atlas = ExtResource("3_pxagv")

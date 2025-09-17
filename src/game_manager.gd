@@ -1,4 +1,4 @@
-﻿class_name GameManager
+class_name GameManager
 extends Node
 ## 此处放置全局变量、常量等
 
@@ -8,3 +8,6 @@ enum NodeGroup {
 	Creature, ## 全局生物类
 	EnemiesInBattle, ## 玩家要攻击的敌对怪物
 }
+
+## 游戏文件所在根目录
+static var ROOT := OS.get_executable_path().get_base_dir()

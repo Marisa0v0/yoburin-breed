@@ -12,9 +12,14 @@ config_version=5
 
 config/name="优里养成Demo"
 run/main_scene="uid://cd6febu7xjvyn"
+config/use_custom_user_dir=true
 config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
 run/canvas_textures/default_texture_filter=1
+
+[autoload]
+
+TestSavegame="*res://src/test_savegame.gd"
 
 [display]
 

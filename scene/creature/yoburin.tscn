@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://bio02arexbhoi"]
+[gd_scene load_steps=43 format=3 uid="uid://bio02arexbhoi"]
 
 [ext_resource type="Texture2D" uid="uid://bhel5dpfu2cy3" path="res://resource/assets/sprites/yoburin/待机带砖1.png" id="1_8qxis"]
 [ext_resource type="PackedScene" uid="uid://ynrkr0s2463o" path="res://scene/creature/creature.tscn" id="1_hlq24"]
@@ -16,8 +16,10 @@
 [ext_resource type="Texture2D" uid="uid://b7u5d52lmwf38" path="res://resource/assets/sprites/yoburin/奔跑2.png" id="10_rxvwy"]
 [ext_resource type="Script" uid="uid://b60ni10gpo0ib" path="res://src/utils/hitbox.gd" id="15_0vtg0"]
 [ext_resource type="Script" uid="uid://8dxdgpj5q8qi" path="res://src/utils/hurtbox.gd" id="16_orvxo"]
-[ext_resource type="Texture2D" uid="uid://33b0n73y67tm" path="res://resource/assets/Legacy-Fantasy - High Forest 2.0/Legacy-Fantasy - High Forest 2.3/HUD/Base-01.png" id="17_0mndr"]
+[ext_resource type="Texture2D" uid="uid://33b0n73y67tm" path="res://resource/references/Legacy-Fantasy - High Forest 2.0/Legacy-Fantasy - High Forest 2.3/HUD/Base-01.png" id="17_0mndr"]
 [ext_resource type="Texture2D" uid="uid://bekayusv2dq2i" path="res://resource/assets/sprites/yoburin/roguelikeitems.png" id="18_p2gjn"]
+[ext_resource type="Texture2D" uid="uid://bdr1i2gmb1et0" path="res://resource/assets/sprites/yoburin/number/0-Sheet.png" id="19_3f1je"]
+[ext_resource type="PackedScene" uid="uid://bp3vtw4efrr5c" path="res://scene/creature/slime.tscn" id="19_vok62"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_6b5qc"]
 animations = [{
@@ -146,6 +148,28 @@ content_margin_right = 2.0
 
 [sub_resource type="LabelSettings" id="LabelSettings_p2gjn"]
 font_size = 8
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_17sku"]
+atlas = ExtResource("19_3f1je")
+region = Rect2(12, 0, 12, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_no408"]
+atlas = ExtResource("19_3f1je")
+region = Rect2(0, 0, 12, 12)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_72a45"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_17sku")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_no408")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_n2w54"]
 atlas = ExtResource("18_p2gjn")
@@ -281,9 +305,15 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_p2gjn")
 [node name="生命值数值" type="Label" parent="动画立绘相关/动画立绘/可视化界面/生命值属性背景/生命值可视化/生命值数值容器" index="0"]
 custom_minimum_size = Vector2(43, 0)
 layout_mode = 2
-text = "000001"
+text = "12345"
 label_settings = SubResource("LabelSettings_p2gjn")
 horizontal_alignment = 2
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="动画立绘相关/动画立绘/可视化界面/生命值属性背景/生命值可视化/生命值数值容器" index="1"]
+position = Vector2(12, 10)
+sprite_frames = SubResource("SpriteFrames_72a45")
+frame = 1
+frame_progress = 0.809391
 
 [node name="攻击速度属性背景" type="PanelContainer" parent="动画立绘相关/动画立绘/可视化界面" index="3"]
 layout_mode = 0
@@ -395,6 +425,9 @@ horizontal_alignment = 2
 
 [node name="默认碰撞箱 - 无用" parent="." index="3"]
 shape = SubResource("RectangleShape2D_6jpij")
+
+[node name="史莱姆" parent="." index="4" instance=ExtResource("19_vok62")]
+position = Vector2(875, 230)
 
 [connection signal="animation_finished" from="动画立绘相关/动画立绘" to="." method="_on_yoburin_animation_finished"]
 [connection signal="hit" from="动画立绘相关/动画立绘/攻击区域" to="." method="_on_yoburin_in_battle_position"]
