@@ -192,6 +192,7 @@ region = Rect2(308, 39, 56, 2)
 [node name="史莱姆" instance=ExtResource("1_jkbhd")]
 position = Vector2(680, 320)
 script = ExtResource("1_q8ldp")
+metadata/_edit_vertical_guides_ = [760.0]
 
 [node name="动画立绘" type="AnimatedSprite2D" parent="动画立绘相关" index="0"]
 position = Vector2(0, -12)
@@ -206,9 +207,8 @@ libraries = {
 }
 
 [node name="攻击区域" type="Area2D" parent="动画立绘相关/动画立绘" index="1"]
-visible = false
 collision_layer = 64
-collision_mask = 32
+collision_mask = 34
 script = ExtResource("4_oa5pk")
 metadata/_custom_type_script = "uid://b60ni10gpo0ib"
 
@@ -217,7 +217,6 @@ position = Vector2(0, 6)
 shape = SubResource("RectangleShape2D_w0lxy")
 
 [node name="受击区域" type="Area2D" parent="动画立绘相关/动画立绘" index="2"]
-visible = false
 collision_layer = 128
 collision_mask = 0
 script = ExtResource("5_a0ytv")

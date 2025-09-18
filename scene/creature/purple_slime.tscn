@@ -208,7 +208,7 @@ libraries = {
 [node name="攻击区域" type="Area2D" parent="动画立绘相关/动画立绘" index="1"]
 visible = false
 collision_layer = 64
-collision_mask = 32
+collision_mask = 34
 script = ExtResource("4_1ykhu")
 metadata/_custom_type_script = "uid://b60ni10gpo0ib"
 

@@ -19,7 +19,7 @@ const MAX_VALUE := 99_9999.0            ## FIXME UI 机制限制，最大显示�
 @export var type_ := "creature"			## 类型，唯一标识符
 @export var move_speed := 0.0            ## 移速 左负右正
 
-@export var health_point := 1.0:
+@export var health_point := 100.0:
 	set = _set_health_point
 
 
@@ -27,8 +27,8 @@ func _set_health_point(value: float):
 	value = max(MIN_VALUE, min(value, MAX_VALUE))
 	Log.debug("%s的生命值被设为 %s" % [self.name, value])
 	## 若血量被设为比当前值小的值 -> 受到攻击了 / 扣血了
-	if health_point > value:
-		self.be_attacked = true
+	#	if health_point > value:
+	#		self.be_attacked = true
 
 	## 生命条成功初始化后再赋值
 	## 生命值大于生命条上限（过量回复）时，将生命条上限设置成当前生命
@@ -51,7 +51,7 @@ func _set_attack_speed(value: float):
 	Log.debug("%s的攻速被设为 %s" % [self.name, value])
 	attack_speed = value
 
-@export var attack_point := 1.0: ## 攻击力
+@export var attack_point := 5.0: ## 攻击力
 	set = _set_attack_point
 
 
@@ -60,7 +60,7 @@ func _set_attack_point(value: float):
 	Log.debug("%s的攻击力被设为 %s" % [self.name, value])
 	attack_point = value
 
-@export var defence_point := 1.0: ## 防御力
+@export var defence_point := 2.0: ## 防御力
 	set = _set_defence_point
 
 
@@ -80,6 +80,7 @@ func _set_defence_point(value: float):
 
 ## 生物组
 var GROUP_CREATURE: StringName          = GameManager.NodeGroup.keys()[GameManager.NodeGroup.Creature]
+var GROUP_MONSTERS: StringName          = GameManager.NodeGroup.keys()[GameManager.NodeGroup.Monsters]
 var GROUP_ENEMIES_IN_BATTLE: StringName = GameManager.NodeGroup.keys()[GameManager.NodeGroup.EnemiesInBattle]
 
 
@@ -147,6 +148,7 @@ func _on_attack_after_animation_end(target: MarisaCreature) -> void:
 
 	Log.debug("%s攻击%s, 血量 %s -> %s" % [self.name, target.name, target.health_point, target.health_point-damage])
 	target.health_point -= damage
+	target.be_attacked = true
 
 	## 攻击结束，攻击状态重置
 	self.can_attack = false

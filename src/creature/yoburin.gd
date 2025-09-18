@@ -28,6 +28,14 @@ func _set_defence_point(value: float, scale_: int = 1):
 	super._set_defence_point(value)
 	if self.defence_point_label:
 		self.defence_point_label.real_value = float(value * scale_)
+		
+		
+const DEFAULT_DATA: Dictionary = {
+	"health_point": 100.0,
+	"attack_point": 5.0,
+	"defence_point": 2.0,
+	"attack_speed": 1.0
+}
 
 
 ## 节点
@@ -121,6 +129,8 @@ func action(current_state: Status, _delta: float) -> void:
 			## 仅在有敌人需要攻击时才增长
 			if !self.pause and !get_tree().get_nodes_in_group(GROUP_ENEMIES_IN_BATTLE).is_empty():
 				self.increase_bar_attack_ready()
+			elif get_tree().get_nodes_in_group(GROUP_ENEMIES_IN_BATTLE).is_empty():
+				self.bar_attack_ready.value = self.bar_attack_ready.min_value
 		Status.Attack:
 			self.animated_sprite_2d.play("攻击动画")
 		Status.BeAttacked:
@@ -152,13 +162,13 @@ func _before_state_change(current_state: Status, next_state: Status) -> void:
 	## 从就位转至跑步状态（敌人死亡）
 	elif current_state == Status.Idle and next_state == Status.Move:
 		self._on_enemy_killed_before_state_change()
-		var default_data: Dictionary = {
+		var data: Dictionary = {
 				"health_point": self.health_point,
 				"attack_speed": self.attack_speed,
 				"attack_point": self.attack_point,
 				"defence_point": self.defence_point
 			}
-		self.save_data(default_data)
+		self.save_data(data)
 
 	## 进入挨打状态
 	elif current_state == Status.Idle and next_state == Status.BeAttacked:
@@ -220,7 +230,7 @@ func _on_yoburin_animation_finished() -> void:
 	
 
 ## 读写数据
-func save_data(data: Dictionary) -> Dictionary:
+func save_data(data: Dictionary = self.DEFAULT_DATA) -> Dictionary:
 	return super.save_data(data)
 	
 

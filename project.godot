@@ -17,10 +17,6 @@ config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
 run/canvas_textures/default_texture_filter=1
 
-[autoload]
-
-TestSavegame="*res://src/test_savegame.gd"
-
 [display]
 
 window/size/viewport_width=650
@@ -43,6 +39,7 @@ theme/custom_font="uid://c8bddt80in81b"
 [layer_names]
 
 2d_physics/layer_1="世界"
+2d_physics/layer_2="怪物清除区域"
 2d_physics/layer_5="玩家攻击区域"
 2d_physics/layer_6="玩家受击区域"
 2d_physics/layer_7="怪物攻击区域"

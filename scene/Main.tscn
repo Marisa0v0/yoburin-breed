@@ -1,17 +1,18 @@
-[gd_scene load_steps=5 format=3 uid="uid://cd6febu7xjvyn"]
+[gd_scene load_steps=6 format=3 uid="uid://cd6febu7xjvyn"]
 
 [ext_resource type="Script" uid="uid://dk2v8f7bhq5nm" path="res://src/main.gd" id="1_nbc6x"]
 [ext_resource type="Script" uid="uid://bxw0plocisiau" path="res://src/utils/websocket_server.gd" id="2_h6nst"]
 [ext_resource type="Texture2D" uid="uid://dyew02tj3fhda" path="res://resource/assets/images/backgrounds/battleback1.png" id="2_hr7lf"]
-[ext_resource type="PackedScene" uid="uid://bwr7h1yljv1vy" path="res://scene/control_panel.tscn" id="4_yiwpq"]
+[ext_resource type="Script" uid="uid://8dxdgpj5q8qi" path="res://src/utils/hurtbox.gd" id="4_yiwpq"]
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_hr7lf"]
+a = Vector2(0, -299)
+b = Vector2(0, 251)
 
 [node name="主场景" type="Node2D"]
 script = ExtResource("1_nbc6x")
 metadata/_edit_vertical_guides_ = [650.0]
 metadata/_edit_horizontal_guides_ = [550.0]
-
-[node name="控制面板" parent="." instance=ExtResource("4_yiwpq")]
-visible = false
 
 [node name="刷怪倒计时" type="Timer" parent="."]
 process_callback = 0
@@ -30,7 +31,18 @@ layout_mode = 3
 anchors_preset = 0
 
 [node name="背景图" type="Sprite2D" parent="图形界面"]
+visible = false
 position = Vector2(320, 280)
 texture = ExtResource("2_hr7lf")
+
+[node name="怪物清除边界" type="Area2D" parent="图形界面"]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("4_yiwpq")
+metadata/_custom_type_script = "uid://8dxdgpj5q8qi"
+
+[node name="怪物清除碰撞箱" type="CollisionShape2D" parent="图形界面/怪物清除边界"]
+position = Vector2(760, 299)
+shape = SubResource("SegmentShape2D_hr7lf")
 
 [connection signal="timeout" from="刷怪倒计时" to="." method="_on_monster_spawn_timer_timeout"]

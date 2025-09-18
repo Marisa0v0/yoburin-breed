@@ -3,6 +3,14 @@ extends MarisaCreature
 ## 怪物 - 史莱姆
 
 var target_player: MarisaCreature = null
+		
+		
+const DEFAULT_DATA: Dictionary = {
+	"health_point": 100.0,
+	"attack_point": 5.0,
+	"defence_point": 2.0,
+	"attack_speed": 1.0
+}
 
 
 ## 内置函数
@@ -44,7 +52,6 @@ func update_state(current_state: Status) -> Status:
 				return Status.Attack
 
 			## 挨打了 -> 挨打
-			## BUG 原因在于这条头到尾都没满足
 			if self.be_attacked:
 				return Status.BeAttacked
 
@@ -95,8 +102,10 @@ func action(current_state: Status, delta: float) -> void:
 		Status.Idle:
 			animated_sprite_2d.play("闲置动画")
 			## 到达位置后攻击条自动增长
-			if !self.pause:
+			if !self.pause and self.target_player != null:
 				self.increase_bar_attack_ready()
+			elif self.target_player == null:  ## FIXME 怎么没用
+				self.bar_attack_ready.value = self.bar_attack_ready.min_value
 		Status.Attack:
 			## 播放动画
 			## TODO 攻击动画
@@ -140,8 +149,16 @@ func _before_state_change(current_state: Status, next_state: Status) -> void:
 ## 判定进入攻击位置
 func _on_slime_in_battle_position(hurtbox: HurtBox) -> void:
 	## 玩家设为攻击目标
-	self.target_player = hurtbox.owner
-	self.in_battle_position = true
+	if hurtbox.owner is Yoburin:
+		Log.debug("%s撞到玩家了" % self.name)
+		self.target_player = hurtbox.owner
+		self.in_battle_position = true
+	## 撞到清除边界了
+	else:
+		Log.debug("%s撞到怪物清除边界了" % self.name)
+		self.remove_from_group(GROUP_MONSTERS)
+		self.queue_free()
+		
 
 
 ## 击杀玩家 TODO 相关处理
