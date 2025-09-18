@@ -14,17 +14,19 @@ script = ExtResource("1_nbc6x")
 metadata/_edit_vertical_guides_ = [650.0]
 metadata/_edit_horizontal_guides_ = [550.0]
 
-[node name="刷怪倒计时" type="Timer" parent="."]
-process_callback = 0
-wait_time = 3.0
-autostart = true
-ignore_time_scale = true
-
 [node name="生物组" type="Node" parent="."]
 
 [node name="网络通信服务器" type="Node" parent="."]
 script = ExtResource("2_h6nst")
 metadata/_custom_type_script = "uid://bxw0plocisiau"
+
+[node name="功能组件集合" type="Node" parent="."]
+
+[node name="刷怪倒计时" type="Timer" parent="功能组件集合"]
+process_callback = 0
+wait_time = 3.0
+autostart = true
+ignore_time_scale = true
 
 [node name="图形界面" type="Control" parent="."]
 layout_mode = 3
@@ -45,4 +47,4 @@ metadata/_custom_type_script = "uid://8dxdgpj5q8qi"
 position = Vector2(1410, 299)
 shape = SubResource("SegmentShape2D_hr7lf")
 
-[connection signal="timeout" from="刷怪倒计时" to="." method="_on_monster_spawn_timer_timeout"]
+[connection signal="timeout" from="功能组件集合/刷怪倒计时" to="." method="_on_monster_spawn_timer_timeout"]

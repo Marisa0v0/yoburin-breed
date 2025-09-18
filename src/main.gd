@@ -15,7 +15,7 @@ const scene_control_panel := preload("res://scene/control_panel.tscn")
 # @onready var control_panel: ControlPanel = $"控制面板"
 ## 接收 B 站发给 Python 客户端处理后发来的信息
 @onready var ws_server: WebsocketServer = $"网络通信服务器"
-@onready var monster_spawn_timer: Timer = $"刷怪倒计时"
+@onready var monster_spawn_timer: Timer = $"功能组件集合/刷怪倒计时"
 
 var DRAGGING: bool = false
 var GROUP_MONSTERS: StringName = GameManager.NodeGroup.keys()[GameManager.NodeGroup.Monsters]
@@ -58,7 +58,7 @@ func _input(event):
 ## 怪物生成相关
 ## 生成怪物倒计时，按本地的实际时间流动进行生成
 func _on_monster_spawn_timer_timeout() -> void:
-	Log.debug("启动刷怪计时器")
+	Log.debug("刷怪计时器到点")
 	if get_tree().get_nodes_in_group(GROUP_MONSTERS).is_empty():
 		spawn_monster()
 	

@@ -63,7 +63,8 @@ func _ready() -> void:
 ## 帧处理
 func _process(_delta: float) -> void:
 	## 和平模式且场上有怪物下，不能切换至非和平模式
-	self.yoburin_peaceful_mode_checkbutton.disabled = true if self.peaceful_mode and !get_tree().get_nodes_in_group(GROUP_MONSTERS).is_empty() else false
+	## 玩家死了就没有开和平模式的必要了
+	self.yoburin_peaceful_mode_checkbutton.disabled = true if (self.peaceful_mode and !get_tree().get_nodes_in_group(GROUP_MONSTERS).is_empty()) or get_tree().get_nodes_in_group(GROUP_PLAYERS)[0].be_defeated else false
 	
 	## 没死不能复活
 	self.yoburin_respawn_button.disabled = true if !get_tree().get_nodes_in_group(GROUP_PLAYERS)[0].be_defeated else false
@@ -121,7 +122,7 @@ func _on_peaceful_mode_button_pressed() -> void:
 		self.peaceful_mode = true
 		## 停止新怪物生成
 		Log.info("开启和平模式")
-		var timer: Timer = get_node("/root/主场景/刷怪倒计时")		## NOTE 修改结构时要修改
+		var timer: Timer = get_node("/root/主场景/功能组件集合/刷怪倒计时")		## NOTE 修改结构时要修改
 		timer.paused = true
 		
 		for monster in get_tree().get_nodes_in_group(GROUP_MONSTERS):
@@ -145,7 +146,7 @@ func _on_peaceful_mode_button_pressed() -> void:
 	else:
 		## 重新开始刷怪计时
 		Log.info("关闭和平模式")
-		var timer: Timer = get_node("/root/主场景/刷怪倒计时")		## NOTE 修改结构时要修改
+		var timer: Timer = get_node("/root/主场景/功能组件集合/刷怪倒计时")		## NOTE 修改结构时要修改
 		timer.paused = false
 		self.peaceful_mode = false
 		
@@ -153,12 +154,7 @@ func _on_peaceful_mode_button_pressed() -> void:
 ## 复活优里
 func _on_yoburin_respawn_button_pressed() -> void:
 	var yoburin: Yoburin = get_tree().get_nodes_in_group(GROUP_PLAYERS)[0]
-	## 设置初始属性
-	for property in yoburin.DEFAULT_DATA:
-		yoburin.set(property, yoburin.DEFAULT_DATA[property])
-	
-	## 取消战败状态
-	yoburin.be_defeated = false
+	yoburin.respawn()
 
 		
 ## 导出优布林数据

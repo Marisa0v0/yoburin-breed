@@ -44,6 +44,10 @@ const DEFAULT_DATA: Dictionary = {
 @onready var attack_point_label: AnimatedNumber = $"动画立绘相关/动画立绘/可视化界面/攻击力属性背景/攻击力可视化/攻击力数值容器/攻击力数值"
 @onready var defence_point_label: AnimatedNumber = $"动画立绘相关/动画立绘/可视化界面/防御力属性背景/防御力可视化/防御力数值容器/防御力数值"
 
+## 场景
+## 玩家复活计时器
+const scene_respawn_timer = preload("res://scene/utils/player_respawn_timer.tscn")
+
 ## 内置函数
 ## 类初始化
 func _init() -> void:
@@ -104,7 +108,9 @@ func update_state(current_state: Status) -> Status:
 
 		## TODO
 		Status.BeDefeated:
-			self.remove_from_group(GROUP_CREATURE)
+			## 复活了
+			if !self.be_defeated:
+				return Status.Default
 
 		_: ## fallback 落回默认状态
 			return Status.Default
@@ -201,9 +207,60 @@ func _on_enemy_killed(_hurtbox: HurtBox) -> void:
 
 ## 作为玩家，战败后可以复活，而非从场上移除
 ## 优布林独有
-func _on_be_defeated() -> void:
-	## TODO 复活机制
-	pass
+func _on_be_defeated_after_animation_end() -> void:
+	self.bar_attack_ready.value = self.bar_attack_ready.min_value
+	## 死亡后，敌人转身离开
+	for attack_creature in get_tree().get_nodes_in_group(GROUP_CREATURE):
+		attack_creature.pause = false
+	
+	## 暂停新怪物生成
+	var timer: Timer = get_node("/root/主场景/功能组件集合/刷怪倒计时")		## NOTE 修改结构时要修改
+	timer.paused = true
+	for monster in get_tree().get_nodes_in_group(GROUP_MONSTERS):
+		if monster is MarisaSlime:	## FIXME 暂时只有史莱姆
+			await monster.animation_end  ## FIXME ? 不确定能不能这么写
+			## 如果当前有正在交战的怪物，停止交战
+			if monster.target_player != null:
+				## 退出交战状态
+				monster.in_battle_position = false
+				monster.target_player = null
+				monster.remove_from_group(GROUP_ENEMIES_IN_BATTLE)
+			## 所有怪物反向加速逃离
+			## 修改贴图方向
+			monster.animated_sprite_2d.flip_h = false
+			## 修改速度
+			monster.move_speed = - 2.0 * monster.move_speed
+			## 修改状态
+			monster.update_state(MarisaCreature.Status.Move)
+	
+	## 自动启动复活倒计时
+	var respawn_timer: PlayerRespawnTimer = scene_respawn_timer.instantiate()
+	## 如果有重复的就删除
+	var respawn_timer_duplicated = get_node("/root/主场景/功能组件集合/玩家复活计时器")
+	if respawn_timer_duplicated != null:
+		respawn_timer_duplicated.queue_free()
+		
+	get_node("/root/主场景/功能组件集合").add_child(respawn_timer)
+	Log.info("优布林死了！！")
+		
+			
+## 复活
+func respawn() -> void:
+	## 如果倒计时还在那就释放掉
+	var respawn_timer = get_node("/root/主场景/功能组件集合/玩家复活计时器")
+	if respawn_timer != null:
+		respawn_timer.queue_free()
+		
+	## 设置初始属性
+	for property in DEFAULT_DATA:
+		self.set(property, DEFAULT_DATA[property])
+
+	## 取消战败状态
+	self.be_defeated = false
+	## 重新开始刷怪计时
+	Log.info("优布林复活了！！")
+	var timer: Timer = get_node("/root/主场景/功能组件集合/刷怪倒计时")		## NOTE 修改结构时要修改
+	timer.paused = false
 	
 
 ## 贴图动画播放完后调用
@@ -226,7 +283,7 @@ func _on_yoburin_animation_finished() -> void:
 
 	elif current_animation == "战败动画":
 		## 挨打动画结束，调用战败函数
-		self._on_be_defeated()
+		self._on_be_defeated_after_animation_end()
 	
 
 ## 读写数据

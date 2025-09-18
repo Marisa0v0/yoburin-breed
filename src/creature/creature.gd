@@ -178,6 +178,7 @@ func _on_be_defeated_before_state_change() -> void:
 
 ## 被击败，在战败动画播放完后调用一次
 func _on_be_defeated_after_animation_end() -> void:
+	self.bar_attack_ready.value = self.bar_attack_ready.min_value
 	## 战败后从场上移除
 	self.queue_free()
 	## 战败动画结束，继续游戏进程

@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://dbvby8gwxe7u"]
+
+[ext_resource type="Script" uid="uid://m83d4hvynhw2" path="res://src/utils/player_respawn_timer.gd" id="1_k1dpe"]
+
+[node name="玩家复活计时器" type="Timer"]
+process_callback = 0
+wait_time = 10.0
+one_shot = true
+autostart = true
+ignore_time_scale = true
+script = ExtResource("1_k1dpe")
+
+[connection signal="timeout" from="." to="." method="_on_player_respawn_timer_timeout"]
