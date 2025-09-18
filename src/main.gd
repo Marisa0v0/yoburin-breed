@@ -14,6 +14,7 @@ enum Monster { GreenSlime , PurpleSlime }
 
 @onready var background: Sprite2D = $"图形界面/背景图"
 @onready var node_creatures: Node = $"生物组"
+@onready var control_panel: ControlPanel = $"控制面板"
 ## 接收 B 站发给 Python 客户端处理后发来的信息
 @onready var ws_server: WebsocketServer = $"网络通信服务器"
 @onready var monster_spawn_timer: Timer = $"刷怪倒计时"
@@ -65,8 +66,13 @@ func _input(event):
 				"defence_point": yoburin.defence_point
 			}
 			yoburin.save_data(default_data)
+			
+		if event.keycode == KEY_C:
+			var menu: ControlPanel = control_panel.instantiate()
+			self.add_child(menu)
 
 
+## 怪物生成相关
 ## 生成怪物倒计时，按本地的实际时间流动进行生成
 func _on_monster_spawn_timer_timeout() -> void:
 	Log.debug("启动刷怪计时器")
@@ -96,3 +102,6 @@ func spawn_monster() -> void:
 	
 	## 将生成的怪物加入怪物列表，用来让倒计时判断结束后是否生成怪物，如果怪物列表里还有东西就不生成
 	monster.add_to_group(GROUP_MONSTER)
+
+
+## 控制面板相关

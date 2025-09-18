@@ -1,5 +1,5 @@
 class_name ControlPanel
-extends Node
+extends Control
 ## 控制面板
 
 ## 菜单需要有

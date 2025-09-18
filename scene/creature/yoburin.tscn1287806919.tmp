@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3 uid="uid://bio02arexbhoi"]
+[gd_scene load_steps=42 format=3 uid="uid://bio02arexbhoi"]
 
 [ext_resource type="Texture2D" uid="uid://bhel5dpfu2cy3" path="res://resource/assets/sprites/yoburin/待机带砖1.png" id="1_8qxis"]
 [ext_resource type="PackedScene" uid="uid://ynrkr0s2463o" path="res://scene/creature/creature.tscn" id="1_hlq24"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://d0i810nyvs5v" path="res://resource/assets/sprites/yoburin/四叶草.png" id="3_3f1je"]
 [ext_resource type="Texture2D" uid="uid://dxm82tw6samtd" path="res://resource/assets/sprites/yoburin/待机3.png" id="3_borl6"]
 [ext_resource type="Texture2D" uid="uid://gj03uh4bh6t5" path="res://resource/assets/sprites/yoburin/挨打1.png" id="3_rxvwy"]
+[ext_resource type="Script" uid="uid://ci5toaq2jcgdx" path="res://src/utils/clover_particles.gd" id="4_avcws"]
 [ext_resource type="Texture2D" uid="uid://cbvj3ekutxagc" path="res://resource/assets/sprites/yoburin/攻击1.png" id="4_hkbpi"]
 [ext_resource type="Texture2D" uid="uid://d20bbdyus5gjj" path="res://resource/assets/sprites/yoburin/攻击2.png" id="5_7v81q"]
 [ext_resource type="Texture2D" uid="uid://bq00gx8m1wrhx" path="res://resource/assets/sprites/yoburin/攻击3.png" id="6_8yv13"]
@@ -20,33 +21,6 @@
 [ext_resource type="Texture2D" uid="uid://33b0n73y67tm" path="res://resource/references/Legacy-Fantasy - High Forest 2.0/Legacy-Fantasy - High Forest 2.3/HUD/Base-01.png" id="17_0mndr"]
 [ext_resource type="Texture2D" uid="uid://bekayusv2dq2i" path="res://resource/assets/sprites/yoburin/roguelikeitems.png" id="18_p2gjn"]
 [ext_resource type="Script" uid="uid://dy7j3c57scgs4" path="res://src/utils/animated_number.gd" id="19_3f1je"]
-
-[sub_resource type="Curve" id="Curve_3f1je"]
-_limits = [0.0, 200.0, 0.0, 1.0]
-_data = [Vector2(0.00735295, 11.236), 0.0, 0.0, 0, 0, Vector2(1, 96.6292), 0.0, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="CurveTexture" id="CurveTexture_avcws"]
-curve = SubResource("Curve_3f1je")
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_avcws"]
-lifetime_randomness = 0.25
-particle_flag_disable_z = true
-emission_shape_offset = Vector3(-52, -52, 0)
-emission_shape_scale = Vector3(1.25, 1.52, 1)
-emission_shape = 3
-emission_box_extents = Vector3(52, 52, 1)
-inherit_velocity_ratio = 1.0
-direction = Vector3(1.25, 1, 0)
-spread = 15.0
-initial_velocity_min = 250.0
-initial_velocity_max = 400.0
-gravity = Vector3(0, 0, 0)
-linear_accel_min = -2.23517e-06
-linear_accel_max = 98.0
-linear_accel_curve = SubResource("CurveTexture_avcws")
-scale_min = 0.25
-scale_max = 0.52
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_6b5qc"]
 animations = [{
@@ -203,16 +177,17 @@ position = Vector2(97, -151)
 position = Vector2(-20, -13)
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="动画立绘相关" index="0"]
-position = Vector2(-208, -413)
-amount = 250
 texture = ExtResource("3_3f1je")
-lifetime = 5.2
-preprocess = 0.52
-randomness = 0.25
-visibility_rect = Rect2(0, 0, 650, 550)
-process_material = SubResource("ParticleProcessMaterial_avcws")
+script = ExtResource("4_avcws")
 
-[node name="动画立绘" type="AnimatedSprite2D" parent="动画立绘相关" index="1"]
+[node name="四叶草" type="Sprite2D" parent="动画立绘相关" index="1"]
+visible = false
+position = Vector2(-158, -363)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_3f1je")
+
+[node name="动画立绘" type="AnimatedSprite2D" parent="动画立绘相关" index="2"]
+visible = false
 position = Vector2(0, -128)
 sprite_frames = SubResource("SpriteFrames_6b5qc")
 animation = &"攻击动画"
