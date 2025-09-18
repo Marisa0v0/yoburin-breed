@@ -149,7 +149,6 @@ func _before_state_change(current_state: Status, next_state: Status) -> void:
 		self._on_be_defeated_before_state_change()
 		
 
-
 ## 信号连接
 ## 判定进入攻击位置
 func _on_slime_in_battle_position(hurtbox: HurtBox) -> void:

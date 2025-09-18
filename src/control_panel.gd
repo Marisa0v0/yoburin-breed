@@ -12,8 +12,11 @@ extends Control
 ## 4.手动刷怪（点击按钮刷怪而不是快捷键，避免不兼容其他软件）
 
 ## 5.一键复活yoburin（把yoburin拉起来，清除当前怪物）
+
 ## 6.设置礼物对应属性（一个礼物可以对应多种属性，一个属性可以接收多种礼物，一个电池等价多少属性，某个礼物直接等价多少（保证送特定礼物活动时也可以用），礼物包括送礼，连击，sc，上舰，以及大招触发条件也算）
+
 ## 7.保存游戏（保存当前ybr属性就行）
+
 ## 还没写
 ## 复制粘贴的
 
@@ -24,7 +27,10 @@ var GROUP_ENEMIES_IN_BATTLE: StringName = GameManager.NodeGroup.keys()[GameManag
 
 ## 标识变量
 @onready var peaceful_mode := false
+@onready var already_get_all_gifts_data := false
 
+## 节点
+@onready var websocket_server: WebsocketServer
 
 ## 优布林菜单
 @onready var yoburin_health_point_line: LineEdit = $"选项卡切换/优布林菜单/H/V/H/生命值数值"
@@ -35,6 +41,7 @@ var GROUP_ENEMIES_IN_BATTLE: StringName = GameManager.NodeGroup.keys()[GameManag
 
 @onready var yoburin_peaceful_mode_checkbutton: CheckButton = $"选项卡切换/优布林菜单/H/V2/H2/和平模式按钮"
 @onready var yoburin_respawn_button: Button = $选项卡切换/优布林菜单/H/V2/H3/复活优里按钮
+@onready var yoburin_clover_meteor_button: Button = $选项卡切换/优布林菜单/H/V2/H4/四叶草流星
 
 @onready var yoburin_save_data_button: Button = $"选项卡切换/优布林菜单/H/V3/H2/导出数据按钮"
 @onready var yoburin_load_data_button: Button = $"选项卡切换/优布林菜单/H/V3/H3/导入数据按钮"
@@ -58,6 +65,7 @@ func _init() -> void:
 func _ready() -> void:
 	Log.debug("控制面板实例准备完毕")
 	self._generate_monster_spawn_options()
+	self.websocket_server = get_node("/root/主场景/网络通信服务器")
 	
 
 ## 帧处理
@@ -69,17 +77,32 @@ func _process(_delta: float) -> void:
 	## 没死不能复活
 	self.yoburin_respawn_button.disabled = true if !get_tree().get_nodes_in_group(GROUP_PLAYERS)[0].be_defeated else false
 	
+	## 四叶草不能重复释放
+	## 没有敌人放什么大招
+	self.yoburin_clover_meteor_button.disabled = true if get_tree().get_nodes_in_group(GROUP_PLAYERS)[0].can_cast_skill or get_tree().get_nodes_in_group(GROUP_MONSTERS).is_empty() else false
+	
 	## 场上没有怪物时，不能一键击杀
 	self.monster_current_kill_button.disabled = true if get_tree().get_nodes_in_group(GROUP_MONSTERS).is_empty() else false
 	
 	## 场上有怪物时，不能生成新怪物
 	self.monster_spawn_button.disabled = true if !get_tree().get_nodes_in_group(GROUP_MONSTERS).is_empty() else false
 	
+	## 获取所有礼物信息
+	if !self.websocket_server._peers.is_empty():
+		if !self.already_get_all_gifts_data:
+			self._get_all_gifts_data()
+			self.already_get_all_gifts_data = true
+	
 	
 ## 生成怪物生成下拉菜单
 func _generate_monster_spawn_options() -> void:
 	for type in GameManager.MonsterType.keys():
 		self.monster_spawn_options.add_item(GameManager.MonsterTypeMapping[type])
+		
+		
+## 获取所有礼物列表
+func _get_all_gifts_data() -> void:
+	self.websocket_server.send_json(self.websocket_server._peers[self.websocket_server._last_peer_id], {"type": "GetAllGiftsData"})
 		
 		
 ## 具体功能连接
@@ -153,8 +176,16 @@ func _on_peaceful_mode_button_pressed() -> void:
 		
 ## 复活优里
 func _on_yoburin_respawn_button_pressed() -> void:
+	Log.debug("手动复活优布林")
 	var yoburin: Yoburin = get_tree().get_nodes_in_group(GROUP_PLAYERS)[0]
 	yoburin.respawn()
+	
+	
+## 四叶草流星
+func _on_yoburin_clover_meteor_button_pressed() -> void:
+	Log.debug("手动释放四叶草流星")
+	var yoburin: Yoburin = get_tree().get_nodes_in_group(GROUP_PLAYERS)[0]
+	yoburin.cast_skill()
 
 		
 ## 导出优布林数据

@@ -65,7 +65,7 @@ class GiftModel(BaseModel, extra="allow"):
     has_imaged_gift: int | None = Field(default=None)
     left_corner_text: str | None = Field(default=None)
     left_corner_background: str | None = Field(default=None)
-    gift_banner: Json | None = Field(default=None)  # FIXME 不知道是什么
+    # gift_banner: Json | None = Field(default=None)  # FIXME 不知道是什么
     diy_count_map: int | None = Field(default=None)
     effect_id: int | None = Field(default=None)
     first_tips: str | None = Field(default=None)

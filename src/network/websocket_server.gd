@@ -8,9 +8,12 @@ extends Node
 var is_opened := false
 
 
+## 监听端口号
 const PORT := 52525
 var ws_server: TCPServer = TCPServer.new()
+## 与客户端建立的连接
 var _peers :Dictionary[int, WebSocketPeer] = {}
+## 连接的唯一标识符 id
 var _last_peer_id := 1
 
 
@@ -69,12 +72,11 @@ func _process(_delta: float) -> void:
 					
 				while peer.get_available_packet_count():
 					var packet := peer.get_packet()
-					if peer.was_string_packet():
-						var packet_text := packet.get_string_from_utf8()
-						Log.info("收到客户端 %d 的信息: %s" % [peer_id, packet_text])
-						self.on_message.emit(peer, packet_text)
-						## 回声
-						peer.send_text(packet_text)
+					var packet_text := packet.get_string_from_utf8()
+					Log.info("收到客户端 %d 的信息: %s" % [peer_id, packet_text])
+					self.on_message.emit(peer, packet_text)
+					## 回声
+					peer.send_text(packet_text)
 	
 			WebSocketPeer.STATE_CLOSING:
 				self.on_closing.emit(peer)
@@ -88,6 +90,6 @@ func _process(_delta: float) -> void:
 				Log.info("与客户端 %d 断开连接 [%d, %s]" % [peer_id, code, reason])
 
 
-func send_json(peer: WebSocketPeer, peer_id: int, data: Variant) -> Error:
-	Log.debug("向WS客户端 %d 发送信息: %s" % [peer_id, data])
+func send_json(peer: WebSocketPeer, data: Variant) -> Error:
+	Log.debug("向WS客户端发送信息: %s" % data)
 	return peer.send_text(JSON.stringify(data))

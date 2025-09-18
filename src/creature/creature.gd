@@ -26,9 +26,6 @@ const MAX_VALUE := 99_9999.0            ## FIXME UI 机制限制，最大显示�
 func _set_health_point(value: float):
 	value = max(MIN_VALUE, min(value, MAX_VALUE))
 	Log.debug("%s的生命值被设为 %s" % [self.name, value])
-	## 若血量被设为比当前值小的值 -> 受到攻击了 / 扣血了
-	#	if health_point > value:
-	#		self.be_attacked = true
 
 	## 生命条成功初始化后再赋值
 	## 生命值大于生命条上限（过量回复）时，将生命条上限设置成当前生命

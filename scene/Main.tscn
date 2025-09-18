@@ -1,9 +1,9 @@
 [gd_scene load_steps=6 format=3 uid="uid://cd6febu7xjvyn"]
 
 [ext_resource type="Script" uid="uid://dk2v8f7bhq5nm" path="res://src/main.gd" id="1_nbc6x"]
-[ext_resource type="Script" uid="uid://bxw0plocisiau" path="res://src/utils/websocket_server.gd" id="2_h6nst"]
+[ext_resource type="Script" uid="uid://bxw0plocisiau" path="res://src/network/websocket_server.gd" id="2_h6nst"]
 [ext_resource type="Texture2D" uid="uid://dyew02tj3fhda" path="res://resource/assets/images/backgrounds/battleback1.png" id="2_hr7lf"]
-[ext_resource type="Script" uid="uid://8dxdgpj5q8qi" path="res://src/utils/hurtbox.gd" id="4_yiwpq"]
+[ext_resource type="Script" uid="uid://8dxdgpj5q8qi" path="res://src/signals/hurtbox.gd" id="4_yiwpq"]
 
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_hr7lf"]
 a = Vector2(0, -299)
@@ -17,6 +17,7 @@ metadata/_edit_horizontal_guides_ = [550.0]
 [node name="生物组" type="Node" parent="."]
 
 [node name="网络通信服务器" type="Node" parent="."]
+unique_name_in_owner = true
 script = ExtResource("2_h6nst")
 metadata/_custom_type_script = "uid://bxw0plocisiau"
 

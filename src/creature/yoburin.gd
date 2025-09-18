@@ -44,9 +44,18 @@ const DEFAULT_DATA: Dictionary = {
 @onready var attack_point_label: AnimatedNumber = $"动画立绘相关/动画立绘/可视化界面/攻击力属性背景/攻击力可视化/攻击力数值容器/攻击力数值"
 @onready var defence_point_label: AnimatedNumber = $"动画立绘相关/动画立绘/可视化界面/防御力属性背景/防御力可视化/防御力数值容器/防御力数值"
 
+## 优里特有动画
+@onready var clover_meteor: GPUParticles2D = $"动画立绘相关/四叶草流星"
+
+
+## 标识变量
+## 能否释放技能
+@onready var can_cast_skill := false
+
+
 ## 场景
 ## 玩家复活计时器
-const scene_respawn_timer = preload("res://scene/utils/player_respawn_timer.tscn")
+const scene_respawn_timer: PackedScene = preload("res://scene/utils/player_respawn_timer.tscn")
 
 ## 内置函数
 ## 类初始化
@@ -126,6 +135,11 @@ func action(current_state: Status, _delta: float) -> void:
 		self.bar_health_point.value -= 1
 	if self.bar_health_point.value < self.health_point:
 		self.bar_health_point.value += 1
+		
+	## 任意情况下若能够释放技能，优先释放技能
+	if self.can_cast_skill:
+		self.cast_skill()
+
 	match current_state:
 		Status.Move:
 			self.animated_sprite_2d.play("移动动画")
@@ -262,6 +276,32 @@ func respawn() -> void:
 	var timer: Timer = get_node("/root/主场景/功能组件集合/刷怪倒计时")		## NOTE 修改结构时要修改
 	timer.paused = false
 	
+	
+## 使用技能 TODO 当前为四叶草流星，以后做兼容其他技能的通用代码
+func cast_skill() -> void:
+	self.animated_sprite_2d.play("闲置动画")
+	self.clover_meteor.emitting = true
+	## 暂停生物行动
+	for attack_creature in get_tree().get_nodes_in_group(GROUP_CREATURE):
+		attack_creature.pause = true
+
+	## 所有敌人百分比扣血至清零
+	for target in get_tree().get_nodes_in_group(GROUP_MONSTERS):
+		var tween: Tween = create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+		tween.tween_property(target, "health_point", 0, self.clover_meteor.lifetime - self.clover_meteor.preprocess)
+		
+	## 优布林回血
+	self.health_point = self.bar_health_point.max_value
+
+## 技能动画播放完毕
+func _on_yoburin_particles_finished() -> void:
+	## 恢复生物行动
+	## 回复标识符
+	self.can_cast_skill = false
+	
+	## 解除暂停
+	for attack_creature in get_tree().get_nodes_in_group(GROUP_CREATURE):
+		attack_creature.pause = false
 
 ## 贴图动画播放完后调用
 ## 动画播放在 action 调用后调用，即每帧最后运行
@@ -284,7 +324,6 @@ func _on_yoburin_animation_finished() -> void:
 	elif current_animation == "战败动画":
 		## 挨打动画结束，调用战败函数
 		self._on_be_defeated_after_animation_end()
-	
 
 ## 读写数据
 func save_data(data: Dictionary = self.DEFAULT_DATA) -> Dictionary:
