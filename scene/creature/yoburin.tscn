@@ -32,21 +32,22 @@ curve = SubResource("Curve_3f1je")
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_avcws"]
 lifetime_randomness = 0.25
 particle_flag_disable_z = true
-emission_shape_offset = Vector3(-52, -52, 0)
+emission_shape_offset = Vector3(-152, -152, 0)
 emission_shape_scale = Vector3(1.25, 1.52, 1)
 emission_shape = 3
 emission_box_extents = Vector3(52, 52, 1)
+angle_min = 1.07288e-05
+angle_max = 52.0
 inherit_velocity_ratio = 1.0
 direction = Vector3(1.25, 1, 0)
-spread = 15.0
+spread = 20.0
 initial_velocity_min = 250.0
 initial_velocity_max = 400.0
 gravity = Vector3(0, 0, 0)
 linear_accel_min = -2.23517e-06
 linear_accel_max = 98.0
 linear_accel_curve = SubResource("CurveTexture_avcws")
-scale_min = 0.25
-scale_max = 0.52
+scale_max = 1.52
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_6b5qc"]
 animations = [{
@@ -204,10 +205,10 @@ position = Vector2(-20, -13)
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="动画立绘相关" index="0"]
 position = Vector2(-208, -413)
-amount = 250
+amount = 520
 texture = ExtResource("3_3f1je")
 lifetime = 5.2
-preprocess = 0.52
+preprocess = 1.25
 randomness = 0.25
 visibility_rect = Rect2(0, 0, 650, 550)
 process_material = SubResource("ParticleProcessMaterial_avcws")
