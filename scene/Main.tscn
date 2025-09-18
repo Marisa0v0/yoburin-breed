@@ -29,4 +29,4 @@ texture = ExtResource("2_hr7lf")
 script = ExtResource("2_h6nst")
 metadata/_custom_type_script = "uid://bxw0plocisiau"
 
-[connection signal="timeout" from="刷怪倒计时" to="." method="add_monster_timer"]
+[connection signal="timeout" from="刷怪倒计时" to="." method="_on_monster_spawn_timer_timeout"]

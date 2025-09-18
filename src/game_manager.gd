@@ -5,8 +5,9 @@ extends Node
 
 ## 分组
 enum NodeGroup {
-	Creature, ## 全局生物类
-	EnemiesInBattle, ## 玩家要攻击的敌对怪物
+	Creature,			## 全局生物类
+	EnemiesInBattle,	## 玩家要攻击的敌对怪物
+	Monsters,			## 全局怪物类
 }
 
 ## 游戏文件所在根目录

@@ -89,7 +89,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"挨打动画",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -197,8 +197,7 @@ script = ExtResource("2_y15u5")
 position = Vector2(0, -12)
 scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_jpaaj")
-animation = &"闲置动画"
-frame_progress = 0.996218
+animation = &"挨打动画"
 flip_h = true
 
 [node name="动画播放器" type="AnimationPlayer" parent="动画立绘相关/动画立绘" index="0"]

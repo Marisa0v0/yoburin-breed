@@ -25,7 +25,7 @@ const MAX_VALUE := 99_9999.0            ## FIXME UI 机制限制，最大显示�
 
 func _set_health_point(value: float):
 	value = max(MIN_VALUE, min(value, MAX_VALUE))
-	Log.debug("health setter: %s" % value)
+	Log.debug("%s的生命值被设为 %s" % [self.name, value])
 	## 若血量被设为比当前值小的值 -> 受到攻击了 / 扣血了
 	if health_point > value:
 		self.be_attacked = true
@@ -48,6 +48,7 @@ func _set_health_point(value: float):
 
 func _set_attack_speed(value: float):
 	value = max(MIN_VALUE, min(value, MAX_VALUE))
+	Log.debug("%s的攻速被设为 %s" % [self.name, value])
 	attack_speed = value
 
 @export var attack_point := 1.0: ## 攻击力
@@ -56,6 +57,7 @@ func _set_attack_speed(value: float):
 
 func _set_attack_point(value: float):
 	value = max(MIN_VALUE, min(value, MAX_VALUE))
+	Log.debug("%s的攻击力被设为 %s" % [self.name, value])
 	attack_point = value
 
 @export var defence_point := 1.0: ## 防御力
@@ -64,8 +66,10 @@ func _set_attack_point(value: float):
 
 func _set_defence_point(value: float):
 	value = max(MIN_VALUE, min(value, MAX_VALUE))
+	Log.debug("%s的防御力被设为 %s" % [self.name, value])
 	defence_point = value
 
+	
 ## 标识变量
 @onready var in_battle_position := false  ## 该生物是否进入能发动攻击的区域
 @onready var can_attack := false  ## 该生物攻击进度条是否涨满（是否能够发起攻击）
@@ -74,6 +78,7 @@ func _set_defence_point(value: float):
 @onready var pause := false  ## 暂停生物逻辑，用于在其他生物进行行动/攻击时避免同时行动/攻击产生bug
 @onready var be_defeated := false  ## 生物是否战败（血量清零）
 
+## 生物组
 var GROUP_CREATURE: StringName          = GameManager.NodeGroup.keys()[GameManager.NodeGroup.Creature]
 var GROUP_ENEMIES_IN_BATTLE: StringName = GameManager.NodeGroup.keys()[GameManager.NodeGroup.EnemiesInBattle]
 
@@ -84,34 +89,27 @@ func _init() -> void:
 	## 初始化 UI 相关
 	Log.debug("初始化生物类实例 %s" % self.to_string())
 	randomize()  ## 随机化随机器发生器种子
+	
+	## 赋予默认属性值
+	self.health_point = 100.0
+	self.attack_point = 5.0
+	self.defence_point = 2.0
 
 
 ## 该节点的所有子节点初始化后才初始化
 func _ready() -> void:
-	Log.debug("生物类准备完毕")
-	## 防御性初始化
-	self.health_point = 1.0
-	self.attack_speed = 1.0
-	self.attack_point = 1.0
-	self.defence_point = 1.0
-
-	## 禁用步长
-	# self.bar_health_point.step = 0
-	# self.bar_attack_ready.step = 0
+	## 读取持久化保存数据
+	var _data := self.load_data()
 	
-	var data := self.load_data()
-	
-	self.health_point = data["health_point"]
-	self.attack_speed = data["attack_speed"]
-	self.attack_point = data["attack_point"]
-	self.defence_point = data["defence_point"]
-
+	## 数据可视化
 	self.bar_health_point.max_value = self.health_point
 	self.bar_health_point.value = self.bar_health_point.max_value
-
 	self.bar_attack_ready.value = self.bar_attack_ready.min_value
+	
 	## 添加至全局生物组
 	self.add_to_group(GROUP_CREATURE)
+	
+	Log.debug("生物类准备完毕")
 
 
 ## 业务函数
@@ -126,7 +124,7 @@ func _on_after_animation_end(animation: StringName, target: MarisaCreature) -> v
 
 ## 攻击，在进入攻击状态前调用一次
 func _on_attack_before_state_change() -> void:
-	self.add_to_group("attack_ready")  ## FIXME ? 干嘛的
+	# self.add_to_group("attack_ready")  ## FIXME ? 干嘛的
 	## 即将发动攻击（播放动画前）
 	## 暂停所有生物
 	## 以免我攻击时对面还在攻击
@@ -149,7 +147,6 @@ func _on_attack_after_animation_end(target: MarisaCreature) -> void:
 
 	Log.debug("%s攻击%s, 血量 %s -> %s" % [self.name, target.name, target.health_point, target.health_point-damage])
 	target.health_point -= damage
-	Log.debug("%s, 挨打后的血量为 %s" % [target.name, target.health_point])
 
 	## 攻击结束，攻击状态重置
 	self.can_attack = false
@@ -208,7 +205,7 @@ func increase_bar_attack_ready() -> void:
 ## 持久化存储
 func save_data(data: Dictionary) -> Dictionary:
 	## 要存储的数据
-	var data_text := JSON.stringify(data,"\t")
+	var data_text := JSON.stringify(data, "\t")
 
 	## 数据写入本地文件
 	var filepath_relative := "data/%s.json" % self.type_
@@ -240,6 +237,7 @@ func load_data() -> Dictionary:
 		"attack_point": self.attack_point,
 		"defence_point": self.defence_point
 	}
+
 	## 数据写入的本地文件
 	var filepath_relative := "data/%s.json" % self.type_
 	var filepath_absolute := GameManager.ROOT.path_join(filepath_relative)
@@ -261,13 +259,16 @@ func load_data() -> Dictionary:
 	data_file.close()
 	Log.debug("读取到%s(%s)的数据: %s" % [self.name, self.type_, data_text])
 	var data: Dictionary = JSON.parse_string(data_text)
+	
+	## 自动为属性赋值：
+	for property in data:
+		if self.get(property) != null:
+			self.set(property, data[property])
+	
 	return data
 	
 
-
 ## 功能函数
 ## a 值越小，x 的差额引起的变化越平滑
-
-
 static func _amplifier(x: int = 0, a: float = 0.5) -> float:
 	return 1 - exp(-a*x)

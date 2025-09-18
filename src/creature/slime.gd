@@ -10,18 +10,17 @@ var target_player: MarisaCreature = null
 func _init() -> void:
 	super._init()
 	Log.debug("初始化史莱姆类实例 %s" % self.to_string())
+	
+	self.health_point = 5.0
+	self.attack_point = 2.0
 
 
 ## 该节点的所有子节点初始化后才初始化
 func _ready() -> void:
 	self.type_ = "slime"
 	super._ready()
-	self.health_point = 100.0
-	self.move_speed = -100.0    ## 怪物向左移动
-
-	self.bar_health_point.max_value = self.health_point
-	self.bar_health_point.value = self.bar_health_point.max_value
 	
+	self.move_speed = -100.0    ## 怪物向左移动
 	Log.debug("史莱姆类准备完毕")
 
 ## 业务函数 (帧)

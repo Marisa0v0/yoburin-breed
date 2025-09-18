@@ -172,8 +172,7 @@ position = Vector2(96, -152)
 [node name="动画立绘" type="AnimatedSprite2D" parent="动画立绘相关" index="0"]
 position = Vector2(0, -128)
 sprite_frames = SubResource("SpriteFrames_6b5qc")
-animation = &"闲置动画"
-frame_progress = 0.670265
+animation = &"攻击动画"
 
 [node name="动画播放器" type="AnimationPlayer" parent="动画立绘相关/动画立绘" index="0"]
 
