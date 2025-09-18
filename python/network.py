@@ -63,22 +63,12 @@ async def _(event: dict):
     logger.info("直播准备中")
     logger.debug(event)
 
-    # message = f"uid: {event['data']['info'][2][0]}, msg: {event['data']['info'][1]}"
-    # send = {"type": "DANMU_MSG", "message": message}
-    # logger.info(message)
-    # await send_to_godot(json.dumps(send, ensure_ascii=False))
-
 
 @room.on("LIVE")
 async def _(event: dict):
     """直播开始"""
     logger.info("直播开始")
     logger.debug(event)
-
-    # message = f"uid: {event['data']['info'][2][0]}, msg: {event['data']['info'][1]}"
-    # send = {"type": "DANMU_MSG", "message": message}
-    # logger.info(message)
-    # await send_to_godot(json.dumps(send, ensure_ascii=False))
 
 
 
@@ -97,6 +87,7 @@ async def _(event: dict):
 @room.on("SEND_GIFT")
 async def _(event: dict):
     """送礼物"""
+    logger.info("收到礼物")
     model = SendGiftModel.model_validate(event)
     data = model.data.data
 
@@ -105,13 +96,19 @@ async def _(event: dict):
     sender_name = data.uname    # 送礼人昵称
     sender_uid = data.uid       # 送礼人 UID
 
-    logger.info("收到礼物")
     logger.debug(event)
 
     message = f"sender: {sender_name}({sender_uid}), gift: {gift_name}, price: {price}"
     logger.info(message)
     send = {"type": "SEND_GIFT", "message": message}
     await send_to_godot(send)
+
+
+@room.on("SUPER_CHAT_MESSAGE")
+async def _(event: dict):
+    """醒目留言"""
+    logger.info("收到醒目留言")
+    logger.debug(event)
 
 
 async def main():

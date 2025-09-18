@@ -89,3 +89,34 @@ func spawn_monster(type = null) -> void:
 
 
 ## 控制面板相关
+
+
+## 网络通信相关
+## 收到户端信息
+func _on_websocket_message(_peer: WebSocketPeer, message: String) -> void:
+	var reception_data := JSON.parse_string(message) as Dictionary
+	if reception_data == null:
+		Log.error("解析WS消息失败: %s" % message)
+		return
+	
+	if reception_data.get("type", null) == null:
+		Log.error("WS消息格式有误: %s" % reception_data)
+		return
+		
+	match reception_data["type"]:
+		## 大航海
+		"GUARD_BUY":
+			## 触发四叶草流星
+			var yoburin: Yoburin = get_tree().get_nodes_in_group(GROUP_PLAYERS)[0]
+			yoburin.cast_skill()
+			
+		## 礼物
+		"SEND_GIFT":
+			pass
+		
+		## 醒目留言
+		"SUPER_CHAT_MESSAGE":
+			pass
+			
+		_:
+			pass

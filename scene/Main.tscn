@@ -48,4 +48,5 @@ metadata/_custom_type_script = "uid://8dxdgpj5q8qi"
 position = Vector2(1410, 299)
 shape = SubResource("SegmentShape2D_hr7lf")
 
+[connection signal="on_message" from="网络通信服务器" to="." method="_on_websocket_message"]
 [connection signal="timeout" from="功能组件集合/刷怪倒计时" to="." method="_on_monster_spawn_timer_timeout"]
