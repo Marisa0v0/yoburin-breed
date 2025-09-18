@@ -194,16 +194,18 @@ region = Rect2(81, 176, 16, 16)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6jpij"]
 
 [node name="优布林" instance=ExtResource("1_hlq24")]
-position = Vector2(228, 426)
+position = Vector2(553, 426)
 script = ExtResource("1_yjsgg")
+metadata/_edit_vertical_guides_ = [650.0]
 
 [node name="主角专用摄像机" type="Camera2D" parent="." index="0"]
 position = Vector2(97, -151)
 
 [node name="动画立绘相关" parent="." index="2"]
-position = Vector2(-20, -13)
+position = Vector2(314, -13)
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="动画立绘相关" index="0"]
+visible = false
 position = Vector2(-208, -413)
 amount = 520
 texture = ExtResource("3_3f1je")
@@ -214,7 +216,7 @@ visibility_rect = Rect2(0, 0, 650, 550)
 process_material = SubResource("ParticleProcessMaterial_avcws")
 
 [node name="动画立绘" type="AnimatedSprite2D" parent="动画立绘相关" index="1"]
-position = Vector2(0, -128)
+position = Vector2(0, -157)
 sprite_frames = SubResource("SpriteFrames_6b5qc")
 animation = &"攻击动画"
 

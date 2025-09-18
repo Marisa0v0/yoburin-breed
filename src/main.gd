@@ -10,9 +10,6 @@ const scene_purple_slime := preload("res://scene/creature/purple_slime.tscn")
 const scene_yoburin     := preload("res://scene/creature/yoburin.tscn")
 const scene_control_panel := preload("res://scene/control_panel.tscn")
 
-## 怪物枚举
-enum Monster { GreenSlime , PurpleSlime }
-
 @onready var background: Sprite2D = $"图形界面/背景图"
 @onready var node_creatures: Node = $"生物组"
 # @onready var control_panel: ControlPanel = $"控制面板"
@@ -67,24 +64,25 @@ func _on_monster_spawn_timer_timeout() -> void:
 	
 	
 ## 生成怪物，根据随机数与枚举决定生成哪一个
-func spawn_monster() -> void:
-	var random_int := RandomNumberGenerator.new().randi_range(0, 1)
-	var monster_position := Vector2(576, 302.0)
+func spawn_monster(type = null) -> void:
+	var random_int := RandomNumberGenerator.new().randi_range(0, len(GameManager.MonsterType.keys())-1)
+	var monster_position := Vector2(1226, 302.0)
 	var monster
-	
-	match random_int:
-		Monster.GreenSlime:
+	var match_value = type if type != null else random_int
+		
+	match match_value:
+		GameManager.MonsterType.SlimeGreen:
 			monster = scene_green_slime.instantiate()
 			
-		Monster.PurpleSlime:
+		GameManager.MonsterType.SlimePurple:
 			monster = scene_purple_slime.instantiate()
 			
 		_:
 			pass
-
+	
 	self.node_creatures.add_child(monster)
 	monster.position = monster_position
-	Log.debug("怪物位置：(%s, %s)" % [monster.position.x, monster.position.y])
+	Log.debug("生成怪物 %s(%s)" % [monster.name, monster])
 	
 	## 将生成的怪物加入怪物列表，用来让倒计时判断结束后是否生成怪物，如果怪物列表里还有东西就不生成
 	monster.add_to_group(GROUP_MONSTERS)

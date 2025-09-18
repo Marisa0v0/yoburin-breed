@@ -120,7 +120,9 @@ func _on_after_animation_end(animation: StringName, target: MarisaCreature) -> v
 	Log.debug("%s的动画“%s”结束了" % [self.name, animation])
 	self.animation_end = true
 	if animation == "挨打动画" or animation == "战败动画":
-		target.bar_attack_ready.value = target.bar_attack_ready.min_value
+		## 被指令击杀
+		if target != null:
+			target.bar_attack_ready.value = target.bar_attack_ready.min_value
 
 
 ## 攻击，在进入攻击状态前调用一次

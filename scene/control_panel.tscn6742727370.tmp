@@ -6,9 +6,9 @@
 layout_mode = 3
 anchor_right = 0.651
 anchor_bottom = 0.649
-offset_left = 137.0
+offset_left = 64.0
 offset_top = 64.0
-offset_right = 225.85
+offset_right = 152.85
 offset_bottom = 155.05
 grow_horizontal = 2
 grow_vertical = 2
@@ -29,9 +29,10 @@ offset_left = 1.0
 offset_right = 512.0
 offset_bottom = 448.0
 tab_alignment = 1
-current_tab = 0
+current_tab = 1
 
 [node name="优布林菜单" type="PanelContainer" parent="选项卡切换"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -68,7 +69,7 @@ text = "攻击力"
 
 [node name="攻击力数值" type="LineEdit" parent="选项卡切换/优布林菜单/H/V/H2"]
 layout_mode = 2
-text = "5"
+text = "52525"
 
 [node name="H3" type="HBoxContainer" parent="选项卡切换/优布林菜单/H/V"]
 layout_mode = 2
@@ -79,7 +80,7 @@ text = "防御力"
 
 [node name="防御力数值" type="LineEdit" parent="选项卡切换/优布林菜单/H/V/H3"]
 layout_mode = 2
-text = "5"
+text = "52525"
 
 [node name="H4" type="HBoxContainer" parent="选项卡切换/优布林菜单/H/V"]
 layout_mode = 2
@@ -90,7 +91,7 @@ text = "攻击速度"
 
 [node name="攻击速度数值" type="LineEdit" parent="选项卡切换/优布林菜单/H/V/H4"]
 layout_mode = 2
-text = "1"
+text = "52525"
 
 [node name="确定修改按钮" type="Button" parent="选项卡切换/优布林菜单/H/V"]
 layout_mode = 2
@@ -115,13 +116,6 @@ text = "和平模式"
 [node name="和平模式按钮" type="CheckButton" parent="选项卡切换/优布林菜单/H/V2/H2"]
 layout_mode = 2
 keep_pressed_outside = true
-
-[node name="H3" type="HBoxContainer" parent="选项卡切换/优布林菜单/H/V2"]
-layout_mode = 2
-
-[node name="复活优里按钮" type="Button" parent="选项卡切换/优布林菜单/H/V2/H3"]
-layout_mode = 2
-text = "复活优里！"
 
 [node name="V3" type="VBoxContainer" parent="选项卡切换/优布林菜单/H"]
 layout_mode = 2
@@ -155,7 +149,6 @@ text = "重置优布林数据
 "
 
 [node name="怪物菜单" type="PanelContainer" parent="选项卡切换"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -221,10 +214,6 @@ layout_mode = 2
 text = "修改"
 icon_alignment = 1
 
-[node name="和平模式按钮" type="CheckButton" parent="选项卡切换/怪物菜单/H/V"]
-layout_mode = 2
-keep_pressed_outside = true
-
 [node name="V2" type="VBoxContainer" parent="选项卡切换/怪物菜单/H"]
 layout_mode = 2
 
@@ -261,7 +250,6 @@ metadata/_tab_index = 2
 [connection signal="text_changed" from="选项卡切换/优布林菜单/H/V/H4/攻击速度数值" to="." method="_on_yoburin_attack_speed_changed"]
 [connection signal="pressed" from="选项卡切换/优布林菜单/H/V/确定修改按钮" to="." method="_on_yoburin_property_confirm_button_pressed"]
 [connection signal="pressed" from="选项卡切换/优布林菜单/H/V2/H2/和平模式按钮" to="." method="_on_peaceful_mode_button_pressed"]
-[connection signal="pressed" from="选项卡切换/优布林菜单/H/V2/H3/复活优里按钮" to="." method="_on_yoburin_respawn_button_pressed"]
 [connection signal="pressed" from="选项卡切换/优布林菜单/H/V3/H2/导出数据按钮" to="." method="_on_yoburin_save_data_button_pressed"]
 [connection signal="pressed" from="选项卡切换/优布林菜单/H/V3/H3/导入数据按钮" to="." method="_on_yoburin_load_data_button_pressed"]
 [connection signal="pressed" from="选项卡切换/优布林菜单/H/V3/H4/重置数据按钮" to="." method="_on_yoburin_reset_data_button_pressed"]

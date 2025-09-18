@@ -46,6 +46,10 @@ func update_state(current_state: Status) -> Status:
 			if self.in_battle_position:
 				return Status.Idle
 
+			## 血量清零 -> 战败
+			if self.be_defeated:
+				return Status.BeDefeated
+
 		Status.Idle:
 			## 攻击条涨满 -> 发动攻击
 			if self.can_attack:
@@ -94,6 +98,7 @@ func action(current_state: Status, delta: float) -> void:
 		self.bar_health_point.value -= 1
 	if self.bar_health_point.value < self.health_point:
 		self.bar_health_point.value += 1
+		
 	match current_state:
 		Status.Move:
 			animated_sprite_2d.play("闲置动画")

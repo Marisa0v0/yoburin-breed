@@ -32,7 +32,7 @@ anchors_preset = 0
 
 [node name="背景图" type="Sprite2D" parent="图形界面"]
 visible = false
-position = Vector2(320, 280)
+position = Vector2(1030, 279)
 texture = ExtResource("2_hr7lf")
 
 [node name="怪物清除边界" type="Area2D" parent="图形界面"]
@@ -42,7 +42,7 @@ script = ExtResource("4_yiwpq")
 metadata/_custom_type_script = "uid://8dxdgpj5q8qi"
 
 [node name="怪物清除碰撞箱" type="CollisionShape2D" parent="图形界面/怪物清除边界"]
-position = Vector2(760, 299)
+position = Vector2(1410, 299)
 shape = SubResource("SegmentShape2D_hr7lf")
 
 [connection signal="timeout" from="刷怪倒计时" to="." method="_on_monster_spawn_timer_timeout"]

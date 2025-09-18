@@ -19,11 +19,11 @@ run/canvas_textures/default_texture_filter=1
 
 [display]
 
-window/size/viewport_width=650
+window/size/viewport_width=1300
 window/size/viewport_height=550
 window/size/borderless=true
 window/size/transparent=true
-window/size/window_width_override=650
+window/size/window_width_override=1300
 window/size/window_height_override=550
 window/stretch/mode="canvas_items"
 window/per_pixel_transparency/allowed=true
