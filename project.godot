@@ -23,12 +23,12 @@ TestSavegame="*res://src/test_savegame.gd"
 
 [display]
 
-window/size/viewport_width=800
-window/size/viewport_height=600
+window/size/viewport_width=650
+window/size/viewport_height=550
 window/size/borderless=true
 window/size/transparent=true
-window/size/window_width_override=800
-window/size/window_height_override=600
+window/size/window_width_override=650
+window/size/window_height_override=550
 window/stretch/mode="canvas_items"
 window/per_pixel_transparency/allowed=true
 

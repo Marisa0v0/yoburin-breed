@@ -163,11 +163,14 @@ region = Rect2(81, 176, 16, 16)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6jpij"]
 
 [node name="优布林" instance=ExtResource("1_hlq24")]
-position = Vector2(154, 402)
+position = Vector2(228, 426)
 script = ExtResource("1_yjsgg")
 
 [node name="主角专用摄像机" type="Camera2D" parent="." index="0"]
-position = Vector2(96, -152)
+position = Vector2(97, -151)
+
+[node name="动画立绘相关" parent="." index="2"]
+position = Vector2(-20, -13)
 
 [node name="动画立绘" type="AnimatedSprite2D" parent="动画立绘相关" index="0"]
 position = Vector2(0, -128)
