@@ -11,7 +11,7 @@ from python.config import settings
 credential = Credential(**settings.bilibili.model_dump())
 
 
-room_id = 23256987
+room_id = 1854312761
 room = LiveDanmaku(
     room_display_id=room_id,
     credential=credential,

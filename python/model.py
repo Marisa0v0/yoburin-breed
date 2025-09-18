@@ -30,7 +30,7 @@ class GuardBuyModel(BaseModel, extra="allow"):
 
 
 """ 弹幕相关 """
-
+""" 送礼物相关 """
 class BlindGiftModel(BaseModel, extra="allow"):
     blind_gift_config_id: int | None = Field(default=None)
     from_: int | None = Field(default=None, alias="from")
