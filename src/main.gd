@@ -94,6 +94,8 @@ func spawn_monster(type = null) -> void:
 ## 网络通信相关
 ## 收到户端信息
 func _on_websocket_message(_peer: WebSocketPeer, message: String) -> void:
+	if message.is_empty():
+		return
 	var reception_data := JSON.parse_string(message) as Dictionary
 	if reception_data == null:
 		Log.error("解析WS消息失败: %s" % message)
@@ -103,20 +105,37 @@ func _on_websocket_message(_peer: WebSocketPeer, message: String) -> void:
 		Log.error("WS消息格式有误: %s" % reception_data)
 		return
 		
+	var message_data := JSON.parse_string(reception_data["message"]) as Dictionary
+	if reception_data == null:
+		Log.error("解析WS消息具体内容失败: %s" % reception_data["message"])
+		return
+		
 	match reception_data["type"]:
 		## 大航海
 		"GUARD_BUY":
+			Log.info("收到大航海了")
+			var gname: StringName = message_data["gname"]	## 礼物名称
+			var gid: int = message_data["gid"]				## 礼物ID
+			var price: int = message_data["price"]			## 礼物价值 (数值为人民币*1000)
 			## 触发四叶草流星
 			var yoburin: Yoburin = get_tree().get_nodes_in_group(GROUP_PLAYERS)[0]
 			yoburin.cast_skill()
 			
 		## 礼物
 		"SEND_GIFT":
-			pass
+			Log.info("收到礼物了")
+			var gname: StringName = message_data["gname"]	## 礼物名称
+			var gid: int = message_data["gid"]				## 礼物ID
+			var price: int = message_data["price"]			## 礼物价值 (数值为人民币*1000)
+			
+			## TODO 触发礼物效果？
 		
 		## 醒目留言
 		"SUPER_CHAT_MESSAGE":
-			pass
+			Log.info("收到醒目留言了")
+			var gname: StringName = message_data["gname"]	## 礼物名称
+			var gid: int = message_data["gid"]				## 礼物ID
+			var price: int = message_data["price"]			## 礼物价值 (数值为人民币，啥比B站)
 			
 		_:
 			pass

@@ -29,9 +29,10 @@ offset_left = 1.0
 offset_right = 512.0
 offset_bottom = 448.0
 tab_alignment = 1
-current_tab = 0
+current_tab = 1
 
 [node name="优布林菜单" type="PanelContainer" parent="选项卡切换"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -162,7 +163,6 @@ text = "重置优布林数据
 "
 
 [node name="怪物菜单" type="PanelContainer" parent="选项卡切换"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -228,9 +228,10 @@ layout_mode = 2
 text = "修改"
 icon_alignment = 1
 
-[node name="和平模式按钮" type="CheckButton" parent="选项卡切换/怪物菜单/H/V"]
+[node name="仅修改场上怪物按钮" type="CheckButton" parent="选项卡切换/怪物菜单/H/V"]
 layout_mode = 2
 keep_pressed_outside = true
+text = "仅修改场上怪物"
 
 [node name="V2" type="VBoxContainer" parent="选项卡切换/怪物菜单/H"]
 layout_mode = 2

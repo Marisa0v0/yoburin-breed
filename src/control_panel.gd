@@ -23,9 +23,11 @@ extends Control
 
 var GROUP_PLAYERS: StringName = GameManager.NodeGroup.keys()[GameManager.NodeGroup.Players]
 var GROUP_MONSTERS: StringName = GameManager.NodeGroup.keys()[GameManager.NodeGroup.Monsters]
+var GROUP_CREATURES: StringName = GameManager.NodeGroup.keys()[GameManager.NodeGroup.Creature]
 var GROUP_ENEMIES_IN_BATTLE: StringName = GameManager.NodeGroup.keys()[GameManager.NodeGroup.EnemiesInBattle]
 
 ## 标识变量
+## 和平模式已启用
 @onready var peaceful_mode := false
 @onready var already_get_all_gifts_data := false
 
@@ -72,7 +74,18 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	## 和平模式且场上有怪物下，不能切换至非和平模式
 	## 玩家死了就没有开和平模式的必要了
-	self.yoburin_peaceful_mode_checkbutton.disabled = true if (self.peaceful_mode and !get_tree().get_nodes_in_group(GROUP_MONSTERS).is_empty()) or get_tree().get_nodes_in_group(GROUP_PLAYERS)[0].be_defeated else false
+	self.yoburin_peaceful_mode_checkbutton.disabled = true if (
+		(
+			self.peaceful_mode 
+			and 
+			!get_tree().get_nodes_in_group(GROUP_MONSTERS).is_empty()
+		) 
+			or get_tree().get_nodes_in_group(GROUP_PLAYERS)[0].be_defeated
+	) else false
+	
+	## 有生物正在播放攻击/挨打/战败动画时不可以开
+	for creature in get_tree().get_nodes_in_group(GROUP_CREATURES):
+		self.yoburin_peaceful_mode_checkbutton.disabled = self.yoburin_peaceful_mode_checkbutton.disabled and creature.animation_end 
 	
 	## 没死不能复活
 	self.yoburin_respawn_button.disabled = true if !get_tree().get_nodes_in_group(GROUP_PLAYERS)[0].be_defeated else false
@@ -88,10 +101,10 @@ func _process(_delta: float) -> void:
 	self.monster_spawn_button.disabled = true if !get_tree().get_nodes_in_group(GROUP_MONSTERS).is_empty() else false
 	
 	## 获取所有礼物信息
-	if !self.websocket_server._peers.is_empty():
-		if !self.already_get_all_gifts_data:
-			self._get_all_gifts_data()
-			self.already_get_all_gifts_data = true
+#	if !self.websocket_server._peers.is_empty():
+#		if !self.already_get_all_gifts_data:
+#			self._get_all_gifts_data()
+#			self.already_get_all_gifts_data = true
 	
 	
 ## 生成怪物生成下拉菜单
@@ -150,12 +163,10 @@ func _on_peaceful_mode_button_pressed() -> void:
 		
 		for monster in get_tree().get_nodes_in_group(GROUP_MONSTERS):
 			if monster is MarisaSlime:	## FIXME 暂时只有史莱姆
-				await monster.animation_end  ## FIXME ? 不确定能不能这么写
 				## 如果当前有正在交战的怪物，停止交战
 				if monster.target_player != null:
 					## 退出交战状态
 					monster.in_battle_position = false
-					monster.target_player = null
 					monster.remove_from_group(GROUP_ENEMIES_IN_BATTLE)
 				## 所有怪物反向加速逃离
 				## 修改贴图方向

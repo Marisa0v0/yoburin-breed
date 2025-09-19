@@ -8,17 +8,14 @@ from bilibili_api.live import (
 )
 from websockets.asyncio.client import connect
 
-from python.model import SendGiftModel
 from python.log import logger
 from python.config import settings
-from python.models.godot import GodotReceptionModel, ReceptionType
 from python.models.live import RoomInfoResponseModel
-from python.models.gift import GiftModel
 
 credential = Credential(**settings.bilibili.model_dump())
 
 
-room_id = 1854312761
+room_id = 31654036
 room = LiveDanmaku(
     room_display_id=room_id,
     credential=credential,
@@ -36,13 +33,12 @@ async def send_to_godot(message: str):
         receive = await ws_client.recv()
         logger.info(f"收到 Godot 返信：{receive}")
         await ws_client.send(message, text=True)
+        receive = await ws_client.recv()
 
 
 @room.on("VERIFICATION_SUCCESSFUL")
 async def _(event: dict):
     """连接B站成功后主动向 Godot 发送消息"""
-    # send = {"type": "VERIFICATION_SUCCESSFUL", "message": "hello godot"}
-    # await send_to_godot(json.dumps(send, ensure_ascii=False))
 
     """获取所有礼物信息，存至本地"""
     room_info = await LiveRoom(room_display_id=room_id, credential=credential).get_room_info()
@@ -54,54 +50,28 @@ async def _(event: dict):
     with open("gifts.json", "w", encoding="utf-8") as fp:
         json.dump(gifts['list'], fp, ensure_ascii=False, indent=2)
 
-    gift_models = [GiftModel.model_validate(_) for _ in gifts['list']]
-
-
-@room.on("PREPARING")
-async def _(event: dict):
-    """直播准备中"""
-    logger.info("直播准备中")
-    logger.debug(event)
-
-
-@room.on("LIVE")
-async def _(event: dict):
-    """直播开始"""
-    logger.info("直播开始")
-    logger.debug(event)
-
-
-
-@room.on("DANMU_MSG")
-async def _(event: dict):
-    """发弹幕"""
-    logger.info("收到弹幕")
-    logger.debug(event)
-
-    message = f"uid: {event['data']['info'][2][0]}, msg: {event['data']['info'][1]}"
-    send = {"type": "DANMU_MSG", "message": message}
-    logger.info(message)
-    await send_to_godot(json.dumps(send, ensure_ascii=False))
-
 
 @room.on("SEND_GIFT")
 async def _(event: dict):
     """送礼物"""
     logger.info("收到礼物")
-    model = SendGiftModel.model_validate(event)
-    data = model.data.data
-
-    gift_name = data.giftName   # 礼物名
-    price = data.total_coin     # 礼物花费金瓜子 x 100
-    sender_name = data.uname    # 送礼人昵称
-    sender_uid = data.uid       # 送礼人 UID
-
     logger.debug(event)
 
-    message = f"sender: {sender_name}({sender_uid}), gift: {gift_name}, price: {price}"
-    logger.info(message)
-    send = {"type": "SEND_GIFT", "message": message}
-    await send_to_godot(send)
+    uid = event['data']['data']['uid']
+    uname = event['data']['data']['uname']
+    price = event['data']['data']['price'] # 数值等于人民币*1000，金瓜子*100 （人民币 9.9，数值9900，金瓜子99）
+    gname = event['data']['data']['giftName']
+    gid = event['data']['data']['giftId']
+
+    data = {
+        "uid": uid,
+        "user_name": uname,
+        "price": price,
+        "gname": gname,
+        "gid": gid,
+    }
+    send = {"type": "SEND_GIFT", "message": json.dumps(data, ensure_ascii=False)}
+    await send_to_godot(json.dumps(send, ensure_ascii=False))
 
 
 @room.on("SUPER_CHAT_MESSAGE")
@@ -109,6 +79,45 @@ async def _(event: dict):
     """醒目留言"""
     logger.info("收到醒目留言")
     logger.debug(event)
+
+    uid = event['data']['data']['uid']
+    uname = event['data']['data']['uinfo']['base']['name']
+    price = event['data']['data']['price']  # NOTE 这里数值又等于人民币了
+    gname = event['data']['data']['gift']['gift_name']  # 醒目留言
+    gid = event['data']['data']['gift']['gift_id']
+
+    data = {
+        "uid": uid,
+        "user_name": uname,
+        "price": price,
+        'gname': gname,
+        "gid": gid,
+    }
+    send = {"type": "SUPER_CHAT_MESSAGE", "message": json.dumps(data, ensure_ascii=False)}
+    await send_to_godot(json.dumps(send, ensure_ascii=False))
+
+
+@room.on("GUARD_BUY")
+async def _(event: dict):
+    """大航海"""
+    logger.info("收到大航海")
+    logger.debug(event)
+
+    uid = event["data"]['data']["uid"]
+    uname = event["data"]['data']["username"]
+    price = event["data"]['data']["price"] # 数值等于人民币*1000，金瓜子*100 （人民币 198，数值198000，金瓜子1980）
+    gname = event["data"]['data']['gift_name']  # 舰长、提督、总督
+    gid = event['data']['data']['gift_id']
+
+    data = {
+        "uid": uid,
+        "user_name": uname,
+        "price": price,
+        'gname': gname,
+        "gid": gid,
+    }
+    send = {"type": "GUARD_BUY", "message": json.dumps(data, ensure_ascii=False)}
+    await send_to_godot(json.dumps(send, ensure_ascii=False))
 
 
 async def main():
