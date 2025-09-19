@@ -10,12 +10,13 @@ from websockets.asyncio.client import connect
 
 from python.log import logger
 from python.config import settings
+from python.models import godot
 from python.models.live import RoomInfoResponseModel
 
 credential = Credential(**settings.bilibili.model_dump())
 
 
-room_id = 213
+room_id = settings.project.live_room_id
 room = LiveDanmaku(
     room_display_id=room_id,
     credential=credential,
@@ -39,6 +40,7 @@ async def send_to_godot(message: str):
 @room.on("VERIFICATION_SUCCESSFUL")
 async def _(event: dict):
     """连接B站成功后主动向 Godot 发送消息"""
+    # 测试上舰
 
     """获取所有礼物信息，存至本地"""
     room_info = await LiveRoom(room_display_id=room_id, credential=credential).get_room_info()
@@ -62,13 +64,15 @@ async def _(event: dict):
     price = event['data']['data']['price'] # 数值等于人民币*1000，金瓜子*100 （人民币 9.9，数值9900，金瓜子99）
     gname = event['data']['data']['giftName']
     gid = event['data']['data']['giftId']
+    num = event['data']['data']['num']  # 数量
 
     data = {
         "uid": uid,
-        "user_name": uname,
+        "uname": uname,
         "price": price,
         "gname": gname,
         "gid": gid,
+        "num": num,
     }
     send = {"type": "SEND_GIFT", "message": json.dumps(data, ensure_ascii=False)}
     await send_to_godot(json.dumps(send, ensure_ascii=False))
@@ -82,13 +86,13 @@ async def _(event: dict):
 
     uid = event['data']['data']['uid']
     uname = event['data']['data']['uinfo']['base']['name']
-    price = event['data']['data']['price']  # NOTE 这里数值又等于人民币了
+    price = event['data']['data']['price']  # NOTE 这里数值又等于人民币了，弱智b站程序员
     gname = event['data']['data']['gift']['gift_name']  # 醒目留言
     gid = event['data']['data']['gift']['gift_id']
 
     data = {
         "uid": uid,
-        "user_name": uname,
+        "uname": uname,
         "price": price,
         'gname': gname,
         "gid": gid,
@@ -108,13 +112,15 @@ async def _(event: dict):
     price = event["data"]['data']["price"] # 数值等于人民币*1000，金瓜子*100 （人民币 198，数值198000，金瓜子1980）
     gname = event["data"]['data']['gift_name']  # 舰长、提督、总督
     gid = event['data']['data']['gift_id']
+    num = event['data']['data']['num']  # 数量
 
     data = {
         "uid": uid,
-        "user_name": uname,
+        "uname": uname,
         "price": price,
         'gname': gname,
         "gid": gid,
+        "num": num,
     }
     send = {"type": "GUARD_BUY", "message": json.dumps(data, ensure_ascii=False)}
     await send_to_godot(json.dumps(send, ensure_ascii=False))

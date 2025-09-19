@@ -116,32 +116,60 @@ func _on_websocket_message(_peer: WebSocketPeer, message: String) -> void:
 		Log.error("解析WS消息具体内容失败: %s" % reception_data["message"])
 		return
 		
+	var yoburin: Yoburin = get_tree().get_nodes_in_group(GROUP_PLAYERS)[0]
 	match reception_data["type"]:
 		## 大航海
 		"GUARD_BUY":
-			Log.info("收到大航海了")
+			var uname: StringName = message_data["uname"]
+			var uid: int = message_data["uid"]
 			var gname: StringName = message_data["gname"]	## 礼物名称
 			var gid: int = message_data["gid"]				## 礼物ID
 			var price: int = message_data["price"]			## 礼物价值 (数值为人民币*1000)
+			var num: int = message_data["num"]				## 礼物数量
+			Log.info("收到%s(%d)送的大航海'%s(%d)' %d个 (价值%d金瓜子)" % [uname, uid, gname, gid, num, price/100])
 			## 触发四叶草流星
-			var yoburin: Yoburin = get_tree().get_nodes_in_group(GROUP_PLAYERS)[0]
 			yoburin.cast_skill()
 			
 		## 礼物
 		"SEND_GIFT":
-			Log.info("收到礼物了")
+			var uname: StringName = message_data["uname"]
+			var uid: int = message_data["uid"]
 			var gname: StringName = message_data["gname"]	## 礼物名称
 			var gid: int = message_data["gid"]				## 礼物ID
 			var price: int = message_data["price"]			## 礼物价值 (数值为人民币*1000)
+			var num: int = message_data["num"]				## 礼物数量
+			Log.info("收到%s(%d)送的礼物'%s(%d)' %d个 (价值%d金瓜子)" % [uname, uid, gname, gid, num, price/100])
 			
-			## TODO 触发礼物效果？
+			## FIXME 暂时写死
+			match gname:
+				## 盛典门票攻击力1
+				"盛典门票":
+					yoburin.attack_point += 1.0 * num
+		
+				## 人气票防御力1
+				"人气票":
+					yoburin.defence_point += 1.0 * num
+					
+				## 心动卡生命值10
+				"心动卡":
+					yoburin.health_point += 10.0 * num
+		
+				## 情书速度1
+				"情书":
+					yoburin.attack_speed += 1.0 * num
+		
+				_:
+					pass
 		
 		## 醒目留言
 		"SUPER_CHAT_MESSAGE":
 			Log.info("收到醒目留言了")
+			var uname: StringName = message_data["uname"]
+			var uid: int = message_data["uid"]
 			var gname: StringName = message_data["gname"]	## 礼物名称
 			var gid: int = message_data["gid"]				## 礼物ID
 			var price: int = message_data["price"]			## 礼物价值 (数值为人民币，啥比B站)
+			Log.info("收到%s(%d)送的醒目留言'%s(%d)' (价值%d人民币)" % [uname, uid, gname, gid, price])
 			
 		_:
 			pass

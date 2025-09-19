@@ -20,6 +20,8 @@ class ProjectSettings(BaseSettings):
         default="<g>{time:HH:mm:ss}</g> | [<lvl>{level:^7}</lvl>] | {extra[project_name]}{message:<35}"
     )
 
+    live_room_id: int = Field(default=1854312761)
+
     @property
     def user_agent(self) -> str:
         return (

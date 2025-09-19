@@ -7,7 +7,6 @@
 [ext_resource type="Script" uid="uid://8dxdgpj5q8qi" path="res://src/signals/hurtbox.gd" id="5_lw5nx"]
 [ext_resource type="Texture2D" uid="uid://33b0n73y67tm" path="res://resource/references/Legacy-Fantasy - High Forest 2.0/Legacy-Fantasy - High Forest 2.3/HUD/Base-01.png" id="6_hdh8b"]
 
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_lu824"]
 atlas = ExtResource("3_g7jy6")
 region = Rect2(72, 0, 24, 24)
