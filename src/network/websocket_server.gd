@@ -73,7 +73,7 @@ func _process(_delta: float) -> void:
 				while peer.get_available_packet_count():
 					var packet := peer.get_packet()
 					var packet_text := packet.get_string_from_utf8()
-					Log.info("收到客户端 %d 的信息: %s" % [peer_id, packet_text])
+					Log.debug("收到客户端 %d 的信息: %s" % [peer_id, packet_text])
 					self.on_message.emit(peer, packet_text)
 					## 回声
 					peer.send_text(packet_text)

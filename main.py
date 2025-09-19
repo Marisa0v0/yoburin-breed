@@ -15,7 +15,7 @@ from python.models.live import RoomInfoResponseModel
 credential = Credential(**settings.bilibili.model_dump())
 
 
-room_id = 31654036
+room_id = 213
 room = LiveDanmaku(
     room_display_id=room_id,
     credential=credential,

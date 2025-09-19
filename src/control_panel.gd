@@ -29,7 +29,8 @@ var GROUP_ENEMIES_IN_BATTLE: StringName = GameManager.NodeGroup.keys()[GameManag
 ## 标识变量
 ## 和平模式已启用
 @onready var peaceful_mode := false
-@onready var already_get_all_gifts_data := false
+## 仅修改当前场上怪物属性
+@onready var only_modify_current_monster := true
 
 ## 节点
 @onready var websocket_server: WebsocketServer
@@ -54,6 +55,8 @@ var GROUP_ENEMIES_IN_BATTLE: StringName = GameManager.NodeGroup.keys()[GameManag
 @onready var monster_attack_point_line: LineEdit = $"选项卡切换/怪物菜单/H/V/H2/攻击力数值"
 @onready var monster_defence_point_line: LineEdit = $"选项卡切换/怪物菜单/H/V/H3/防御力数值"
 @onready var monster_attack_speed_line: LineEdit = $"选项卡切换/怪物菜单/H/V/H4/攻击速度数值"
+@onready var monster_property_confirm_button: Button = $"选项卡切换/怪物菜单/H/V/确定修改按钮"
+@onready var monster_only_modify_current_checkbutton: CheckButton = $选项卡切换/怪物菜单/H/V/仅修改场上怪物按钮
 
 @onready var monster_current_kill_button: Button = $"选项卡切换/怪物菜单/H/V2/H/击杀怪物按钮"
 @onready var monster_spawn_button: Button = $"选项卡切换/怪物菜单/H/V2/H2/生成新怪物按钮"
@@ -81,11 +84,7 @@ func _process(_delta: float) -> void:
 			!get_tree().get_nodes_in_group(GROUP_MONSTERS).is_empty()
 		) 
 			or get_tree().get_nodes_in_group(GROUP_PLAYERS)[0].be_defeated
-	) else false
-	
-	## 有生物正在播放攻击/挨打/战败动画时不可以开
-	for creature in get_tree().get_nodes_in_group(GROUP_CREATURES):
-		self.yoburin_peaceful_mode_checkbutton.disabled = self.yoburin_peaceful_mode_checkbutton.disabled and creature.animation_end 
+	) else false 
 	
 	## 没死不能复活
 	self.yoburin_respawn_button.disabled = true if !get_tree().get_nodes_in_group(GROUP_PLAYERS)[0].be_defeated else false
@@ -94,28 +93,20 @@ func _process(_delta: float) -> void:
 	## 没有敌人放什么大招
 	self.yoburin_clover_meteor_button.disabled = true if get_tree().get_nodes_in_group(GROUP_PLAYERS)[0].can_cast_skill or get_tree().get_nodes_in_group(GROUP_MONSTERS).is_empty() else false
 	
+	## 没怪物时，不能仅修改当前场上物属性
+	self.monster_property_confirm_button.disabled = true if self.only_modify_current_monster and get_tree().get_nodes_in_group(GROUP_MONSTERS).is_empty() else false
+	
 	## 场上没有怪物时，不能一键击杀
 	self.monster_current_kill_button.disabled = true if get_tree().get_nodes_in_group(GROUP_MONSTERS).is_empty() else false
 	
 	## 场上有怪物时，不能生成新怪物
 	self.monster_spawn_button.disabled = true if !get_tree().get_nodes_in_group(GROUP_MONSTERS).is_empty() else false
 	
-	## 获取所有礼物信息
-#	if !self.websocket_server._peers.is_empty():
-#		if !self.already_get_all_gifts_data:
-#			self._get_all_gifts_data()
-#			self.already_get_all_gifts_data = true
-	
 	
 ## 生成怪物生成下拉菜单
 func _generate_monster_spawn_options() -> void:
 	for type in GameManager.MonsterType.keys():
 		self.monster_spawn_options.add_item(GameManager.MonsterTypeMapping[type])
-		
-		
-## 获取所有礼物列表
-func _get_all_gifts_data() -> void:
-	self.websocket_server.send_json(self.websocket_server._peers[self.websocket_server._last_peer_id], {"type": "GetAllGiftsData"})
 		
 		
 ## 具体功能连接
@@ -276,6 +267,20 @@ func _on_monster_property_confirm_button_pressed() -> void:
 		"attack_speed": attack_speed,
 	})
 	Log.debug("怪物的数值已修改为: %s, %s, %s, %s" % [health_point, attack_point, defence_point, attack_speed])
+	
+
+## 仅修改当前场上怪物
+func _on_monster_only_modify_current_checkbutton_pressed() -> void:
+	## 启用
+	if self.only_modify_current_monster == false:
+		Log.info("仅修改当前场上怪物数值，不存至本地文件")
+		self.only_modify_current_monster = true
+		
+	## 关闭
+	else:
+		## 重新开始刷怪计时
+		Log.info("关闭和平模式")
+		self.only_modify_current_monster == false
 
 
 ## 击杀当前怪物 FIXME 当前只有史莱姆

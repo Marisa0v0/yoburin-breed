@@ -53,6 +53,12 @@ func _input(event):
 		var current_position := get_window().position
 		var new_position     := current_position + Vector2i(event.relative)
 		get_window().set_position(new_position)
+		
+	if event is InputEventKey:
+		if event.keycode == KEY_C:
+			## 触发四叶草流星
+			var yoburin: Yoburin = get_tree().get_nodes_in_group(GROUP_PLAYERS)[0]
+			yoburin.cast_skill()
 
 
 ## 怪物生成相关
